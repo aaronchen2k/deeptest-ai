@@ -1,0 +1,10 @@
+lsof -i:8501 | grep '(LISTEN)' | awk '{print $2}' | sudo xargs --no-run-if-empty kill -9
+lsof -i:7861 | grep '(LISTEN)' | awk '{print $2}' | sudo xargs --no-run-if-empty kill -9
+chatchat-config server --default_bind_host=0.0.0.0
+chatchat -a
+
+git push -f github main:main
+
+nohup ./run.sh > runner.log 2>&1 &
+
+nvm use v22.11.0

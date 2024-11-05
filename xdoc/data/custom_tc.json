@@ -1,0 +1,42 @@
+[
+  {
+    "instruction": "assign project ${project_name} to part ${part_name}.",
+    "input": "",
+    "output": "{\"intent\": \"assign_project\",\"slots\": {\"part\": \"${part_name}\", \"project\": \"${project_name}\"}}"
+  },
+  {
+    "instruction": "add part ${part_name} to project ${project_name}.",
+    "input": "",
+    "output": ""
+  },
+  {
+    "instruction": "分配项目${project_name}到配件${part_name}。",
+    "input": "",
+    "output": ""
+  },
+  {
+    "instruction": "设置配件${part_name}的项目为${project_name}。",
+    "input": "",
+    "output": ""
+  },
+  {
+    "instruction": "配件${part_name}的项目属性设为${project_name}。",
+    "input": "",
+    "output": ""
+  },
+  {
+    "instruction": "将配件${part_name}加入到项目${project_name}。",
+    "input": "",
+    "output": ""
+  },
+  {
+    "instruction": "将配件${part_name}分配至项目${project_name}。",
+    "input": "",
+    "output": ""
+  },
+  {
+    "instruction": "在项目${project_name}中加入配件${part_name}。",
+    "input": "",
+    "output": ""
+  }
+]
