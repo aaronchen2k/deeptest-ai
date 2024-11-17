@@ -18,10 +18,6 @@ var (
 )
 
 var (
-	DatabaseType = "sqlite"
-)
-
-var (
 	ErrUserNameOrPassword = errors.New("用户名或密码错误")
 	ErrUserNameInvalid    = errors.New("用户名名称已经被使用")
 	ErrRoleNameInvalid    = errors.New("角色名称已经被使用")

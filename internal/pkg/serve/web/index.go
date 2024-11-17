@@ -1,13 +1,14 @@
 package web
 
 import (
+	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/viper_server"
 	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
 )
 
 // init
 func init() {
-	viper_server.Init(getViperConfig())
+	viper_server.Init(config.GetViperConfig())
 }
 
 type WebBaseFunc interface {

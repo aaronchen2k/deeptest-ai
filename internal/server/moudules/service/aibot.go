@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	v1 "github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
-	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	_domain "github.com/deeptest-com/deeptest-next/pkg/domain"
 	_http "github.com/deeptest-com/deeptest-next/pkg/libs/http"
 	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
@@ -30,7 +30,7 @@ func (s *AibotService) ChatCompletion(req v1.ChatCompletionReq, flusher http.Flu
 
 	req.Model = "qwen2.5-coder:1.5b-instruct"
 
-	url := _http.AddSepIfNeeded(web.CONFIG.System.ChatchatUrl) + "chat/chat/completions"
+	url := _http.AddSepIfNeeded(config.CONFIG.System.ChatchatUrl) + "chat/chat/completions"
 	_logUtils.Info("url=" + url)
 	bts, err := json.Marshal(req)
 
@@ -106,7 +106,7 @@ func (s *AibotService) KnowledgeBaseChat(req v1.KnowledgeBaseChatReq, flusher ht
 		//}
 	}
 
-	url := _http.AddSepIfNeeded(web.CONFIG.System.ChatchatUrl) +
+	url := _http.AddSepIfNeeded(config.CONFIG.System.ChatchatUrl) +
 		fmt.Sprintf("knowledge_base/local_kb/%s/chat/completions", req.KbName)
 	bts, err := json.Marshal(req)
 
@@ -159,7 +159,7 @@ func (s *AibotService) KnowledgeBaseChat(req v1.KnowledgeBaseChatReq, flusher ht
 }
 
 func (s *AibotService) ListValidModel(typ string) (ret []v1.ChatchatModelData, err error) {
-	url := _http.AddSepIfNeeded(web.CONFIG.System.ChatchatUrl) + "v1/models"
+	url := _http.AddSepIfNeeded(config.CONFIG.System.ChatchatUrl) + "v1/models"
 
 	bytes, err := _http.Get(url)
 	if err != nil {
@@ -182,7 +182,7 @@ func (s *AibotService) ListValidModel(typ string) (ret []v1.ChatchatModelData, e
 }
 
 func (s *AibotService) ListKnowledgeBase() (ret []v1.ChatchatKnowledgeBaseData, err error) {
-	url := _http.AddSepIfNeeded(web.CONFIG.System.ChatchatUrl) + "knowledge_base/list_knowledge_bases"
+	url := _http.AddSepIfNeeded(config.CONFIG.System.ChatchatUrl) + "knowledge_base/list_knowledge_bases"
 
 	bytes, err := _http.Get(url)
 	if err != nil {

@@ -3,8 +3,8 @@ package web_iris
 import (
 	stdContext "context"
 	"errors"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/libs/arr"
-	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web/web_iris/middleware"
 	_str "github.com/deeptest-com/deeptest-next/pkg/libs/string"
 	"strings"
@@ -43,14 +43,14 @@ type Party struct {
 // Init
 func Init() *WebServer {
 	app := iris.New()
-	if web.CONFIG.System.Tls {
+	if config.CONFIG.System.Tls {
 		app.Use(middleware.LoadTls())
 	}
 
 	app.Use(recover.New())
 
 	app.Validator = validator.New()
-	app.Logger().SetLevel(web.CONFIG.System.Level)
+	app.Logger().SetLevel(config.CONFIG.System.Level)
 	idleConnsClosed := make(chan struct{})
 
 	iris.RegisterOnInterrupt(func() {
@@ -61,12 +61,12 @@ func Init() *WebServer {
 		close(idleConnsClosed)
 	})
 
-	web.SetDefaultAddrAndTimeFormat()
+	config.SetDefaultAddrAndTimeFormat()
 
 	return &WebServer{
 		App:             app,
-		addr:            web.CONFIG.System.Addr,
-		timeFormat:      web.CONFIG.System.TimeFormat,
+		addr:            config.CONFIG.System.Addr,
+		timeFormat:      config.CONFIG.System.TimeFormat,
 		idleConnsClosed: idleConnsClosed,
 	}
 }
@@ -83,7 +83,7 @@ func (ws *WebServer) AddModule(parties ...Party) {
 
 // AddWebStatic
 func (ws *WebServer) AddWebStatic(staticAbsPath, webPrefix string, paths ...string) {
-	webPrefixs := strings.Split(web.CONFIG.System.WebPrefix, ",")
+	webPrefixs := strings.Split(config.CONFIG.System.WebPrefix, ",")
 	wp := arr.NewCheckArrayType(2)
 	for _, webPrefix := range webPrefixs {
 		wp.Add(webPrefix)
@@ -98,14 +98,14 @@ func (ws *WebServer) AddWebStatic(staticAbsPath, webPrefix string, paths ...stri
 		SPA:       true,
 	}
 	ws.App.HandleDir(webPrefix, fsOrDir, opt)
-	web.CONFIG.System.WebPrefix = _str.Join(web.CONFIG.System.WebPrefix, ",", webPrefix)
+	config.CONFIG.System.WebPrefix = _str.Join(config.CONFIG.System.WebPrefix, ",", webPrefix)
 }
 
 // AddUploadStatic
 func (ws *WebServer) AddUploadStatic(webPrefix, staticAbsPath string) {
 	fsOrDir := iris.Dir(staticAbsPath)
 	ws.App.HandleDir(webPrefix, fsOrDir)
-	web.CONFIG.System.StaticPrefix = webPrefix
+	config.CONFIG.System.StaticPrefix = webPrefix
 }
 
 // Run

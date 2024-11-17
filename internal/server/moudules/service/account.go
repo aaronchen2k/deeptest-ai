@@ -3,9 +3,9 @@ package service
 import (
 	"errors"
 	v1 "github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/core/auth"
-	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/repo"
 	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"go.uber.org/zap"
@@ -38,7 +38,7 @@ func (s *AccountService) GetAccessToken(req *v1.LoginReq) (token string, id uint
 		return
 	}
 
-	expiresAt := time.Now().Local().Add(time.Duration(web.CONFIG.SessionTimeout) * time.Minute).Unix()
+	expiresAt := time.Now().Local().Add(time.Duration(config.CONFIG.SessionTimeout) * time.Minute).Unix()
 	claims := auth.New(&auth.Multi{
 		Id:            admin.ID,
 		Username:      req.Username,

@@ -1,4 +1,4 @@
-package web
+package config
 
 import (
 	"encoding/json"
@@ -92,6 +92,8 @@ type System struct {
 
 	ChatchatUrl string `mapstructure:"chatchat-url" json:"chatchat-url" yaml:"chatchat-url"`
 	LLmUrl      string `mapstructure:"llm-url" json:"llm-url" yaml:"llm-url"`
+
+	DatabaseType string `mapstructure:"database-type" json:"database-type" yaml:"database-type"`
 }
 
 // SetDefaultAddrAndTimeFormat
@@ -116,12 +118,12 @@ func ToStaticUrl(uri string) string {
 
 // IsExist config file is exist
 func IsExist() bool {
-	return getViperConfig().IsFileExist()
+	return GetViperConfig().IsFileExist()
 }
 
 // Remove remove config file
 func Remove() error {
-	return getViperConfig().Remove()
+	return GetViperConfig().Remove()
 }
 
 // Recover
@@ -130,11 +132,11 @@ func Recover() error {
 	if err != nil {
 		return err
 	}
-	return getViperConfig().Recover(b)
+	return GetViperConfig().Recover(b)
 }
 
-// getViperConfig get viper config
-func getViperConfig() viper_server.ViperConfig {
+// GetViperConfig get viper config
+func GetViperConfig() viper_server.ViperConfig {
 	maxSize := strconv.FormatInt(CONFIG.FileMaxSize, 10)
 	sessionTimeout := strconv.FormatInt(CONFIG.SessionTimeout, 10)
 	keyLong := strconv.FormatInt(int64(CONFIG.Captcha.KeyLong), 10)

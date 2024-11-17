@@ -1,8 +1,8 @@
 package web_iris
 
 import (
+	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/libs/arr"
-	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web/web_iris/middleware"
 	"net/http"
 	"strings"
@@ -24,11 +24,11 @@ func (ws *WebServer) InitRouter() error {
 
 		app.UseRouter(middleware.CrsAuth())
 		app.UseRouter(recover.New())
-		if !web.CONFIG.Limit.Disable {
-			limitV1 := rate.Limit(web.CONFIG.Limit.Limit, web.CONFIG.Limit.Burst, rate.PurgeEvery(time.Minute, 5*time.Minute))
+		if !config.CONFIG.Limit.Disable {
+			limitV1 := rate.Limit(config.CONFIG.Limit.Limit, config.CONFIG.Limit.Burst, rate.PurgeEvery(time.Minute, 5*time.Minute))
 			app.Use(limitV1)
 		}
-		if web.CONFIG.System.Level == "debug" {
+		if config.CONFIG.System.Level == "debug" {
 			debug := func(index iris.Party) {
 				index.Get("/", func(ctx iris.Context) {
 					ctx.HTML("<h1>请点击<a href='/debug/pprof'>这里</a>打开调试页面")
@@ -56,8 +56,8 @@ func (ws *WebServer) InitRouter() error {
 // - PermRoutes
 // - NoPermRoutes
 func (ws *WebServer) GetSources() ([]map[string]string, []map[string]string) {
-	methodExcepts := strings.Split(web.CONFIG.Except.Method, ";")
-	uris := strings.Split(web.CONFIG.Except.Uri, ";")
+	methodExcepts := strings.Split(config.CONFIG.Except.Method, ";")
+	uris := strings.Split(config.CONFIG.Except.Uri, ";")
 	routeLen := len(ws.App.GetRoutes())
 	permRoutes := make([]map[string]string, 0, routeLen)
 	noPermRoutes := make([]map[string]string, 0, routeLen)

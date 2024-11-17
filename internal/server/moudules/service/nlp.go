@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	v1 "github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
-	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	_http "github.com/deeptest-com/deeptest-next/pkg/libs/http"
 	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	_str "github.com/deeptest-com/deeptest-next/pkg/libs/string"
@@ -23,7 +23,7 @@ func (s *NlpService) Parse(req v1.NlpReq) (ret v1.NlpResp, err error) {
 		req.Model = "qwen2.5-coder:1.5b-instruct"
 	}
 
-	url := _http.AddSepIfNeeded(web.CONFIG.System.LLmUrl) + "v1/chat/completions"
+	url := _http.AddSepIfNeeded(config.CONFIG.System.LLmUrl) + "v1/chat/completions"
 	_logUtils.Info("url=" + url)
 
 	dataBytes, err := json.Marshal(req.Instruction)

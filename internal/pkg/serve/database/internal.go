@@ -19,16 +19,16 @@ type writer interface {
 	Printf(string, ...interface{})
 }
 
-// config
-type config struct {
+// conf
+type conf struct {
 	SlowThreshold time.Duration
 	Colorful      bool
 	LogLevel      logger.LogLevel
 }
 
 var (
-	Discard = New(log.New(ioutil.Discard, "", log.LstdFlags), config{})
-	Default = New(log.New(os.Stdout, "\r\n", log.LstdFlags), config{
+	Discard = New(log.New(ioutil.Discard, "", log.LstdFlags), conf{})
+	Default = New(log.New(os.Stdout, "\r\n", log.LstdFlags), conf{
 		SlowThreshold: 200 * time.Millisecond,
 		LogLevel:      logger.Warn,
 		Colorful:      true,
@@ -37,7 +37,7 @@ var (
 )
 
 // New
-func New(writer writer, config config) logger.Interface {
+func New(writer writer, config conf) logger.Interface {
 	var (
 		infoStr      = "%s\n[info] "
 		warnStr      = "%s\n[warn] "
@@ -58,7 +58,7 @@ func New(writer writer, config config) logger.Interface {
 
 	return &customLogger{
 		writer:       writer,
-		config:       config,
+		conf:         config,
 		infoStr:      infoStr,
 		warnStr:      warnStr,
 		errStr:       errStr,
@@ -71,7 +71,7 @@ func New(writer writer, config config) logger.Interface {
 // customLogger
 type customLogger struct {
 	writer
-	config
+	conf
 	infoStr, warnStr, errStr            string
 	traceStr, traceErrStr, traceWarnStr string
 }

@@ -3,11 +3,11 @@ package database
 import (
 	"encoding/json"
 	"fmt"
+	config2 "github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/viper_server"
-	"github.com/snowlyg/iris-admin/g"
-
 	"github.com/fsnotify/fsnotify"
+	"github.com/snowlyg/iris-admin/g"
 	"github.com/spf13/viper"
 )
 
@@ -32,7 +32,7 @@ var CONFIG_SQLITE = Sqlite{
 
 type Mysql struct {
 	Path         string `mapstructure:"path" json:"path" yaml:"path"`
-	Config       string `mapstructure:"config" json:"config" yaml:"config"`
+	Config       string `mapstructure:"conf" json:"conf" yaml:"conf"`
 	DbName       string `mapstructure:"db-name" json:"db-name" yaml:"db-name"`
 	Username     string `mapstructure:"username" json:"username" yaml:"username"`
 	Password     string `mapstructure:"password" json:"password" yaml:"password"`
@@ -60,12 +60,12 @@ type Sqlite struct {
 	LogZap       string `mapstructure:"log-zap" json:"log-zap" yaml:"log-zap"` //silent,error,warn,info,zap
 }
 
-// IsExist config file is exist
+// IsExist conf file is exist
 func IsExist() bool {
 	return GetViperConfig().IsFileExist()
 }
 
-// Remove remove config file
+// Remove remove conf file
 func Remove() error {
 	return GetViperConfig().Remove()
 }
@@ -80,14 +80,14 @@ func Recover() error {
 }
 
 func GetViperConfig() viper_server.ViperConfig {
-	if consts.DatabaseType == "sqlite" {
+	if config2.CONFIG.System.DatabaseType == "sqlite" {
 		return getViperConfigSqlite()
 	} else {
 		return getViperConfigMySql()
 	}
 }
 
-// getViperConfigMySql get viper config
+// getViperConfigMySql get viper conf
 func getViperConfigMySql() viper_server.ViperConfig {
 	configName := "mysql"
 	mxIdleConns := fmt.Sprintf("%d", CONFIG_MYSQL.MaxIdleConns)
@@ -103,7 +103,7 @@ func getViperConfigMySql() viper_server.ViperConfig {
 			if err := vi.Unmarshal(&CONFIG_MYSQL); err != nil {
 				return fmt.Errorf("get Unarshal error: %v", err)
 			}
-			// watch config file change
+			// watch conf file change
 			vi.OnConfigChange(func(e fsnotify.Event) {
 				fmt.Println("Config file changed:", e.Name)
 			})
@@ -114,7 +114,7 @@ func getViperConfigMySql() viper_server.ViperConfig {
 		Default: []byte(`
 {
 	"path": "` + CONFIG_MYSQL.Path + `",
-	"config": "` + CONFIG_MYSQL.Config + `",
+	"conf": "` + CONFIG_MYSQL.Config + `",
 	"db-name": "` + CONFIG_MYSQL.DbName + `",
 	"username": "` + CONFIG_MYSQL.Username + `",
 	"password": "` + CONFIG_MYSQL.Password + `",
@@ -126,7 +126,7 @@ func getViperConfigMySql() viper_server.ViperConfig {
 	}
 }
 
-// getViperConfigSqlite get viper config
+// getViperConfigSqlite get viper conf
 func getViperConfigSqlite() viper_server.ViperConfig {
 	configName := "sqlite"
 	mxIdleConns := fmt.Sprintf("%d", CONFIG_SQLITE.MaxIdleConns)
@@ -142,7 +142,7 @@ func getViperConfigSqlite() viper_server.ViperConfig {
 			if err := vi.Unmarshal(&CONFIG_SQLITE); err != nil {
 				return fmt.Errorf("get Unarshal error: %v", err)
 			}
-			// watch config file change
+			// watch conf file change
 			vi.OnConfigChange(func(e fsnotify.Event) {
 				fmt.Println("Config file changed:", e.Name)
 			})

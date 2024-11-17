@@ -4,7 +4,6 @@ import (
 	"flag"
 	"github.com/deeptest-com/deeptest-next/cmd/server/serve"
 	"github.com/deeptest-com/deeptest-next/cmd/server/v1/router"
-	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/core/auth"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/inits"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/cache"
@@ -27,7 +26,6 @@ var (
 
 func main() {
 	flagSet = flag.NewFlagSet("deeptest", flag.ContinueOnError)
-	flagSet.StringVar(&consts.DatabaseType, "d", "sqlite", "")
 	flagSet.Parse(os.Args[1:])
 
 	viper_server.Init(database.GetViperConfig())

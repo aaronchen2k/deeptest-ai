@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"gorm.io/driver/mysql"
@@ -33,7 +34,7 @@ func GetInstance() *gorm.DB {
 }
 
 func gormDb() *gorm.DB {
-	if consts.DatabaseType == "sqlite" {
+	if config.CONFIG.System.DatabaseType == "sqlite" {
 		return gormSqlite()
 	} else {
 		return gormMysql()
@@ -43,7 +44,7 @@ func gormDb() *gorm.DB {
 // gormMysql get *gorm.DB
 func gormMysql() *gorm.DB {
 	if CONFIG_MYSQL.DbName == "" {
-		fmt.Println("config dbname is empty")
+		fmt.Println("conf dbname is empty")
 		return nil
 	}
 	err := createTable(CONFIG_MYSQL.BaseDsn(), "mysql", CONFIG_MYSQL.DbName)
@@ -76,7 +77,7 @@ func gormMysql() *gorm.DB {
 // gormSqlite get *gorm.DB
 func gormSqlite() *gorm.DB {
 	if CONFIG_SQLITE.DbName == "" {
-		fmt.Println("config dbname is empty")
+		fmt.Println("conf dbname is empty")
 		return nil
 	}
 
@@ -116,7 +117,7 @@ func gormSqlite() *gorm.DB {
 	return db
 }
 
-// gormConfig get gorm config
+// gormConfig get gorm conf
 func gormConfig(mod bool) *gorm.Config {
 	var config = &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,

@@ -8,3 +8,4 @@ git push -f github main:main
 nohup ./run.sh > runner.log 2>&1 &
 
 nvm use v22.11.0
+pnpm dev

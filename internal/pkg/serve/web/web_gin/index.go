@@ -3,6 +3,8 @@ package web_gin
 import (
 	"errors"
 	"fmt"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web/web_gin/middleware"
 	"net/http"
 	"path/filepath"
 	"regexp"
@@ -14,8 +16,6 @@ import (
 	"github.com/snowlyg/helper/arr"
 	"github.com/snowlyg/helper/dir"
 	"github.com/snowlyg/helper/str"
-	"github.com/snowlyg/iris-admin/server/web"
-	"github.com/snowlyg/iris-admin/server/web/web_gin/middleware"
 )
 
 var ErrAuthDriverEmpty = errors.New("auth driver initialize fail")
@@ -41,9 +41,9 @@ type WebStatic struct {
 
 // Init
 func Init() *WebServer {
-	gin.SetMode(web.CONFIG.System.Level)
+	gin.SetMode(config.CONFIG.System.Level)
 	app := gin.Default()
-	if web.CONFIG.System.Tls {
+	if config.CONFIG.System.Tls {
 		app.Use(middleware.LoadTls())
 	}
 	app.Use(middleware.Cors())
@@ -51,12 +51,12 @@ func Init() *WebServer {
 
 	gin.DefaultWriter = colorable.NewColorableStdout()
 
-	web.SetDefaultAddrAndTimeFormat()
+	config.SetDefaultAddrAndTimeFormat()
 
 	return &WebServer{
 		app:        app,
-		addr:       web.CONFIG.System.Addr,
-		timeFormat: web.CONFIG.System.TimeFormat,
+		addr:       config.CONFIG.System.Addr,
+		timeFormat: config.CONFIG.System.TimeFormat,
 	}
 }
 
@@ -102,7 +102,7 @@ func (ws *WebServer) GetEngine() *gin.Engine {
 
 // AddWebStatic
 func (ws *WebServer) AddWebStatic(staticAbsPath, webPrefix string, paths ...string) {
-	webPrefixs := strings.Split(web.CONFIG.System.WebPrefix, ",")
+	webPrefixs := strings.Split(config.CONFIG.System.WebPrefix, ",")
 	wp := arr.NewCheckArrayType(2)
 	for _, webPrefix := range webPrefixs {
 		wp.Add(webPrefix)
@@ -124,7 +124,7 @@ func (ws *WebServer) AddWebStatic(staticAbsPath, webPrefix string, paths ...stri
 		}
 	}
 
-	web.CONFIG.System.WebPrefix = str.Join(web.CONFIG.System.WebPrefix, ",", webPrefix)
+	config.CONFIG.System.WebPrefix = str.Join(config.CONFIG.System.WebPrefix, ",", webPrefix)
 	file, _ := dir.ReadBytes(index)
 	webStatic := WebStatic{
 		Prefix:    webPrefix,
@@ -137,15 +137,15 @@ func (ws *WebServer) AddWebStatic(staticAbsPath, webPrefix string, paths ...stri
 // AddUploadStatic
 func (ws *WebServer) AddUploadStatic(webPrefix, staticAbsPath string) {
 	ws.app.StaticFS(webPrefix, http.Dir(staticAbsPath))
-	web.CONFIG.System.StaticPrefix = webPrefix
+	config.CONFIG.System.StaticPrefix = webPrefix
 }
 
 // Run
 func (ws *WebServer) Run() {
 	ws.NoRoute()
-	s := initServer(web.CONFIG.System.Addr, ws.app)
+	s := initServer(config.CONFIG.System.Addr, ws.app)
 	time.Sleep(10 * time.Microsecond)
-	fmt.Printf("默认监听地址: http://%s\n", web.CONFIG.System.Addr)
+	fmt.Printf("默认监听地址: http://%s\n", config.CONFIG.System.Addr)
 	s.ListenAndServe()
 
 }
