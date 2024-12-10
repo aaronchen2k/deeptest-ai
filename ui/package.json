@@ -1,6 +1,6 @@
 {
   "name": "vben-admin-monorepo",
-  "version": "5.4.4",
+  "version": "5.5.0",
   "private": true,
   "keywords": [
     "monorepo",
@@ -43,7 +43,6 @@
     "commit": "czg",
     "dev": "turbo-run dev",
     "dev:antd": "pnpm -F @vben/web-antd run dev",
-    "dev:docs": "pnpm -F @vben/docs run dev",
     "dev:play": "pnpm -F @vben/playground run dev",
     "format": "vsh lint --format",
     "lint": "vsh lint",
@@ -95,9 +94,9 @@
   },
   "engines": {
     "node": ">=20.10.0",
-    "pnpm": ">=9.5.0"
+    "pnpm": ">=9.12.0"
   },
-  "packageManager": "pnpm@9.12.3",
+  "packageManager": "pnpm@9.14.4",
   "pnpm": {
     "peerDependencyRules": {
       "allowedVersions": {

@@ -1,6 +1,8 @@
 export * from './cn';
+export * from './date';
 export * from './diff';
 export * from './dom';
+export * from './download';
 export * from './inference';
 export * from './letter';
 export * from './merge';
@@ -13,3 +15,5 @@ export * from './update-css-variables';
 export * from './util';
 export * from './window';
 export { default as cloneDeep } from 'lodash.clonedeep';
+export { default as get } from 'lodash.get';
+export { default as isEqual } from 'lodash.isequal';

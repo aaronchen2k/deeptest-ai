@@ -157,6 +157,18 @@ const routes: RouteRecordRaw[] = [
             },
             children: [
               {
+                name: 'HideChildrenInMenuDemo',
+                path: '',
+                component: () =>
+                  import(
+                    '#/views/demos/features/hide-menu-children/children.vue'
+                  ),
+                meta: {
+                  hideInMenu: true,
+                  title: $t('demos.features.hideChildrenInMenu'),
+                },
+              },
+              {
                 name: 'HideChildrenInMenuChildrenDemo',
                 path: '/demos/features/hide-menu-children/children',
                 component: () =>
@@ -175,6 +187,16 @@ const routes: RouteRecordRaw[] = [
             meta: {
               icon: 'lucide:fullscreen',
               title: $t('demos.features.fullScreen'),
+            },
+          },
+          {
+            name: 'FileDownloadDemo',
+            path: '/demos/features/file-download',
+            component: () =>
+              import('#/views/demos/features/file-download/index.vue'),
+            meta: {
+              icon: 'lucide:hard-drive-download',
+              title: $t('demos.features.fileDownload'),
             },
           },
           {
