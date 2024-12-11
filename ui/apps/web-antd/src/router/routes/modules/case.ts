@@ -4,7 +4,6 @@ import {
   VBEN_DOC_URL,
   VBEN_ELE_PREVIEW_URL,
   VBEN_GITHUB_URL,
-  VBEN_LOGO_URL,
   VBEN_NAIVE_PREVIEW_URL,
 } from '@vben/constants';
 
@@ -16,9 +15,9 @@ const routes: RouteRecordRaw[] = [
     component: BasicLayout,
     meta: {
       badgeType: 'dot',
-      icon: VBEN_LOGO_URL,
-      order: 9999,
-      title: $t('demos.vben.title'),
+      icon: 'ic:baseline-view-in-ar',
+      order: 1000,
+      title: $t('case.title'),
     },
     name: 'VbenProject',
     path: '/vben-admin',

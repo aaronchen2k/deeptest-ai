@@ -9,8 +9,8 @@ const routes: RouteRecordRaw[] = [
     meta: {
       icon: 'ic:baseline-view-in-ar',
       keepAlive: true,
-      order: 1000,
-      title: $t('demos.title'),
+      order: 2000,
+      title: $t('set.title'),
     },
     name: 'Demos',
     path: '/demos',
