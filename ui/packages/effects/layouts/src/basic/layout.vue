@@ -28,6 +28,7 @@ import {
   useMixedMenu,
 } from './menu';
 import { LayoutTabbar } from './tabbar';
+import {useRoute} from "vue-router";
 
 defineOptions({ name: 'BasicLayout' });
 
@@ -136,6 +137,15 @@ function toggleSidebar() {
 function clearPreferencesAndLogout() {
   emit('clearPreferencesAndLogout');
 }
+
+const route = useRoute();
+watch(
+  () => route.path,
+  (path) => {
+    window.console.log('======', path);
+  },
+  { immediate: true },
+);
 
 watch(
   () => preferences.app.layout,
