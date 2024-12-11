@@ -12,16 +12,26 @@ const routes: RouteRecordRaw[] = [
       order: 1000,
       title: $t('case.title'),
     },
-    name: 'VbenProject',
-    path: '/vben-admin',
+    name: 'Case',
+    path: '/case',
+    redirect: '/case/index',
     children: [
       {
-        name: 'VbenAbout',
-        path: '/vben-admin/about',
+        name: 'TestCase',
+        path: '/case/index',
         component: () => import('#/views/_core/about/index.vue'),
         meta: {
           icon: 'lucide:copyright',
-          title: $t('case.full'),
+          title: $t('case.case'),
+        },
+      },
+      {
+        name: 'TestSuite',
+        path: '/case/suite',
+        component: () => import('#/views/_core/about/index.vue'),
+        meta: {
+          icon: 'lucide:copyright',
+          title: $t('case.suite'),
         },
       },
     ],

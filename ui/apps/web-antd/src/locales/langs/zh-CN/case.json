@@ -1,5 +1,7 @@
 {
   "title": "用例",
   "antd": "Ant Design Vue",
-  "full": "测试用例"
+
+  "case": "测试用例",
+  "suite": "测试套件"
 }

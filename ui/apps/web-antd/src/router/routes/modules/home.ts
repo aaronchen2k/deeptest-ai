@@ -12,17 +12,17 @@ const routes: RouteRecordRaw[] = [
       title: $t('home.title'),
     },
     name: 'Dashboard',
-    path: '/',
+    path: '/home',
     children: [
       {
         name: 'Index',
-        path: '/index',
+        path: 'index',
         component: () => import('#/views/dashboard/analytics/index.vue'),
         meta: {
           affixTab: true,
           icon: 'lucide:area-chart',
-          title: $t('page.dashboard.analytics'),
-          hideInMenu: true,
+          title: $t('home.title'),
+          // hideInMenu: true,
         },
       },
     ],
