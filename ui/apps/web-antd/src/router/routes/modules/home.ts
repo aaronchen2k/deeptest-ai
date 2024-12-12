@@ -22,7 +22,7 @@ const routes: RouteRecordRaw[] = [
           affixTab: true,
           icon: 'lucide:area-chart',
           title: $t('home.title'),
-          // hideInMenu: true,
+          hideInMenu: true,
         },
       },
     ],

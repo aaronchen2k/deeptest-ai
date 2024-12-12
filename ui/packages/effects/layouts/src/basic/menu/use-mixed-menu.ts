@@ -30,6 +30,7 @@ function useMixedMenu() {
     return enableSidebar;
   });
   const menus = computed(() => accessStore.accessMenus);
+  const routes = computed(() => accessStore.accessRoutes);
 
   /**
    * 头部菜单
@@ -84,12 +85,15 @@ function useMixedMenu() {
     const rootMenu = menus.value.find((item) => item.path === key);
     rootMenuPath.value = rootMenu?.path ?? '';
     splitSideMenus.value = rootMenu?.children ?? [];
-    if (splitSideMenus.value.length === 0) {
-      navigation(key);
-    } else {
-      const item = splitSideMenus.value[0];
-      navigation(item ? item.path : key);
+
+    const rootRouter = routes.value.find((item) => item.path === key);
+    const children = rootRouter?.children || [];
+
+    let pth = key;
+    if (children.length > 0 && children[0]) {
+      pth = children[0].path;
     }
+    navigation(pth);
   };
 
   /**
