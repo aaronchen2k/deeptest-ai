@@ -34,10 +34,10 @@ const text = computed(() => {
 </script>
 
 <template>
-  <div :class="props.class" class="relative flex flex-shrink-0 items-center">
+  <div :class="props.class" class="dp-avatar-main relative flex flex-shrink-0 items-center">
     <Avatar :class="props.class" class="size-full">
       <AvatarImage :alt="alt" :src="src" />
-      <AvatarFallback>{{ text }}</AvatarFallback>
+      <!-- <AvatarFallback>{{ text }}</AvatarFallback> -->
     </Avatar>
     <span
       v-if="dot"

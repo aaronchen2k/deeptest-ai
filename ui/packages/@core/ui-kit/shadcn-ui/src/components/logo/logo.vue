@@ -42,7 +42,7 @@ withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div :class="theme" class="flex h-full items-center text-lg">
+  <div :class="theme" class="dp-logo-main flex h-full items-center text-lg">
     <a
       :class="$attrs.class"
       :href="href"
@@ -52,14 +52,14 @@ withDefaults(defineProps<Props>(), {
         v-if="src"
         :alt="text"
         :src="src"
-        class="relative w-8 rounded-none bg-transparent"
+        class="relative rounded-none bg-transparent"
       />
-      <span
+      <!-- <span
         v-if="!collapsed"
         class="text-foreground truncate text-nowrap font-semibold"
       >
         {{ text }}
-      </span>
+      </span>-->
     </a>
   </div>
 </template>
