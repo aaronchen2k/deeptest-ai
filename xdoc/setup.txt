@@ -7,6 +7,7 @@ git push -f github main:main
 
 nohup ./run.sh > runner.log 2>&1 &
 
+VITE_DEVTOOLS=true
 COREPACK_REGISTRY=https://registry.npmmirror.com
 pnpm install
 pnpm run dev:antd
