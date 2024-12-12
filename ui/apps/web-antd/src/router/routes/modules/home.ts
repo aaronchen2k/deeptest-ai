@@ -10,19 +10,20 @@ const routes: RouteRecordRaw[] = [
       icon: 'lucide:layout-dashboard',
       order: -1,
       title: $t('home.title'),
+      hideChildrenInMenu: true,
     },
-    name: 'Dashboard',
+    name: 'Home',
     path: '/home',
+    redirect: '/home/index',
     children: [
       {
-        name: 'Index',
+        name: 'HomeIndex',
         path: 'index',
         component: () => import('#/views/dashboard/analytics/index.vue'),
         meta: {
           affixTab: true,
           icon: 'lucide:area-chart',
           title: $t('home.title'),
-          hideInMenu: true,
         },
       },
     ],

@@ -16,7 +16,7 @@ const defaultPreferences: Preferences = {
     enablePreferences: true,
     enableRefreshToken: false,
     isMobile: false,
-    layout: 'mixed-nav',
+    layout: 'header-nav',
     locale: 'zh-CN',
     loginExpiredMode: 'page',
     name: 'DeepTest',

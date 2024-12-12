@@ -11,27 +11,19 @@ const routes: RouteRecordRaw[] = [
       icon: 'ic:baseline-view-in-ar',
       order: 1000,
       title: $t('case.title'),
+      hideChildrenInMenu: true,
     },
     name: 'Case',
     path: '/case',
     redirect: '/case/index',
     children: [
       {
-        name: 'TestCase',
+        name: 'CaseIndex',
         path: '/case/index',
-        component: () => import('#/views/_core/about/index.vue'),
+        component: () => import('#/views/empty/index.vue'),
         meta: {
+          title: $t('case.title'),
           icon: 'lucide:copyright',
-          title: $t('case.case'),
-        },
-      },
-      {
-        name: 'TestSuite',
-        path: '/case/suite',
-        component: () => import('#/views/_core/about/index.vue'),
-        meta: {
-          icon: 'lucide:copyright',
-          title: $t('case.suite'),
         },
       },
     ],

@@ -82,18 +82,14 @@ function useMixedMenu() {
       return;
     }
 
+    console.log(routes);
+
     const rootMenu = menus.value.find((item) => item.path === key);
     rootMenuPath.value = rootMenu?.path ?? '';
     splitSideMenus.value = rootMenu?.children ?? [];
-
-    const rootRouter = routes.value.find((item) => item.path === key);
-    const children = rootRouter?.children || [];
-
-    let pth = key;
-    if (children.length > 0 && children[0]) {
-      pth = children[0].path;
+    if (splitSideMenus.value.length === 0) {
+      navigation(key);
     }
-    navigation(pth);
   };
 
   /**

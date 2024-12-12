@@ -9,20 +9,19 @@ const routes: RouteRecordRaw[] = [
     meta: {
       icon: 'ic:baseline-view-in-ar',
       keepAlive: true,
-      order: 3000,
-      title: $t('plan.title'),
-      hideChildrenInMenu: true,
+      order: 5000,
+      title: $t('admin.title'),
     },
-    name: 'Plan',
-    path: '/plan',
-    redirect: '/plan/index',
+    name: 'Administration',
+    path: '/admin',
+    redirect: '/home/index',
     children: [
       {
-        name: 'PlanIndex',
-        path: 'index',
+        name: 'ProjectManagement',
+        path: 'project',
         component: () => import('#/views/empty/index.vue'),
         meta: {
-          title: $t('plan.title'),
+          title: $t('admin.project'),
           icon: 'lucide:copyright',
         },
       },
