@@ -86,6 +86,9 @@ function useMixedMenu() {
     splitSideMenus.value = rootMenu?.children ?? [];
     if (splitSideMenus.value.length === 0) {
       navigation(key);
+    } else {
+      const item = splitSideMenus.value[0];
+      navigation(item ? item.path : key);
     }
   };
 
