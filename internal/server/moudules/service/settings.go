@@ -19,6 +19,7 @@ func (s *SettingsService) Get(key string) (value string, err error) {
 		return "", nil
 	}
 	value = config.Value
+
 	return
 }
 
