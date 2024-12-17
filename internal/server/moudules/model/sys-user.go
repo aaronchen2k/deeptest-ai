@@ -11,6 +11,8 @@ type SysUser struct {
 
 	Password  string   `gorm:"type:varchar(250)" json:"password" validate:"required"`
 	RoleNames []string `gorm:"-" json:"role_names"`
+
+	Profile SysUserProfile `gorm:"foreignKey:user_id"`
 }
 
 type Avatar struct {

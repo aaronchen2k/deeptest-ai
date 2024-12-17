@@ -3,6 +3,7 @@ package _str
 import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -40,4 +41,23 @@ func UnescapeUnicode(raw []byte) ([]byte, error) {
 		return nil, err
 	}
 	return []byte(str), nil
+}
+
+var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
+var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+
+func SnakeCase(str string) string {
+	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
+	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+	return strings.ToLower(snake)
+}
+
+func FindInArr(val string, arr []string) bool {
+	for _, i := range arr {
+		if val == i {
+			return true
+		}
+	}
+
+	return false
 }

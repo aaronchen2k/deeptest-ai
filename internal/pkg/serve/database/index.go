@@ -8,6 +8,7 @@ import (
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -34,14 +35,39 @@ func GetInstance() *gorm.DB {
 }
 
 func gormDb() *gorm.DB {
-	if config.CONFIG.System.DatabaseType == "sqlite" {
+	if config.CONFIG.System.DatabaseType == "postgres" {
+		return gormPostgres()
+	} else if config.CONFIG.System.DatabaseType == "sqlite" {
 		return gormSqlite()
 	} else {
 		return gormMysql()
 	}
 }
 
-// gormMysql get *gorm.DB
+func gormPostgres() *gorm.DB {
+	if CONFIG_POSTGRES.DbName == "" {
+		fmt.Println("conf dbname is empty")
+		return nil
+	}
+
+	postgresConfig := postgres.Config{
+		DSN:                  CONFIG_POSTGRES.Dsn(),
+		PreferSimpleProtocol: true, // disables implicit prepared statement usage
+	}
+
+	db, err := gorm.Open(postgres.New(postgresConfig), gormConfig(CONFIG_POSTGRES.LogMode))
+	if err != nil {
+		fmt.Printf("open postgres is failed %v \n", err)
+		return nil
+	}
+
+	sqlDB, _ := db.DB()
+	sqlDB.SetMaxIdleConns(CONFIG_POSTGRES.MaxIdleConns)
+	sqlDB.SetMaxOpenConns(CONFIG_POSTGRES.MaxOpenConns)
+
+	return db
+}
+
 func gormMysql() *gorm.DB {
 	if CONFIG_MYSQL.DbName == "" {
 		fmt.Println("conf dbname is empty")
@@ -74,7 +100,6 @@ func gormMysql() *gorm.DB {
 	return db
 }
 
-// gormSqlite get *gorm.DB
 func gormSqlite() *gorm.DB {
 	if CONFIG_SQLITE.DbName == "" {
 		fmt.Println("conf dbname is empty")

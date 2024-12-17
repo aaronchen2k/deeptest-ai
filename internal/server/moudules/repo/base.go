@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/database"
+	_str "github.com/deeptest-com/deeptest-next/pkg/libs/string"
 
 	"gorm.io/gorm"
 )
@@ -94,9 +95,67 @@ func (r *BaseRepo) GetAllChildIdsSimple(id uint, tableName string) (
 	return
 }
 
+func (r *BaseRepo) PaginateScope(page, pageSize int, sort, orderBy string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if page == 0 {
+			page = 1
+		}
+
+		switch {
+		case pageSize > 100:
+			pageSize = 100
+		case pageSize < 0:
+			pageSize = -1
+			//case pageSize == 0:
+			//	pageSize = 10
+		}
+
+		if sort == "" {
+			sort = "desc"
+		}
+		if orderBy == "" {
+			orderBy = "created_at"
+		}
+
+		offset := (page - 1) * pageSize
+		if page < 0 {
+			offset = -1
+		}
+		db = db.Order(_str.Join(orderBy, " ", sort)).Offset(offset)
+		if pageSize > 0 {
+			db = db.Limit(pageSize)
+		}
+		return db
+	}
+}
+
 func (r *BaseRepo) GetAdminRoleName() (roleName consts.RoleType) {
 	roleName = consts.Admin
 	return
+}
+
+func (r *BaseRepo) IsDisable(enable string) bool {
+	if enable == "1" {
+		return false
+	} else {
+		return true
+	}
+}
+
+func (r *BaseRepo) ArrayRemoveUintDuplication(arr []uint) []uint {
+	set := make(map[uint]struct{}, len(arr))
+	j := 0
+	for _, v := range arr {
+		_, ok := set[v]
+		if ok {
+			continue
+		}
+		set[v] = struct{}{}
+		arr[j] = v
+		j++
+	}
+
+	return arr[:j]
 }
 
 func GetDbInstance() (db *gorm.DB) {

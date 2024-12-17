@@ -488,8 +488,12 @@ github.com/sirupsen/logrus v1.8.1 h1:dJKuHgqk1NNQlqoA6BTlM1Wf9DOH3NBjQyu0h9+AZZE
 github.com/sirupsen/logrus v1.8.1/go.mod h1:yWOB1SBYBC5VeMP7gHvWumXLIWorT60ONWic61uBYv0=
 github.com/snowlyg/helper v0.1.33 h1:iKVcFvT8TAmsrGqFIMGgonmiX2JCbFq5iBkR16gJK44=
 github.com/snowlyg/helper v0.1.33/go.mod h1:/uAwFSceu4L27DdY0AvRhM5HMO0vhVoIXdFH3CyezZY=
+github.com/snowlyg/helper v0.1.45 h1:ipQs08ON6Wke1+p33I8/sdAJh1tQj702DrdauTi9Z6I=
+github.com/snowlyg/helper v0.1.45/go.mod h1:clk3YLLXdK+wO6Fu2EI8kBGz+ZRd1VBdijuCKL5J1NA=
 github.com/snowlyg/iris-admin v1.2.15 h1:plkE9/hsh0LU/UE2OVn+hteufqSeEsUkNA0sCXMAMdk=
 github.com/snowlyg/iris-admin v1.2.15/go.mod h1:hUNB7HOTrUJJMdXAHjB3nArglTiapOzm/TiwdXQBJjs=
+github.com/snowlyg/multi v0.0.42 h1:1wGSjtZ12mCTzaCSMB5watz56VantdPZyoVkuY3iG2w=
+github.com/snowlyg/multi v0.0.42/go.mod h1:CF0o/f4L2ht3sAK1I8UBmFqe993WoC8Yvn5U5QXYxPk=
 github.com/sourcegraph/conc v0.3.0 h1:OQTbbt6P72L20UqAkXXuLOj79LfEanQ+YQFNpLA9ySo=
 github.com/sourcegraph/conc v0.3.0/go.mod h1:Sdozi7LEKbFPqYX2/J+iBAM6HpqSLTASQIKqDmF7Mt0=
 github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=

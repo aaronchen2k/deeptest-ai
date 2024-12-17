@@ -11,7 +11,11 @@ type IndexModule struct {
 	RoleModule    *RoleModule    `inject:""`
 	UserModule    *UserModule    `inject:""`
 
-	AibotModule *AibotModule `inject:""`
+	ProjectModule *ProjectModule `inject:""`
+	CaseModule    *CaseModule    `inject:""`
+	SetModule     *SetModule     `inject:""`
+	PlanModule    *PlanModule    `inject:""`
+	AibotModule   *AibotModule   `inject:""`
 }
 
 func NewIndexModule() *IndexModule {
@@ -25,6 +29,10 @@ func (m *IndexModule) ApiParty() func(rbac iris.Party) {
 		rbac.PartyFunc("/roles", m.RoleModule.Party())
 		rbac.PartyFunc("/perms", m.PermModule.Party())
 		rbac.PartyFunc("/users", m.UserModule.Party())
+
+		rbac.PartyFunc("/cases", m.CaseModule.Party())
+		rbac.PartyFunc("/sets", m.SetModule.Party())
+		rbac.PartyFunc("/plans", m.PlanModule.Party())
 
 		rbac.PartyFunc("/aichat", m.AibotModule.Party())
 	}

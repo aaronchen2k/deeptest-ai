@@ -3,6 +3,10 @@ package consts
 import "errors"
 
 const (
+	AdminUserName     = "admin"
+	AdminUserPassword = "P2ssw0rd"
+	AdminRoleName     = "admin"
+
 	ConfigType     = "json"
 	CasbinFileName = "rbac_model.conf"
 	DirUpload      = "upload"

@@ -113,7 +113,7 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/jinzhu/copier v0.4.0
 	github.com/robfig/cron/v3 v3.0.1
-	github.com/snowlyg/helper v0.1.33
+	github.com/snowlyg/helper v0.1.45
 	github.com/snowlyg/iris-admin v1.2.15
 )
 

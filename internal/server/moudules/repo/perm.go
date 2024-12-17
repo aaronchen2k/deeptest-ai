@@ -24,7 +24,7 @@ func (r *PermRepo) Paginate(req v1.PermPageReq) (ret _domain.PageData, err error
 		return
 	}
 
-	db.Scopes(PaginateScope(req.Page, req.PageSize, req.Order, req.Field))
+	db.Scopes(r.PaginateScope(req.Page, req.PageSize, req.Order, req.Field))
 
 	if req.Name != "" {
 		db.Where("name = ?", req.Name)

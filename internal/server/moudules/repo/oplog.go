@@ -24,7 +24,7 @@ func (r *OplogRepo) Paginate(req v1.OptLogPageReq) (ret _domain.PageData, err er
 		return
 	}
 
-	db.Scopes(PaginateScope(req.Page, req.PageSize, req.Order, req.Field))
+	db.Scopes(r.PaginateScope(req.Page, req.PageSize, req.Order, req.Field))
 
 	if req.Name != "" {
 		db.Where("name = ?", req.Name)

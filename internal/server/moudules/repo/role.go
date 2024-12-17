@@ -26,7 +26,7 @@ func (r *RoleRepo) Paginate(req v1.RolePageReq) (ret _domain.PageData, err error
 		return
 	}
 
-	db.Scopes(PaginateScope(req.Page, req.PageSize, req.Order, req.Field))
+	db.Scopes(r.PaginateScope(req.Page, req.PageSize, req.Order, req.Field))
 
 	if req.Name != "" {
 		db.Where("name = ?", req.Name)
@@ -131,5 +131,13 @@ func (r *RoleRepo) GetRoleNames() (roleNames []string, err error) {
 		return
 	}
 
+	return
+}
+
+func (r *RoleRepo) FindInId(ids []string) (roles []v1.RoleResp, error error) {
+	err := r.DB.Model(&model.SysRole{}).Where("id in ?", ids).Find(&roles).Error
+	if err != nil {
+		return
+	}
 	return
 }
