@@ -28,7 +28,7 @@ type UserDetail struct {
 	RoleIds []uint `gorm:"-" json:"role_ids"`
 }
 
-func (res *UserDetail) ToString() {
+func (res *UserDetail) SetAvatar() {
 	if res.Avatar == "" {
 		return
 	}

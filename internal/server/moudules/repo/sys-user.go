@@ -236,7 +236,8 @@ func (r *UserRepo) GetSysRoles(users ...*domain.UserDetail) {
 	}
 
 	for _, user := range users {
-		user.ToString()
+		//user.SetAvatar()
+
 		userRoleId := casbin.GetRolesForUser(user.Id)
 		uintRoleIds := make([]uint, 0)
 		for _, v := range userRoleId {
@@ -279,4 +280,15 @@ func (r *UserRepo) GetProjectRoles(users ...*domain.UserDetail) {
 			user.ProjectRoles[projectRole.ProjectId] = projectRole.ProjectRoleName
 		}
 	}
+}
+
+func (r *UserRepo) UpdatePasswordByName(name string, password string) (err error) {
+	err = r.DB.Model(&model.SysUser{}).Where("username = ?", name).
+		Updates(map[string]interface{}{"password": password}).Error
+	if err != nil {
+		_logs.Errorf("更新用户错误", zap.String("错误:", err.Error()))
+		return err
+	}
+
+	return nil
 }

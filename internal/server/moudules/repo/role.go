@@ -75,10 +75,10 @@ func (r *RoleRepo) FindByName(name string) (ret *model.SysRole, err error) {
 }
 
 func (r *RoleRepo) GetPermsForRole() (ret [][]string, err error) {
-	perms := []model.SysPermission{}
+	perms := []model.SysPerm{}
 
 	err = r.DB.
-		Model(&model.SysPermission{}).
+		Model(&model.SysPerm{}).
 		Find(&perms).Error
 	if err != nil {
 		return

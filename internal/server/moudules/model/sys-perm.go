@@ -5,16 +5,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type PermCollection []SysPermission
+type PermCollection []SysPerm
 
-// SysPermission 权鉴模块
-type SysPermission struct {
+// SysPerm 权鉴模块
+type SysPerm struct {
 	BaseModel
 	domain.BasePermission
 }
 
 // Create 添加
-func (item *SysPermission) Create(db *gorm.DB) (id uint, err error) {
+func (item *SysPerm) Create(db *gorm.DB) (id uint, err error) {
 	//if db == nil {
 	//	return 0, gorm.ErrInvalidDB
 	//}
@@ -32,7 +32,7 @@ func (item *SysPermission) Create(db *gorm.DB) (id uint, err error) {
 }
 
 // Update 更新
-func (item *SysPermission) Update(db *gorm.DB, scopes ...func(db *gorm.DB) *gorm.DB) (err error) {
+func (item *SysPerm) Update(db *gorm.DB, scopes ...func(db *gorm.DB) *gorm.DB) (err error) {
 	//if db == nil {
 	//	return gorm.ErrInvalidDB
 	//}
@@ -47,7 +47,7 @@ func (item *SysPermission) Update(db *gorm.DB, scopes ...func(db *gorm.DB) *gorm
 }
 
 // Delete 删除
-func (item *SysPermission) Delete(db *gorm.DB, scopes ...func(db *gorm.DB) *gorm.DB) (err error) {
+func (item *SysPerm) Delete(db *gorm.DB, scopes ...func(db *gorm.DB) *gorm.DB) (err error) {
 	//if db == nil {
 	//	return gorm.ErrInvalidDB
 	//}
@@ -61,6 +61,6 @@ func (item *SysPermission) Delete(db *gorm.DB, scopes ...func(db *gorm.DB) *gorm
 	return
 }
 
-func (SysPermission) TableName() string {
-	return "sys_permissions"
+func (SysPerm) TableName() string {
+	return "sys_perms"
 }

@@ -61,6 +61,7 @@ function createRequestClient(baseURL: string) {
   // 请求头处理
   client.addRequestInterceptor({
     fulfilled: async (config) => {
+      window.console.log('fulfilled', config.data)
       const accessStore = useAccessStore();
 
       config.headers.Authorization = formatToken(accessStore.accessToken);

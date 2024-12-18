@@ -14,7 +14,6 @@ type ProjectCtrl struct {
 }
 
 func (c *ProjectCtrl) List(ctx iris.Context) {
-
 	userId := multi_iris.GetUserId(ctx)
 
 	var req v1.ReqPaginate

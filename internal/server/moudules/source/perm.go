@@ -25,10 +25,10 @@ func GetPermMigration() *gormigrate.Migration {
 	return &gormigrate.Migration{
 		ID: "20240606000000_create_sys_permissions_table",
 		Migrate: func(tx *gorm.DB) error {
-			return tx.AutoMigrate(&model.SysPermission{})
+			return tx.AutoMigrate(&model.SysPerm{})
 		},
 		Rollback: func(tx *gorm.DB) error {
-			return tx.Migrator().DropTable(model.SysPermission.TableName)
+			return tx.Migrator().DropTable(model.SysPerm.TableName)
 		},
 	}
 }
@@ -40,10 +40,10 @@ func (s *PermSource) Init() error {
 
 	return database.GetInstance().Transaction(func(tx *gorm.DB) error {
 		err := tx.Unscoped().Where("1 = 1").
-			Delete(&model.SysPermission{}).Error
-		if err != nil {
-			return err
-		}
+			Delete(&model.SysPerm{}).Error
+		//if err != nil {
+		//	return err
+		//}
 
 		err = s.createBatch(tx, s.getSources())
 		if err != nil { // 遇到错误时回滚事务
@@ -60,7 +60,7 @@ func (s *PermSource) getSources() model.PermCollection {
 	perms := make(model.PermCollection, 0, len(s.routes))
 
 	for _, permRoute := range s.routes {
-		perm := model.SysPermission{
+		perm := model.SysPerm{
 			BasePermission: domain.BasePermission{
 				Name:        permRoute["path"],
 				DisplayName: permRoute["name"],
@@ -74,7 +74,7 @@ func (s *PermSource) getSources() model.PermCollection {
 }
 
 func (s *PermSource) createBatch(tx *gorm.DB, perms model.PermCollection) (err error) {
-	err = tx.Model(&model.SysPermission{}).
+	err = tx.Model(&model.SysPerm{}).
 		CreateInBatches(&perms, 500).
 		Error
 

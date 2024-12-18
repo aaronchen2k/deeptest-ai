@@ -13,7 +13,7 @@ type SetModule struct {
 // Party 集合
 func (m *SetModule) Party() func(index iris.Party) {
 	return func(party iris.Party) {
-		party.Use(middleware.MultiHandler(), middleware.Casbin())
+		party.Use(middleware.JwtHandler(), middleware.Casbin())
 
 		party.Get("/", m.SetCtrl.List).Name = "集合列表"
 		party.Get("/{id:uint}", m.SetCtrl.Get).Name = "集合详情"

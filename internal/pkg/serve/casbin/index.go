@@ -36,7 +36,7 @@ func getEnforcer() *casbin.Enforcer {
 		return nil
 	}
 
-	enforcer, err := casbin.NewEnforcer(filepath.Join(consts.ExecDir, consts.ConfDir, consts.CasbinFileName), c)
+	enforcer, err := casbin.NewEnforcer(filepath.Join(consts.ConfDir, consts.CasbinFileName), c)
 	if err != nil {
 		return nil
 	}

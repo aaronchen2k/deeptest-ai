@@ -12,6 +12,7 @@ import (
 type AccountCtrl struct {
 	BaseCtrl
 	AccountService *service.AccountService `inject:""`
+	UserService    *service.UserService    `inject:""`
 }
 
 func (c *AccountCtrl) Login(ctx iris.Context) {
@@ -61,4 +62,28 @@ func (c AccountCtrl) CleanToken(ctx iris.Context) {
 	}
 
 	ctx.JSON(_domain.Response{Code: _domain.Success.Code})
+}
+
+func (c AccountCtrl) Info(ctx iris.Context) {
+	userId := multi_iris.GetUserId(ctx)
+
+	user, err := c.AccountService.GetInfo(userId)
+	if err != nil {
+		ctx.JSON(_domain.Response{Code: _domain.FailErr.Code, Msg: err.Error()})
+		return
+	}
+
+	ctx.JSON(_domain.Response{Code: _domain.Success.Code, Data: user})
+}
+
+func (c AccountCtrl) Codes(ctx iris.Context) {
+	userId := multi_iris.GetUserId(ctx)
+
+	codes, err := c.AccountService.GetCodes(userId)
+	if err != nil {
+		ctx.JSON(_domain.Response{Code: _domain.FailErr.Code, Msg: err.Error()})
+		return
+	}
+
+	ctx.JSON(_domain.Response{Code: _domain.Success.Code, Data: codes})
 }

@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/deeptest-com/deeptest-next/cmd/server/v1/handler"
-	middleware2 "github.com/deeptest-com/deeptest-next/internal/pkg/core/middleware"
+	middleware "github.com/deeptest-com/deeptest-next/internal/pkg/core/middleware"
 	"github.com/kataras/iris/v12"
 )
 
@@ -12,7 +12,7 @@ type UserModule struct {
 
 func (m *UserModule) Party() func(index iris.Party) {
 	return func(index iris.Party) {
-		index.Use(middleware2.MultiHandler(), middleware2.Casbin())
+		index.Use(middleware.JwtHandler(), middleware.Casbin())
 
 		index.Get("/", m.UserCtrl.Paginate).Name = "用户列表"
 		index.Get("/{id:uint}", m.UserCtrl.Get).Name = "用户详情"

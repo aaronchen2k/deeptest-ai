@@ -13,7 +13,7 @@ type ProjectModule struct {
 // Party 项目
 func (m *ProjectModule) Party() func(index iris.Party) {
 	return func(party iris.Party) {
-		party.Use(middleware.MultiHandler(), middleware.Casbin())
+		party.Use(middleware.JwtHandler(), middleware.Casbin())
 
 		party.Get("/", m.ProjectCtrl.List).Name = "项目列表"
 		party.Get("/{id:uint}", m.ProjectCtrl.Get).Name = "项目详情"

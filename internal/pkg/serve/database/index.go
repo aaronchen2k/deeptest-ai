@@ -14,6 +14,8 @@ import (
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"gorm.io/plugin/dbresolver"
+	"log"
+	"os"
 	"path/filepath"
 	"sync"
 	"time"
@@ -55,7 +57,7 @@ func gormPostgres() *gorm.DB {
 		PreferSimpleProtocol: true, // disables implicit prepared statement usage
 	}
 
-	db, err := gorm.Open(postgres.New(postgresConfig), gormConfig(CONFIG_POSTGRES.LogMode))
+	db, err := gorm.Open(postgres.New(postgresConfig), gormConfig(CONFIG_POSTGRES.LogMode, CONFIG_POSTGRES.LogZap))
 	if err != nil {
 		fmt.Printf("open postgres is failed %v \n", err)
 		return nil
@@ -87,7 +89,7 @@ func gormMysql() *gorm.DB {
 		SkipInitializeWithVersion: false,
 	}
 
-	db, err := gorm.Open(mysql.New(mysqlConfig), gormConfig(CONFIG_MYSQL.LogMode))
+	db, err := gorm.Open(mysql.New(mysqlConfig), gormConfig(CONFIG_MYSQL.LogMode, CONFIG_MYSQL.LogZap))
 	if err != nil {
 		fmt.Printf("open mysql is failed %v \n", err)
 		return nil
@@ -143,12 +145,12 @@ func gormSqlite() *gorm.DB {
 }
 
 // gormConfig get gorm conf
-func gormConfig(mod bool) *gorm.Config {
+func gormConfig(mod bool, logZap string) *gorm.Config {
 	var config = &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 	}
 
-	switch CONFIG_MYSQL.LogZap {
+	switch logZap {
 	case "silent", "Silent":
 		config.Logger = Default.LogMode(logger.Silent)
 	case "error", "Error":
@@ -158,7 +160,15 @@ func gormConfig(mod bool) *gorm.Config {
 	case "info", "Info":
 		config.Logger = Default.LogMode(logger.Info)
 	case "zap", "Zap":
-		config.Logger = Default.LogMode(logger.Info)
+		config.Logger = logger.New(
+			log.New(os.Stdout, "\r\n", log.LstdFlags),
+			logger.Config{
+				SlowThreshold: time.Second,
+				LogLevel:      logger.Info,
+				Colorful:      true,
+			},
+		)
+
 	default:
 		if mod {
 			config.Logger = Default.LogMode(logger.Info)

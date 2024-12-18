@@ -19,9 +19,10 @@ package main
 
 import (
 	"github.com/deeptest-com/deeptest-next/cmd/server/v1/router"
-	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/core/migration"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/inits"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/database"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/viper_server"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web/web_iris"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/zap_server"
@@ -36,6 +37,8 @@ var MigrationId string
 var Seed bool
 
 func main() {
+	viper_server.Init(database.GetViperConfig())
+
 	// cmdInit 初始化项目
 	var cmdInit = &cobra.Command{
 		Use:   "init",
@@ -107,8 +110,6 @@ func main() {
 	var rootCmd = &cobra.Command{Use: "deeptest"}
 	rootCmd.AddCommand(cmdInit, cmdRun, cmdRollback, cmdRefresh, cmdSeed)
 	rootCmd.PersistentFlags().BoolVarP(&Seed, "seed", "s", true, "Seed data to database")
-
-	rootCmd.PersistentFlags().StringVarP(&consts.DatabaseType, "db", "d", "mysql", "database type")
 
 	rootCmd.Execute()
 }

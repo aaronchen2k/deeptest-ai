@@ -12,3 +12,11 @@ type BaseDomain struct {
 
 	Disabled bool `json:"disabled,omitempty"`
 }
+
+type DataReq struct {
+	ClearData bool    `json:"clearData"`
+	Sys       DataSys `json:"sys"`
+}
+type DataSys struct {
+	AdminPassword string `json:"adminPassword"`
+}

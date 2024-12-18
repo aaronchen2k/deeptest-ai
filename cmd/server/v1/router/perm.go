@@ -12,7 +12,7 @@ type PermModule struct {
 
 func (m *PermModule) Party() func(index iris.Party) {
 	return func(index iris.Party) {
-		index.Use(middleware2.MultiHandler(), middleware2.Casbin())
+		index.Use(middleware2.JwtHandler(), middleware2.Casbin())
 
 		index.Get("/", m.PermCtrl.Paginate).Name = "权限列表"
 		index.Get("/{id:uint}", m.PermCtrl.Get).Name = "权限详情"

@@ -13,7 +13,7 @@ type CaseModule struct {
 // Party 项目
 func (m *CaseModule) Party() func(index iris.Party) {
 	return func(party iris.Party) {
-		party.Use(middleware.MultiHandler(), middleware.Casbin())
+		party.Use(middleware.JwtHandler(), middleware.Casbin())
 
 		party.Get("/", m.CaseCtrl.List).Name = "用例列表"
 		party.Get("/{id:uint}", m.CaseCtrl.Get).Name = "用例详情"

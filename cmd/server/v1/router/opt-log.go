@@ -12,7 +12,7 @@ type OptLogModule struct {
 
 func (m *OptLogModule) Party() func(index iris.Party) {
 	return func(index iris.Party) {
-		index.Use(middleware.MultiHandler(), middleware.Casbin())
+		index.Use(middleware.JwtHandler(), middleware.Casbin())
 
 		index.Get("/", m.OptLogCtrl.Paginate).Name = "操作日志列表"
 	}

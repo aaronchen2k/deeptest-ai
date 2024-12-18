@@ -13,7 +13,7 @@ type PlanModule struct {
 // Party 项目
 func (m *PlanModule) Party() func(index iris.Party) {
 	return func(party iris.Party) {
-		party.Use(middleware.MultiHandler(), middleware.Casbin())
+		party.Use(middleware.JwtHandler(), middleware.Casbin())
 
 		party.Get("/", m.PlanCtrl.List).Name = "项目列表"
 		party.Get("/{id:uint}", m.PlanCtrl.Get).Name = "计划详情"

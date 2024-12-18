@@ -15,7 +15,7 @@ type PermRepo struct {
 
 func (r *PermRepo) Paginate(req v1.PermPageReq) (ret _domain.PageData, err error) {
 	var count int64
-	db := r.DB.Model(&model.SysPermission{}).
+	db := r.DB.Model(&model.SysPerm{}).
 		Where("NOT deleted")
 
 	err = db.Count(&count).Error
@@ -33,7 +33,7 @@ func (r *PermRepo) Paginate(req v1.PermPageReq) (ret _domain.PageData, err error
 		db.Where("display_name = ?", req.DisplayName)
 	}
 
-	results := make([]model.SysPermission, 0)
+	results := make([]model.SysPerm, 0)
 	err = db.Find(&results).Error
 	if err != nil {
 		_logUtils.Errorf("query perm error %s", err.Error())
@@ -45,15 +45,15 @@ func (r *PermRepo) Paginate(req v1.PermPageReq) (ret _domain.PageData, err error
 	return
 }
 
-func (r *PermRepo) List() (pos []model.SysPermission, err error) {
-	err = r.DB.Model(&model.SysPermission{}).
+func (r *PermRepo) List() (pos []model.SysPerm, err error) {
+	err = r.DB.Model(&model.SysPerm{}).
 		Where("NOT deleted").
 		Find(&pos).Error
 
 	return
 }
 
-func (r *PermRepo) Get(id uint) (po model.SysPermission, err error) {
+func (r *PermRepo) Get(id uint) (po model.SysPerm, err error) {
 	err = r.DB.Where("id = ?", id).
 		First(&po).Error
 

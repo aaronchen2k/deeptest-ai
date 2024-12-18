@@ -6,8 +6,9 @@ import (
 	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/core/auth"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/domain"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/repo"
-	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
+	"github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"go.uber.org/zap"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -32,7 +33,7 @@ func (s *AccountService) GetAccessToken(req *v1.LoginReq) (token string, id uint
 
 	err = bcrypt.CompareHashAndPassword([]byte(admin.Password), []byte(req.Password))
 	if err != nil {
-		_logUtils.Zap.Error("用户名或密码错误", zap.String("密码:", req.Password), zap.String("bcrypt.CompareHashAndPassword()", err.Error()))
+		_logs.Zap.Error("用户名或密码错误", zap.String("密码:", req.Password), zap.String("bcrypt.CompareHashAndPassword()", err.Error()))
 
 		err = consts.ErrUserNameOrPassword
 		return
@@ -51,7 +52,7 @@ func (s *AccountService) GetAccessToken(req *v1.LoginReq) (token string, id uint
 
 	token, _, err = auth.AuthDriver.GenerateToken(claims)
 	if err != nil {
-		_logUtils.Zap.Error(err.Error())
+		_logs.Zap.Error(err.Error())
 		return
 	}
 
@@ -64,7 +65,7 @@ func (s *AccountService) DeleteToken(token string) (err error) {
 	err = auth.AuthDriver.DelUserTokenCache(token)
 
 	if err != nil {
-		_logUtils.Error(err.Error())
+		_logs.Error(err.Error())
 		return
 	}
 
@@ -74,9 +75,20 @@ func (s *AccountService) DeleteToken(token string) (err error) {
 func (s *AccountService) CleanToken(authorityType int, userId string) (err error) {
 	err = auth.AuthDriver.CleanUserTokenCache(authorityType, userId)
 	if err != nil {
-		_logUtils.Error(err.Error())
+		_logs.Error(err.Error())
 		return
 	}
+
+	return
+}
+
+func (s *AccountService) GetInfo(userId uint) (info domain.UserDetail, err error) {
+	info, err = s.AccountRepo.GetInfo(userId)
+
+	return
+}
+
+func (s *AccountService) GetCodes(userId uint) (ret []string, err error) {
 
 	return
 }
