@@ -134,8 +134,8 @@ func (r *RoleRepo) GetRoleNames() (roleNames []string, err error) {
 	return
 }
 
-func (r *RoleRepo) FindInId(ids []string) (roles []v1.RoleResp, error error) {
-	err := r.DB.Model(&model.SysRole{}).Where("id in ?", ids).Find(&roles).Error
+func (r *RoleRepo) FindInName(names []string) (roles []v1.RoleResp, error error) {
+	err := r.DB.Model(&model.SysRole{}).Where("name in (?)", names).Find(&roles).Error
 	if err != nil {
 		return
 	}

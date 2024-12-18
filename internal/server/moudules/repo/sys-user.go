@@ -249,7 +249,7 @@ func (r *UserRepo) GetSysRoles(users ...*domain.UserDetail) {
 		roleIds = append(roleIds, userRoleId...)
 	}
 
-	roles, err := r.RoleRepo.FindInId(roleIds)
+	roles, err := r.RoleRepo.FindInName(roleIds)
 	if err != nil {
 		_logs.Errorf("get role get err ", zap.String("错误:", err.Error()))
 	}
