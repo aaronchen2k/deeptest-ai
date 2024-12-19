@@ -73,7 +73,7 @@ func (s UserSource) GetSources() ([]*v1.UserReq, error) {
 			Name:     "超级管理员",
 			Username: "admin",
 			Intro:    "超级管理员",
-			Avatar:   "/images/avatar.jpg",
+			Avatar:   "/static/avatar.png",
 		},
 		Password:  "P2ssw0rd",
 		RoleNames: roleNames,
