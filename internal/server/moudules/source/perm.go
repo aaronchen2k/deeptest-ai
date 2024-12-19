@@ -39,11 +39,10 @@ func (s *PermSource) Init() error {
 	}
 
 	return database.GetInstance().Transaction(func(tx *gorm.DB) error {
-		err := tx.Unscoped().Where("1 = 1").
-			Delete(&model.SysPerm{}).Error
-		//if err != nil {
-		//	return err
-		//}
+		err := tx.Unscoped().Where("1 = 1").Delete(&model.SysPerm{}).Error
+		if err != nil {
+			return err
+		}
 
 		err = s.createBatch(tx, s.getSources())
 		if err != nil { // 遇到错误时回滚事务

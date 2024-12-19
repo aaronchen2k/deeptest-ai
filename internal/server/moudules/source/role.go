@@ -32,13 +32,14 @@ func GetRoleMigration() *gormigrate.Migration {
 
 func (s RoleSource) Init() error {
 	db := database.GetInstance()
+	//if db.Model(&model.SysRole{}).
+	//	Where("id IN ?", []int{1}).
+	//	Find(&[]model.SysRole{}).RowsAffected == 1 {
+	//	color.Danger.Println("\n[Mysql] --> roles 表的初始数据已存在!")
+	//	return nil
+	//}
 
-	if database.GetInstance().Model(&model.SysRole{}).Where("id IN ?", []int{1}).Find(&[]model.SysRole{}).RowsAffected == 1 {
-		color.Danger.Println("\n[Mysql] --> roles 表的初始数据已存在!")
-		return nil
-	}
-
-	sources, err := s.getSources(db)
+	sources, err := s.getSourcesWithPerms(db)
 	if err != nil {
 		return err
 	}
@@ -55,7 +56,7 @@ func (s RoleSource) Init() error {
 	return nil
 }
 
-func (s RoleSource) getSources(tx *gorm.DB) ([]*v1.RoleReq, error) {
+func (s RoleSource) getSourcesWithPerms(tx *gorm.DB) ([]*v1.RoleReq, error) {
 	repo := repo.RoleRepo{
 		DB: tx,
 	}
@@ -79,21 +80,21 @@ func (s RoleSource) getSources(tx *gorm.DB) ([]*v1.RoleReq, error) {
 }
 
 func (s RoleSource) Create(tx *gorm.DB, req *v1.RoleReq) (id uint, err error) {
-	repo := repo.RoleRepo{
-		DB: tx,
-	}
+	repo := repo.RoleRepo{DB: tx}
 
 	_, err = repo.FindByName(req.Name)
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		err = consts.ErrRoleNameInvalid
-		return
-	}
 
-	role := &model.SysRole{BaseRole: req.BaseRole}
-
-	id, err = repo.Create(role)
 	if err != nil {
-		return
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			role := &model.SysRole{BaseRole: req.BaseRole}
+			id, err = repo.Create(role)
+			if err != nil {
+				return
+			}
+		} else {
+			err = consts.ErrRoleNameInvalid
+			return
+		}
 	}
 
 	err = repo.AddPermForRole(req.Name, req.Perms)
