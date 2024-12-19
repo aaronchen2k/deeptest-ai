@@ -24,8 +24,9 @@ type ProjectRepo struct {
 func (r *ProjectRepo) Paginate(req v1.ReqPaginate, userId uint) (data _domain.PageData, err error) {
 	var count int64
 	var projectIds []uint
-	r.DB.Model(&model.ProjectMember{}).
-		Select("project_id").Where("user_id = ?", userId).Scan(&projectIds)
+
+	//r.DB.Model(&model.ProjectMember{}).
+	//	Select("project_id").Where("user_id = ?", userId).Scan(&projectIds)
 
 	db := r.DB.Model(&model.Project{}).Where("NOT deleted AND id IN (?)", projectIds)
 

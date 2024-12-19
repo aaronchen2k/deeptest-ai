@@ -246,7 +246,7 @@ type ListBatchResponse struct {
 	HasMore bool    `json:"has_more"`
 }
 
-// ListBatch API call to List batch.
+// ListBatch API call to Query batch.
 func (c *Client) ListBatch(ctx context.Context, after *string, limit *int) (response ListBatchResponse, err error) {
 	urlValues := url.Values{}
 	if limit != nil {

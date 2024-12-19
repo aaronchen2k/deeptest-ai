@@ -69,9 +69,8 @@ func (s RoleSource) getSourcesWithPerms(tx *gorm.DB) ([]*v1.RoleReq, error) {
 	var sources []*v1.RoleReq
 	sources = append(sources, &v1.RoleReq{
 		BaseRole: domain.BaseRole{
-			Name:        "SuperAdmin",
-			DisplayName: "超级管理员",
-			Description: "超级管理员",
+			Name:        "admin",
+			DisplayName: "管理员",
 		},
 		Perms: perms,
 	})

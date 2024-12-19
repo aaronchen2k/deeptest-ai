@@ -13,11 +13,12 @@ type ProjectCtrl struct {
 	BaseCtrl
 }
 
-func (c *ProjectCtrl) List(ctx iris.Context) {
+func (c *ProjectCtrl) Query(ctx iris.Context) {
 	userId := multi_iris.GetUserId(ctx)
 
 	var req v1.ReqPaginate
-	if err := ctx.ReadQuery(&req); err != nil {
+	err := ctx.ReadJSON(&req)
+	if err != nil {
 		ctx.JSON(_domain.Response{Code: _domain.ParamErr.Code, Msg: _domain.ParamErr.Msg})
 		return
 	}

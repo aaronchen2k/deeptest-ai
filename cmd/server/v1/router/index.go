@@ -36,6 +36,7 @@ func (m *IndexModule) ApiParty() func(rbac iris.Party) {
 		rbac.PartyFunc("/cases", m.CaseModule.Party())
 		rbac.PartyFunc("/sets", m.SetModule.Party())
 		rbac.PartyFunc("/plans", m.PlanModule.Party())
+		rbac.PartyFunc("/projects", m.ProjectModule.Party())
 
 		rbac.PartyFunc("/aichat", m.AibotModule.Party())
 	}

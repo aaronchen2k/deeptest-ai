@@ -135,7 +135,7 @@ func (r *BaseRepo) GetAdminRoleName() (roleName consts.RoleType) {
 }
 
 func (r *BaseRepo) IsDisable(enable string) bool {
-	if enable == "1" {
+	if enable == "1" || enable == "true" {
 		return false
 	} else {
 		return true

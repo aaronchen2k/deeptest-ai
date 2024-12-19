@@ -70,9 +70,9 @@ func (s UserSource) GetSources() ([]*v1.UserReq, error) {
 	var users []*v1.UserReq
 	users = append(users, &v1.UserReq{
 		BaseUser: domain.BaseUser{
-			Name:     "超级管理员",
+			Name:     "管理员",
 			Username: "admin",
-			Intro:    "超级管理员",
+			Intro:    "管理员",
 			Avatar:   "/static/avatar.png",
 		},
 		Password:  "P2ssw0rd",

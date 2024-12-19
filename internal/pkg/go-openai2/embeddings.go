@@ -175,7 +175,7 @@ type EmbeddingRequestStrings struct {
 	// E.g.
 	//	"The food was delicious and the waiter..."
 	Input []string `json:"input"`
-	// ID of the model to use. You can use the List models API to see all of your available models,
+	// ID of the model to use. You can use the Query models API to see all of your available models,
 	// or see our Model overview for descriptions of them.
 	Model EmbeddingModel `json:"model"`
 	// A unique identifier representing your end-user, which will help OpenAI to monitor and detect abuse.
@@ -207,7 +207,7 @@ type EmbeddingRequestTokens struct {
 	// E.g.
 	//	"The food was delicious and the waiter..."
 	Input [][]int `json:"input"`
-	// ID of the model to use. You can use the List models API to see all of your available models,
+	// ID of the model to use. You can use the Query models API to see all of your available models,
 	// or see our Model overview for descriptions of them.
 	Model EmbeddingModel `json:"model"`
 	// A unique identifier representing your end-user, which will help OpenAI to monitor and detect abuse.

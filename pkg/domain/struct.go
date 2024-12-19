@@ -1,7 +1,6 @@
 package _domain
 
 import (
-	_consts "github.com/deeptest-com/deeptest-next/pkg/libs/consts"
 	_str "github.com/deeptest-com/deeptest-next/pkg/libs/string"
 )
 
@@ -24,5 +23,5 @@ type PaginateReq struct {
 
 func (r *PaginateReq) ConvertParams() {
 	r.Field = _str.SnakeCase(r.Field)
-	r.Order = _consts.SortMap[r.Order]
+	r.Order = SortMap[r.Order]
 }
