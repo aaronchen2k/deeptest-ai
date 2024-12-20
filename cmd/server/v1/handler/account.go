@@ -36,7 +36,7 @@ func (c *AccountCtrl) Login(ctx iris.Context) {
 func (c AccountCtrl) Logout(ctx iris.Context) {
 	token := multi_iris.GetVerifiedToken(ctx)
 	if token == nil {
-		ctx.JSON(_domain.Response{Code: _domain.FailErr.Code, Msg: "授权凭证为空"})
+		ctx.JSON(_domain.Response{Code: _domain.Success.Code})
 		return
 	}
 

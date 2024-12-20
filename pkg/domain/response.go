@@ -10,7 +10,7 @@ type Response struct {
 }
 
 type PageData struct {
-	Result interface{} `json:"result"`
+	Items interface{} `json:"items"`
 
 	Total    int `json:"total"`
 	Page     int `json:"page"`
@@ -18,7 +18,7 @@ type PageData struct {
 }
 
 func (d *PageData) Populate(result interface{}, total int64, page, pageSize int) {
-	d.Result = result
+	d.Items = result
 	d.Total = int(total)
 	d.Page = page
 	d.PageSize = pageSize

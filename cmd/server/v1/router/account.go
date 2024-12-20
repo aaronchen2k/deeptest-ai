@@ -13,9 +13,9 @@ type AccountModule struct {
 func (m *AccountModule) Party() func(public iris.Party) {
 	return func(public iris.Party) {
 		public.Post("/login", m.AccountCtrl.Login).Name = "登录"
+		public.Post("/logout", m.AccountCtrl.Logout).Name = "退出"
 
 		public.Use(middleware.JwtHandler(), middleware.Casbin())
-		public.Get("/logout", m.AccountCtrl.Logout).Name = "退出"
 		public.Get("/clear", m.AccountCtrl.CleanToken).Name = "清空Token"
 
 		public.Get("/info", m.AccountCtrl.Info).Name = "用户信息"

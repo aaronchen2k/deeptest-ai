@@ -23,12 +23,12 @@ type ProjectRepo struct {
 
 func (r *ProjectRepo) Paginate(req v1.ReqPaginate, userId uint) (data _domain.PageData, err error) {
 	var count int64
-	var projectIds []uint
-
+	//var projectIds []uint
 	//r.DB.Model(&model.ProjectMember{}).
 	//	Select("project_id").Where("user_id = ?", userId).Scan(&projectIds)
+	//db := r.DB.Model(&model.Project{}).Where("NOT deleted AND id IN (?)", projectIds)
 
-	db := r.DB.Model(&model.Project{}).Where("NOT deleted AND id IN (?)", projectIds)
+	db := r.DB.Model(&model.Project{}).Where("NOT deleted")
 
 	if req.Keywords != "" {
 		db = db.Where("name LIKE ?", fmt.Sprintf("%%%s%%", req.Keywords))
@@ -54,8 +54,8 @@ func (r *ProjectRepo) Paginate(req v1.ReqPaginate, userId uint) (data _domain.Pa
 	}
 
 	for key, project := range projects {
-		user, _ := r.UserRepo.Get(project.AdminId)
-		projects[key].AdminName = user.Name
+		user, _ := r.UserRepo.Get(project.UpdatedBy)
+		projects[key].UpdatedUser = user.Name
 	}
 
 	data.Populate(projects, count, req.Page, req.PageSize)
@@ -132,13 +132,11 @@ func (r *ProjectRepo) Create(req v1.ProjectReq, userId uint) (id uint, bizErr _d
 
 		return
 	}
-	if req.AdminId != userId {
-		err = r.AddProjectMember(project.ID, req.AdminId, r.BaseRepo.GetAdminRoleName())
-		if err != nil {
-			_logs.Errorf("添加项目角色错误", zap.String("错误:", err.Error()))
-			bizErr = _domain.SystemErr
-			return 0, bizErr
-		}
+
+	err = r.AddProjectMember(project.ID, userId, r.BaseRepo.GetAdminRoleName())
+	if err != nil {
+		bizErr = _domain.SystemErr
+		return 0, bizErr
 	}
 	err = r.CreateProjectRes(project.ID, userId, req.IncludeExample)
 

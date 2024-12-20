@@ -108,6 +108,7 @@ class RequestClient {
       });
       return response as T;
     } catch (error: any) {
+      window.console.log('******', error.message, error);
       throw error.response ? error.response.data : error;
     }
   }

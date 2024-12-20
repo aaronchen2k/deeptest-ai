@@ -71,7 +71,7 @@ func (c *SetCtrl) Create(ctx iris.Context) {
 		return
 	}
 
-	req.CreateBy = multi_iris.GetUserId(ctx)
+	req.CreatedBy = multi_iris.GetUserId(ctx)
 	req.ProjectId = uint(projectId)
 
 	po, err := c.SetService.Create(req)

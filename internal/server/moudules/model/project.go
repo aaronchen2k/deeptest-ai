@@ -8,8 +8,7 @@ type Project struct {
 	BaseModel
 	domain.ProjectBase
 
-	AdminId   uint   `json:"adminId"`
-	AdminName string `json:"adminName"`
+	UpdatedUser string `json:"updatedUser" gorm:"omitempty"`
 }
 
 func (Project) TableName() string {

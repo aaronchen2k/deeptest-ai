@@ -2,10 +2,16 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { Page } from '@vben/common-ui';
+import { ref } from 'vue';
+
+import { Page, useVbenModal } from '@vben/common-ui';
+
+import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { listProjectApi } from '#/api';
+
+import EditModalComp from './edit.vue';
 
 interface RowType {
   category: string;
@@ -15,6 +21,8 @@ interface RowType {
   productName: string;
   releaseDate: string;
 }
+
+const currPage = ref(0);
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -46,11 +54,8 @@ const formOptions: VbenFormProps = {
       label: '状态',
     },
   ],
-  // 控制表单是否显示折叠按钮
   showCollapseButton: true,
-  // 是否在字段值改变时提交表单
   submitOnChange: true,
-  // 按下回车时是否提交表单
   submitOnEnter: false,
 };
 
@@ -63,16 +68,30 @@ const gridOptions: VxeGridProps<RowType> = {
     { title: '序号', type: 'seq', width: 50 },
     { title: '', align: 'left', type: 'checkbox', width: 100 },
     { title: '名称', field: 'name' },
-    { title: '更新时间', field: 'updateAt', formatter: 'formatDateTime' },
+    { title: '修改人', field: 'updatedUser' },
+    { title: '修改时间', field: 'updatedAt', formatter: 'formatDateTime' },
+    {
+      title: '操作',
+      field: 'action',
+      fixed: 'right',
+      slots: { default: 'action' },
+      width: 120,
+    },
   ],
   height: 'auto',
-  keepSource: true,
-  pagerConfig: {},
+  pagerConfig: {
+    enabled: true,
+    pageSize: 3,
+    // currentPage: 0,
+  },
+  sortConfig: {
+    multiple: true,
+  },
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        // message.success(`Query params: ${JSON.stringify(formValues)}`);
-        return await listProjectApi({
+        currPage.value = page.currentPage;
+        return await query({
           page: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
@@ -82,11 +101,37 @@ const gridOptions: VxeGridProps<RowType> = {
   },
 };
 
-const [Grid] = useVbenVxeGrid({ formOptions, gridOptions });
+const [Grid, gridApi] = useVbenVxeGrid({ formOptions, gridOptions });
+
+async function query(data: any) {
+  window.console.log(
+    '=====',
+    currPage.value,
+    gridApi.grid.pagerConfig?.pageSize,
+  );
+  return listProjectApi(data);
+}
+
+const [EditModal, editModalApi] = useVbenModal({
+  connectedComponent: EditModalComp,
+});
+
+const model = ref<any>(null as any);
+function edit(item: any) {
+  window.console.log(item);
+  model.value = item;
+  editModalApi.open();
+}
 </script>
 
 <template>
   <Page auto-content-height>
-    <Grid />
+    <Grid>
+      <template #action="{ row }">
+        <Button type="link" @click="edit(row)">编辑</Button>
+      </template>
+    </Grid>
+
+    <EditModal :data="model" />
   </Page>
 </template>

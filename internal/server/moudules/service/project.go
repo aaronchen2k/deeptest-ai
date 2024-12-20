@@ -16,7 +16,6 @@ type ProjectService struct {
 
 func (s *ProjectService) Paginate(req v1.ReqPaginate, userId uint) (ret _domain.PageData, err error) {
 	ret, err = s.ProjectRepo.Paginate(req, userId)
-
 	if err != nil {
 		return
 	}

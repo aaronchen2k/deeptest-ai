@@ -15,8 +15,8 @@ type BaseModel struct {
 	UpdatedAt *time.Time     `json:"updatedAt,omitempty"`
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 
-	CreateBy uint `json:"createBy"`
-	UpdateBy uint `json:"updateBy"`
+	CreatedBy uint `json:"createdBy"`
+	UpdatedBy uint `json:"updatedBy"`
 
 	Deleted  bool `json:"-" gorm:"default:false"`
 	Disabled bool `json:"disabled,omitempty" gorm:"default:false"`

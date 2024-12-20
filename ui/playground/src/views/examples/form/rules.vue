@@ -237,7 +237,9 @@ function onSubmit(values: Record<string, any>) {
           清空校验信息
         </Button>
       </template>
-      <Form />
+
+      <Form @finish="" />
+
     </Card>
   </Page>
 </template>
