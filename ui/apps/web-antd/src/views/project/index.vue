@@ -12,6 +12,8 @@ import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { listProjectApi } from '#/api';
 
 import EditModalComp from './edit.vue';
+import {useAccessStore} from "@vben/stores";
+import {useGlobalStore} from "#/store/global";
 
 interface RowType {
   category: string;
@@ -21,8 +23,6 @@ interface RowType {
   productName: string;
   releaseDate: string;
 }
-
-const queryParams = ref({});
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -89,23 +89,27 @@ const gridOptions: VxeGridProps<RowType> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        queryParams.value = {
+        return await listProjectApi({
           page: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
-        };
-        return await query();
+        });
       },
     },
   },
 };
 
-const [Grid, gridApi] = useVbenVxeGrid({ formOptions, gridOptions });
+const globalStore = useGlobalStore();
+globalStore.setCurrProjectId(123);
+window.console.log('===', globalStore.currProjectId);
 
-async function query() {
-  window.console.log('query', queryParams.value);
-  return listProjectApi(queryParams.value);
-}
+const [Grid, gridApi] = useVbenVxeGrid({ formOptions, gridOptions });
+// const showBorder = gridApi.useStore((state) => state.gridOptions?.border);
+// function changeBorder() {
+//   gridApi.setGridOptions({
+//     border: !showBorder.value,
+//   });
+// }
 
 const [EditModal, editModalApi] = useVbenModal({
   connectedComponent: EditModalComp,
