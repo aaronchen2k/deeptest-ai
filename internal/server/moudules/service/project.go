@@ -36,8 +36,8 @@ func (s *ProjectService) Create(req v1.ProjectReq, userId uint) (id uint, err _d
 	return
 }
 
-func (s *ProjectService) Update(req v1.ProjectReq) (err error) {
-	err = s.ProjectRepo.Update(req)
+func (s *ProjectService) Update(req v1.ProjectReq, userId uint) (err error) {
+	err = s.ProjectRepo.Update(req, userId)
 	if err != nil {
 		return
 	}

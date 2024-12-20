@@ -84,12 +84,16 @@ watch(
   { immediate: true, deep: true },
 );
 
+const emits = defineEmits<{
+  finish: [event: any];
+}>();
 function submit(values: Record<string, any>) {
   window.console.log('submit', values, model.value);
 
   const data = Object.assign({}, model.value, values);
 
   saveProjectApi(data).then((result) => {
+    emits('finish', null);
     modalApi.close();
   });
 }

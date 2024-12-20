@@ -8,7 +8,6 @@ import (
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
 	"github.com/deeptest-com/deeptest-next/pkg/domain"
 	_logs "github.com/deeptest-com/deeptest-next/pkg/libs/log"
-
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
@@ -124,7 +123,9 @@ func (r *ProjectRepo) Create(req v1.ProjectReq, userId uint) (id uint, bizErr _d
 	}
 
 	// create project
-	project := model.Project{ProjectBase: req.ProjectBase}
+	project := model.Project{ProjectBase: req.ProjectBase,
+		BaseModel: model.BaseModel{CreatedBy: userId, UpdatedBy: userId}}
+
 	err = r.DB.Model(&model.Project{}).Create(&project).Error
 	if err != nil {
 		_logs.Errorf("add project error", zap.String("error:", err.Error()))
@@ -146,7 +147,6 @@ func (r *ProjectRepo) Create(req v1.ProjectReq, userId uint) (id uint, bizErr _d
 }
 
 func (r *ProjectRepo) CreateProjectRes(projectId, userId uint, IncludeExample bool) (err error) {
-
 	// create project member
 	err = r.AddProjectMember(projectId, userId, r.BaseRepo.GetAdminRoleName())
 	if err != nil {
@@ -156,7 +156,7 @@ func (r *ProjectRepo) CreateProjectRes(projectId, userId uint, IncludeExample bo
 	return
 }
 
-func (r *ProjectRepo) Update(req v1.ProjectReq) error {
+func (r *ProjectRepo) Update(req v1.ProjectReq, userId uint) error {
 	po, _ := r.GetByName(req.Name, req.ID)
 	if po.Name != "" {
 		return errors.New("同名记录已存在")
@@ -167,7 +167,7 @@ func (r *ProjectRepo) Update(req v1.ProjectReq) error {
 		return errors.New("英文缩写已存在")
 	}
 
-	project := model.Project{ProjectBase: req.ProjectBase}
+	project := model.Project{ProjectBase: req.ProjectBase, BaseModel: model.BaseModel{UpdatedBy: userId}}
 	err := r.DB.Model(&model.Project{}).Where("id = ?", req.ID).Updates(&project).Error
 	if err != nil {
 		_logs.Errorf("update project error", zap.String("error:", err.Error()))

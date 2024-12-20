@@ -67,6 +67,8 @@ func (c *ProjectCtrl) Create(ctx iris.Context) {
 }
 
 func (c *ProjectCtrl) Update(ctx iris.Context) {
+	userId := multi_iris.GetUserId(ctx)
+
 	var req v1.ProjectReq
 	err := ctx.ReadJSON(&req)
 	if err != nil {
@@ -74,7 +76,7 @@ func (c *ProjectCtrl) Update(ctx iris.Context) {
 		return
 	}
 
-	err = c.ProjectService.Update(req)
+	err = c.ProjectService.Update(req, userId)
 	if err != nil {
 		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
 		return

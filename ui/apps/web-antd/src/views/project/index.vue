@@ -22,7 +22,7 @@ interface RowType {
   releaseDate: string;
 }
 
-const currPage = ref(0);
+const queryParams = ref({});
 
 const formOptions: VbenFormProps = {
   // 默认展开
@@ -66,8 +66,7 @@ const gridOptions: VxeGridProps<RowType> = {
   },
   columns: [
     { title: '序号', type: 'seq', width: 50 },
-    { title: '', align: 'left', type: 'checkbox', width: 100 },
-    { title: '名称', field: 'name' },
+    { title: '名称', field: 'name', type: 'checkbox', align: 'left' },
     { title: '修改人', field: 'updatedUser' },
     { title: '修改时间', field: 'updatedAt', formatter: 'formatDateTime' },
     {
@@ -90,12 +89,12 @@ const gridOptions: VxeGridProps<RowType> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        currPage.value = page.currentPage;
-        return await query({
+        queryParams.value = {
           page: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
-        });
+        };
+        return await query();
       },
     },
   },
@@ -103,13 +102,9 @@ const gridOptions: VxeGridProps<RowType> = {
 
 const [Grid, gridApi] = useVbenVxeGrid({ formOptions, gridOptions });
 
-async function query(data: any) {
-  window.console.log(
-    '=====',
-    currPage.value,
-    gridApi.grid.pagerConfig?.pageSize,
-  );
-  return listProjectApi(data);
+async function query() {
+  window.console.log('query', queryParams.value);
+  return listProjectApi(queryParams.value);
 }
 
 const [EditModal, editModalApi] = useVbenModal({
@@ -122,6 +117,11 @@ function edit(item: any) {
   model.value = item;
   editModalApi.open();
 }
+
+function finish() {
+  window.console.log('finish');
+  gridApi.query();
+}
 </script>
 
 <template>
@@ -132,6 +132,6 @@ function edit(item: any) {
       </template>
     </Grid>
 
-    <EditModal :data="model" />
+    <EditModal :data="model" @finish="finish" />
   </Page>
 </template>
