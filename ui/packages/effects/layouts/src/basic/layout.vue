@@ -256,6 +256,10 @@ const headerSlots = computed(() => {
         <template v-for="item in headerSlots" #[item]>
           <slot :name="item"></slot>
         </template>
+
+        <template #context>
+          <slot name="context"></slot>
+        </template>
       </LayoutHeader>
     </template>
     <!-- 侧边菜单区域 -->

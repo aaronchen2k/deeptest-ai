@@ -10,10 +10,9 @@ import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { listProjectApi } from '#/api';
+import { useGlobalStore } from '#/store/global';
 
 import EditModalComp from './edit.vue';
-import {useAccessStore} from "@vben/stores";
-import {useGlobalStore} from "#/store/global";
 
 interface RowType {
   category: string;

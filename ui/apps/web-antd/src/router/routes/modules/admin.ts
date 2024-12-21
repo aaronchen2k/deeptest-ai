@@ -7,7 +7,7 @@ const routes: RouteRecordRaw[] = [
   {
     component: BasicLayout,
     meta: {
-      icon: 'ic:baseline-view-in-ar',
+      icon: 'lucide:settings',
       keepAlive: true,
       order: 5000,
       title: $t('admin.title'),
