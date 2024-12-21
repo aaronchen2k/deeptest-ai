@@ -22,7 +22,7 @@ function selectProject(item) {
     </template>
 
     <span>
-      <span class="dp-inline-block" style="padding-right: 3px">项目A</span>
+      <span class="dp-inline-block" style="padding-right: 8px">项目A</span>
       <span class="dp-dropdown-icon icon-[ant-design--down-outlined]"></span>
     </span>
   </Dropdown>
