@@ -12,11 +12,6 @@ export const useGlobalStore = defineStore('global', {
     currProject: {},
     projects: [],
   }),
-  // getters: {
-  //   fullName(state): string {
-  //     return `${state.name} ${state.email.split('@')[0]}`;
-  //   },
-  // },
   actions: {
     loadProjectData() {
       loadProjectsApi().then((result) => {
@@ -37,6 +32,12 @@ export const useGlobalStore = defineStore('global', {
     setProjects(val: any[]) {
       this.projects = val;
     },
+
+    // getters: {
+    //   fullName(state): string {
+    //     return `${state.name} ${state.email.split('@')[0]}`;
+    //   },
+    // },
   },
 });
 
