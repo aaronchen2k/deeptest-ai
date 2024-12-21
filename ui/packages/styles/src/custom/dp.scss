@@ -7,7 +7,7 @@
   span {
     display: inline-block;
     padding: 0 3px;
-    &.item-icon {
+    &.dp-dropdown-icon {
       mask-position: 2px 2px;
       font-weight: bold;
     }
@@ -15,7 +15,9 @@
 }
 
 .dp-dropdown-overlay {
-  span.item-icon {
-    mask-position: 2px 2px;
+  .ant-dropdown-menu-item {
+    span.dp-dropdown-icon {
+      mask-position: 2px 2px;
+    }
   }
 }

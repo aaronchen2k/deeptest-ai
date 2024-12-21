@@ -13,7 +13,7 @@ function selectProject(item) {
     <template #overlay>
       <Menu @click="selectProject">
         <MenuItem key="1" @click="selectProject(1)">
-          <span class="item-icon icon-[ant-design--project-outlined]" />
+          <span class="dp-dropdown-icon icon-[ant-design--project-outlined]" />
           &nbsp;项目B
         </MenuItem>
       </Menu>
@@ -21,7 +21,7 @@ function selectProject(item) {
 
     <span>
       <span>项目A</span>
-      <span class="item-icon icon-[ant-design--down-outlined]"></span>
+      <span class="dp-dropdown-icon icon-[ant-design--down-outlined]"></span>
     </span>
   </Dropdown>
 </template>
