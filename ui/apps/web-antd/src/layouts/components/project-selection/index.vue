@@ -1,29 +1,29 @@
 <script lang="ts" setup>
-import {computed, ref} from 'vue';
+import {computed, onMounted, onUnmounted, ref} from 'vue';
 
 import '@vben/styles/global';
 
 import { Dropdown, Menu, MenuItem } from 'ant-design-vue';
 
-import { loadProjectsApi, updateUserProject } from '#/api';
 import { useGlobalStore } from '#/store/global';
 
 const globalStore = useGlobalStore();
 const currProject = computed(() => globalStore.currProject);
 const projects = computed(() => globalStore.projects);
 
-loadProjectsApi().then((result) => {
-  window.console.log('loadProjectsApi', result);
-  globalStore.setCurrProject(result.default);
-  globalStore.setProjects(result.items);
-});
+globalStore.loadProjectData();
 
 function selectProject(item: any) {
   window.console.log('selectProject', item);
-  updateUserProject(item.id).then(() => {
-    globalStore.setCurrProject(item);
-  });
+  globalStore.updateUserProject(item);
 }
+
+onMounted(() => {
+  window.console.log('onMounted');
+});
+onUnmounted(() => {
+  window.console.log('onUnmounted');
+});
 </script>
 
 <template>
