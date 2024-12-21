@@ -10,8 +10,11 @@ import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { listProjectApi } from '#/api';
+import { useProjectStore } from '#/views/project/project';
 
 import EditModalComp from './edit.vue';
+
+const projectStore = useProjectStore();
 
 interface RowType {
   category: string;
@@ -87,23 +90,18 @@ const gridOptions: VxeGridProps<RowType> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        return await listProjectApi({
+        await projectStore.queryProjects({
           page: page.currentPage,
           pageSize: page.pageSize,
           ...formValues,
         });
+        return projectStore.queryResult;
       },
     },
   },
 };
 
 const [Grid, gridApi] = useVbenVxeGrid({ formOptions, gridOptions });
-// const showBorder = gridApi.useStore((state) => state.gridOptions?.border);
-// function changeBorder() {
-//   gridApi.setGridOptions({
-//     border: !showBorder.value,
-//   });
-// }
 
 const [EditModal, editModalApi] = useVbenModal({
   connectedComponent: EditModalComp,
