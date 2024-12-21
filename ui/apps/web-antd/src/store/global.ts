@@ -13,7 +13,7 @@ export const useGlobalStore = defineStore('global', {
     projects: [],
   }),
   actions: {
-    loadProjectData() {
+    loadUserProjects() {
       loadProjectsApi().then((result) => {
         window.console.log('loadProjectsApi', result);
         this.setCurrProject(result.default);
