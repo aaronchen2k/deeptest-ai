@@ -1,23 +1,16 @@
 .dp-link {
   cursor: pointer;
 }
+.dp-inline-block {
+  display: inline-block;
+}
 
 .dp-dropdown {
   cursor: pointer;
-  span {
-    display: inline-block;
-    padding: 0 3px;
-    &.dp-dropdown-icon {
-      mask-position: 2px 2px;
-      font-weight: bold;
-    }
-  }
+}
+.dp-dropdown-icon {
+  mask-position: 2px 2px;
+  display: inline-block;
+  padding: 0 3px;
 }
 
-.dp-dropdown-overlay {
-  .ant-dropdown-menu-item {
-    span.dp-dropdown-icon {
-      mask-position: 2px 2px;
-    }
-  }
-}
