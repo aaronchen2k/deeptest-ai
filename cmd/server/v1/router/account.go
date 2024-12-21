@@ -20,5 +20,7 @@ func (m *AccountModule) Party() func(public iris.Party) {
 
 		public.Get("/info", m.AccountCtrl.Info).Name = "用户信息"
 		public.Get("/codes", m.AccountCtrl.Codes).Name = "用户代码"
+
+		public.Post("/updateUserProject", m.AccountCtrl.UpdateUserProject).Name = "编辑用户"
 	}
 }

@@ -12,3 +12,11 @@ export async function saveProjectApi(data: any) {
   const method = data.id ? 'put' : 'post';
   return requestClient[method](`/projects`, data);
 }
+
+export async function loadProjectsApi() {
+  return requestClient.get('/projects/load');
+}
+
+export async function updateUserProject(projectId: number) {
+  return requestClient.post('/accounts/updateUserProject', { projectId });
+}

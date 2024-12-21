@@ -13,6 +13,20 @@ type ProjectCtrl struct {
 	BaseCtrl
 }
 
+func (c *ProjectCtrl) Load(ctx iris.Context) {
+	userId := multi_iris.GetUserId(ctx)
+
+	curr, items, err := c.ProjectService.Load(userId)
+	if err != nil {
+		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
+		return
+	}
+
+	ctx.JSON(_domain.Response{Code: _domain.Success.Code, Data: iris.Map{
+		"default": curr, "items": items,
+	}})
+}
+
 func (c *ProjectCtrl) Query(ctx iris.Context) {
 	userId := multi_iris.GetUserId(ctx)
 

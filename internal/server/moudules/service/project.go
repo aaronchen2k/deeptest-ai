@@ -14,6 +14,15 @@ type ProjectService struct {
 	UserRepo        *repo.UserRepo        `inject:""`
 }
 
+func (s *ProjectService) Load(userId uint) (curr v1.ProjectReq, items []v1.ProjectReq, err error) {
+	curr, items, err = s.ProjectRepo.Load(userId)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
 func (s *ProjectService) Paginate(req v1.ReqPaginate, userId uint) (ret _domain.PageData, err error) {
 	ret, err = s.ProjectRepo.Paginate(req, userId)
 	if err != nil {

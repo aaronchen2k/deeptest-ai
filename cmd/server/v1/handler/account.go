@@ -87,3 +87,22 @@ func (c AccountCtrl) Codes(ctx iris.Context) {
 
 	ctx.JSON(_domain.Response{Code: _domain.Success.Code, Data: codes})
 }
+
+func (c *AccountCtrl) UpdateUserProject(ctx iris.Context) {
+	userId := multi_iris.GetUserId(ctx)
+
+	req := &v1.UpdateUserProjectReq{}
+	err := ctx.ReadJSON(&req)
+	if err != nil {
+		ctx.JSON(_domain.Response{Code: _domain.ParamErr.Code, Msg: err.Error()})
+		return
+	}
+
+	err = c.AccountService.UpdateUserProject(req, userId)
+	if err != nil {
+		ctx.JSON(_domain.Response{Code: _domain.FailErr.Code, Msg: err.Error()})
+		return
+	}
+
+	ctx.JSON(_domain.Response{Code: _domain.Success.Code})
+}

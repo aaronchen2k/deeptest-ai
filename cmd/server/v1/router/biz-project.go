@@ -15,6 +15,7 @@ func (m *ProjectModule) Party() func(index iris.Party) {
 	return func(party iris.Party) {
 		party.Use(middleware.JwtHandler(), middleware.Casbin())
 
+		party.Get("/load", m.ProjectCtrl.Load).Name = "用户项目"
 		party.Post("/query", m.ProjectCtrl.Query).Name = "项目列表"
 
 		party.Get("/{id:uint}", m.ProjectCtrl.Get).Name = "项目详情"

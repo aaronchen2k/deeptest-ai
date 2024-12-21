@@ -18,6 +18,7 @@ import (
 type AccountService struct {
 	AccountRepo *repo.AccountRepo `inject:""`
 	UserRepo    *repo.UserRepo    `inject:""`
+	ProfileRepo *repo.ProfileRepo `inject:""`
 }
 
 func (s *AccountService) GetAccessToken(req *v1.LoginReq) (token string, id uint, err error) {
@@ -89,6 +90,11 @@ func (s *AccountService) GetInfo(userId uint) (info domain.UserDetail, err error
 }
 
 func (s *AccountService) GetCodes(userId uint) (ret []string, err error) {
+	return
+}
+
+func (s *AccountService) UpdateUserProject(req *v1.UpdateUserProjectReq, userId uint) (err error) {
+	err = s.ProfileRepo.UpdateUserProject(req.ProjectId, userId)
 
 	return
 }

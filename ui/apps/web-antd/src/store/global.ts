@@ -1,17 +1,22 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
 interface GlobalState {
-  currProjectId: number;
+  currProject: any;
+  projects: any[];
 }
 
 export const useGlobalStore = defineStore('global', {
   actions: {
-    setCurrProjectId(id: number) {
-      this.currProjectId = id;
+    setCurrProject(val: any) {
+      this.currProject = val;
+    },
+    setProjects(val: any[]) {
+      this.projects = val;
     },
   },
   state: (): GlobalState => ({
-    currProjectId: -1,
+    currProject: {},
+    projects: [],
   }),
 });
 

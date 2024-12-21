@@ -17,7 +17,32 @@ type ProjectRepo struct {
 	*BaseRepo `inject:""`
 
 	*UserRepo        `inject:""`
+	*ProfileRepo     `inject:""`
 	*ProjectRoleRepo `inject:""`
+}
+
+func (r *ProjectRepo) Load(userId uint) (curr v1.ProjectReq, items []v1.ProjectReq, err error) {
+	db := r.DB.Model(&model.Project{}).Where("NOT deleted")
+
+	err = db.Find(&items).Error
+	if err != nil {
+		return
+	}
+
+	profile, err := r.ProfileRepo.FindByUserId(userId)
+
+	for _, item := range items {
+		if profile.CurrProjectId == item.ID {
+			curr = item
+			break
+		}
+	}
+
+	if curr.ID == 0 && len(items) > 0 {
+		curr = items[0]
+	}
+
+	return
 }
 
 func (r *ProjectRepo) Paginate(req v1.ReqPaginate, userId uint) (data _domain.PageData, err error) {

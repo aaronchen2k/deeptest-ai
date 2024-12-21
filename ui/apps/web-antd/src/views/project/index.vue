@@ -10,7 +10,6 @@ import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { listProjectApi } from '#/api';
-import { useGlobalStore } from '#/store/global';
 
 import EditModalComp from './edit.vue';
 
@@ -97,10 +96,6 @@ const gridOptions: VxeGridProps<RowType> = {
     },
   },
 };
-
-const globalStore = useGlobalStore();
-globalStore.setCurrProjectId(123);
-window.console.log('===', globalStore.currProjectId);
 
 const [Grid, gridApi] = useVbenVxeGrid({ formOptions, gridOptions });
 // const showBorder = gridApi.useStore((state) => state.gridOptions?.border);

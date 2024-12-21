@@ -11,3 +11,7 @@ type LoginResp struct {
 	Password     string   `json:"password"`
 	AuthorityIds []string `gorm:"-" json:"authorityIds"`
 }
+
+type UpdateUserProjectReq struct {
+	ProjectId uint `json:"projectId" validate:"required"`
+}
