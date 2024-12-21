@@ -31,7 +31,7 @@ func GetUserMigration() *gormigrate.Migration {
 func (s UserSource) Init() error {
 	return database.GetInstance().Transaction(func(tx *gorm.DB) error {
 		if tx.Model(&model.SysUser{}).Where("id IN ?", []int{1}).Find(&[]model.SysUser{}).RowsAffected == 1 {
-			color.Danger.Println("\n[Mysql] --> users 表的初始数据已存在!")
+			color.Danger.Println("\nusers 表的初始数据已存在!")
 			return nil
 		}
 		sources, err := s.GetSources()
@@ -51,7 +51,7 @@ func (s UserSource) Init() error {
 			}
 		}
 
-		color.Info.Println("\n[Mysql] --> users 表初始数据成功!")
+		color.Info.Println("\n--> users 表初始数据成功!")
 
 		return nil
 	})

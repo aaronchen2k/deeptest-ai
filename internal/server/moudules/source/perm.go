@@ -49,7 +49,7 @@ func (s *PermSource) Init() error {
 			return err
 		}
 
-		color.Info.Println("\n[Mysql] --> permissions 表初始数据成功!")
+		color.Info.Println("\n--> permissions 表初始数据成功!")
 
 		return nil
 	})

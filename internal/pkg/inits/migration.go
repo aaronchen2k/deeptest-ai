@@ -33,7 +33,7 @@ var PartyFunc = func(wi *web_iris.WebServer) {
 var SeedFunc = func(wi *web_iris.WebServer, mc *migration.MigrationCmd) {
 	err := database.GetInstance().AutoMigrate(model.Models...)
 	if err != nil {
-		_logs.Errorf("迁移数据表错误", zap.String("错误:", err.Error()))
+		_logs.Errorf("初始化数据表错误", zap.String("错误:", err.Error()))
 		return
 	}
 

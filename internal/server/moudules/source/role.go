@@ -35,7 +35,7 @@ func (s RoleSource) Init() error {
 	//if db.Model(&model.SysRole{}).
 	//	Where("id IN ?", []int{1}).
 	//	Find(&[]model.SysRole{}).RowsAffected == 1 {
-	//	color.Danger.Println("\n[Mysql] --> roles 表的初始数据已存在!")
+	//	color.Danger.Println("\n--> roles 表的初始数据已存在!")
 	//	return nil
 	//}
 
@@ -52,7 +52,7 @@ func (s RoleSource) Init() error {
 		}
 	}
 
-	color.Info.Println("\n[Mysql] --> roles 表初始数据成功!")
+	color.Info.Println("\n--> roles 表初始数据成功!")
 	return nil
 }
 
