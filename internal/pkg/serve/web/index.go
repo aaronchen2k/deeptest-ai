@@ -34,7 +34,6 @@ func Start(wf WebFunc) {
 	}
 
 	PermRoutes, _ = wf.GetSources()
-
 	wf.Run()
 }
 
