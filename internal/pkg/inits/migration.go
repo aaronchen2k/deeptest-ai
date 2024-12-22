@@ -44,12 +44,11 @@ var SeedFunc = func(wi *web_iris.WebServer, mc *migration.MigrationCmd) {
 		operation.GetMigration())
 
 	routes, _ := wi.GetSources()
-
 	// 权鉴模块全部为管理员权限
-	authorityTypes := map[string]int{}
-	for _, route := range routes {
-		authorityTypes[route["path"]] = auth.AdminAuthority
-	}
+	//authorityTypes := map[string]int{}
+	//for _, route := range routes {
+	//	authorityTypes[route["path"]] = auth.AdminAuthority
+	//}
 
 	// notice : 注意模块顺序
 	mc.AddSeed(source.NewPermSource(routes), source.RoleSrc, source.UserSrc)

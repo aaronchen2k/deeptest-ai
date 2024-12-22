@@ -1,6 +1,7 @@
 package source
 
 import (
+	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/domain"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/database"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
@@ -8,6 +9,7 @@ import (
 	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/gookit/color"
 	"gorm.io/gorm"
+	"log"
 )
 
 type PermSource struct {
@@ -34,6 +36,7 @@ func GetPermMigration() *gormigrate.Migration {
 }
 
 func (s *PermSource) Init() error {
+	s.routes = config.PermRoutes // PermRoutes init in cmd/main from webserver
 	if s.getSources() == nil {
 		return nil
 	}
@@ -41,6 +44,7 @@ func (s *PermSource) Init() error {
 	return database.GetInstance().Transaction(func(tx *gorm.DB) error {
 		err := tx.Unscoped().Where("1 = 1").Delete(&model.SysPerm{}).Error
 		if err != nil {
+			log.Println(err.Error())
 			return err
 		}
 

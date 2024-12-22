@@ -16,6 +16,7 @@ type WebBaseFunc interface {
 	AddUploadStatic(staticAbsPath, webPrefix string)
 	InitRouter() error
 	Run()
+	GetSources() ([]map[string]string, []map[string]string)
 }
 
 type WebFunc interface {
@@ -29,6 +30,9 @@ func Start(wf WebFunc) {
 		_logUtils.Error(err.Error())
 		return
 	}
+
+	config.PermRoutes, _ = wf.GetSources()
+
 	wf.Run()
 }
 
