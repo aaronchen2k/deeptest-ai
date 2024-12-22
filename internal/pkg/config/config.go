@@ -202,5 +202,3 @@ func GetViperConfig() viper_server.ViperConfig {
  }`),
 	}
 }
-
-var PermRoutes = make([]map[string]string, 0)

@@ -23,6 +23,8 @@ type WebFunc interface {
 	WebBaseFunc
 }
 
+var PermRoutes = make([]map[string]string, 0)
+
 // Start
 func Start(wf WebFunc) {
 	err := wf.InitRouter()
@@ -31,7 +33,7 @@ func Start(wf WebFunc) {
 		return
 	}
 
-	config.PermRoutes, _ = wf.GetSources()
+	PermRoutes, _ = wf.GetSources()
 
 	wf.Run()
 }

@@ -1,9 +1,9 @@
 package source
 
 import (
-	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/domain"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/database"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/repo"
 	"github.com/go-gormigrate/gormigrate/v2"
@@ -36,7 +36,7 @@ func GetPermMigration() *gormigrate.Migration {
 }
 
 func (s *PermSource) Init() error {
-	s.routes = config.PermRoutes // PermRoutes init in cmd/main from webserver
+	s.routes = web.PermRoutes
 	if s.getSources() == nil {
 		return nil
 	}
