@@ -68,16 +68,5 @@ function nameView(name: string) {
         </div>
       </div>
     </template>
-
-    <SwitchItem
-      v-model="themeSemiDarkSidebar"
-      :disabled="modelValue === 'dark'"
-      class="mt-6"
-    >
-      {{ $t('preferences.theme.darkSidebar') }}
-    </SwitchItem>
-    <SwitchItem v-model="themeSemiDarkHeader" :disabled="modelValue === 'dark'">
-      {{ $t('preferences.theme.darkHeader') }}
-    </SwitchItem>
   </div>
 </template>

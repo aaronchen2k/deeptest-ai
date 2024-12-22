@@ -4,6 +4,8 @@
   "resetTitle": "重置偏好设置",
   "resetTip": "数据有变化，点击可进行重置",
   "resetSuccess": "重置偏好设置成功",
+
+  "display": "显示",
   "appearance": "外观",
   "layout": "布局",
   "content": "内容",

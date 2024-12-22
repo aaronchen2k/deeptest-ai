@@ -3,7 +3,7 @@ import {computed, onMounted, onUnmounted, ref} from 'vue';
 
 import '@vben/styles/global';
 
-import { Dropdown, Menu, MenuItem } from 'ant-design-vue';
+import { DropdownButton, Menu, MenuItem } from 'ant-design-vue';
 
 import { useGlobalStore } from '#/store/global';
 
@@ -27,30 +27,31 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Dropdown class="dp-dropdown" overlay-class-name="dp-dropdown-overlay">
-    <template #overlay>
-      <Menu>
-        <template v-for="project in projects" :key="project.id">
-          <MenuItem
-            v-if="currProject.id !== project.id"
-            @click="selectProject(project)"
-          >
-            <span
-              class="dp-dropdown-icon icon-[ant-design--project-outlined]"
-            ></span>
-            <span class="dp-inline-block" style="padding-left: 10px">
-              {{ project.name }}
-            </span>
-          </MenuItem>
-        </template>
-      </Menu>
-    </template>
+  <div>
+    <span class="dp-inline-block" style="padding-right: 20px">项目</span>
 
-    <span>
-      <span class="dp-inline-block" style="padding-right: 8px">
+    <DropdownButton overlay-class-name="dp-dropdown-overlay">
+      <span>
         {{ currProject.name }}
       </span>
-      <span class="dp-dropdown-icon icon-[ant-design--down-outlined]"></span>
-    </span>
-  </Dropdown>
+
+      <template #overlay>
+        <Menu>
+          <template v-for="project in projects" :key="project.id">
+            <MenuItem
+              :disabled="currProject.id === project.id"
+              @click="selectProject(project)"
+            >
+              <span
+                class="dp-dropdown-icon icon-[ant-design--project-outlined]"
+              ></span>
+              <span class="dp-inline-block" style="padding-left: 10px">
+                {{ project.name }}
+              </span>
+            </MenuItem>
+          </template>
+        </Menu>
+      </template>
+    </DropdownButton>
+  </div>
 </template>

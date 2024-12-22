@@ -262,6 +262,7 @@ const headerSlots = computed(() => {
         </template>
       </LayoutHeader>
     </template>
+
     <!-- 侧边菜单区域 -->
     <template #menu>
       <LayoutMenu
