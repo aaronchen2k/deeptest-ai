@@ -43,6 +43,7 @@ const tabs = computed((): SegmentedItem[] => {
 });
 
 async function handleClearCache() {
+  window.console.log('handleClearCache');
   resetPreferences();
   clearPreferencesCache();
   emit('clearPreferencesAndLogout');
@@ -85,12 +86,18 @@ async function handleClearCache() {
       <template #footer>
         <VbenButton
           :disabled="!diffPreference"
+
           class="mr-4 w-full"
           size="sm"
           variant="ghost"
           @click="handleClearCache"
         >
-          {{ $t('preferences.clearAndLogout') }}
+          <span v-if="diffPreference">
+            {{ $t('preferences.clearAndLogout') }}
+          </span>
+          <span v-else>
+            {{ $t('preferences.clearAndLogoutDisabled') }}
+          </span>
         </VbenButton>
       </template>
     </Drawer>

@@ -4,15 +4,9 @@ import { computed, useSlots } from 'vue';
 import { useRefresh } from '@vben/hooks';
 import { RotateCw } from '@vben/icons';
 import { preferences, usePreferences } from '@vben/preferences';
-import { useAccessStore } from '@vben/stores';
-import { VbenFullScreen, VbenIconButton } from '@vben-core/shadcn-ui';
+import { VbenIconButton } from '@vben-core/shadcn-ui';
 
-import {
-  GlobalSearch,
-  LanguageToggle,
-  PreferencesButton,
-  ThemeToggle,
-} from '../../widgets';
+import { PreferencesButton } from '../../widgets';
 
 interface Props {
   /**
@@ -33,20 +27,12 @@ const emit = defineEmits<{ clearPreferencesAndLogout: [] }>();
 
 const REFERENCE_VALUE = 50;
 
-const accessStore = useAccessStore();
-const { globalSearchShortcutKey, preferencesButtonPosition } = usePreferences();
+const { preferencesButtonPosition } = usePreferences();
 const slots = useSlots();
 const { refresh } = useRefresh();
 
 const rightSlots = computed(() => {
   const list = [{ index: REFERENCE_VALUE + 100, name: 'user-dropdown' }];
-  if (preferences.widget.globalSearch) {
-    list.push({
-      index: REFERENCE_VALUE,
-      name: 'global-search',
-    });
-  }
-
   if (preferencesButtonPosition.value.header) {
     list.push({
       index: REFERENCE_VALUE + 10,
@@ -137,21 +123,13 @@ function clearPreferencesAndLogout() {
     <slot name="menu"></slot>
   </div>
   <div class="flex h-full min-w-0 flex-shrink-0 items-center">
-    <div style="margin-right: 36px;">
+    <div style="margin-right: 36px">
       <slot name="context"></slot>
     </div>
 
     <template v-for="slot in rightSlots" :key="slot.name">
       <slot :name="slot.name">
-        <template v-if="slot.name === 'global-search'">
-          <GlobalSearch
-            :enable-shortcut-key="globalSearchShortcutKey"
-            :menus="accessStore.accessMenus"
-            class="mr-1 sm:mr-4"
-          />
-        </template>
-
-        <template v-else-if="slot.name === 'preferences'">
+        <template v-if="slot.name === 'preferences'">
           <PreferencesButton
             class="mr-1"
             @clear-preferences-and-logout="clearPreferencesAndLogout"
@@ -164,16 +142,6 @@ function clearPreferencesAndLogout() {
             @clear-preferences-and-logout="clearPreferencesAndLogout"
           />
         </template>
-
-        <!-- <template v-else-if="slot.name === 'theme-toggle'">
-          <ThemeToggle class="mr-1 mt-[2px]" />
-        </template>
-        <template v-else-if="slot.name === 'language-toggle'">
-          <LanguageToggle class="mr-1" />
-        </template>
-        <template v-else-if="slot.name === 'fullscreen'">
-          <VbenFullScreen class="mr-1" />
-        </template> -->
       </slot>
     </template>
   </div>
