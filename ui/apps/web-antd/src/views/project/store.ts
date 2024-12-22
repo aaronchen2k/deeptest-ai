@@ -1,9 +1,10 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
 import { listProjectApi } from '#/api';
+import { useGlobalStore } from '#/store/global';
 
 export interface ProjectState {
-  queryResult: any[];
+  queryResult: any;
 }
 
 export const useProjectStore = defineStore('project', {
@@ -19,6 +20,14 @@ export const useProjectStore = defineStore('project', {
     },
     setQueryResult(val: any[]) {
       this.queryResult = val;
+    },
+  },
+  getters: {
+    projectState(state): string {
+      window.console.log('=== gets: projectState');
+      const globalStore = useGlobalStore();
+      const msg = `${state.queryResult.items?.length}, ${globalStore.currProject.name}, ${new Date()}`;
+      return msg;
     },
   },
 });

@@ -2,19 +2,19 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { ref } from 'vue';
+import {computed, ref} from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import { Button } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { listProjectApi } from '#/api';
-import { useProjectStore } from '#/views/project/project';
+import { useProjectStore } from '#/views/project/store';
 
 import EditModalComp from './edit.vue';
 
 const projectStore = useProjectStore();
+const projectState = computed(() => projectStore.projectState);
 
 interface RowType {
   category: string;
@@ -129,5 +129,6 @@ function finish() {
     </Grid>
 
     <EditModal :data="model" @finish="finish" />
+    {{ projectState }}
   </Page>
 </template>
