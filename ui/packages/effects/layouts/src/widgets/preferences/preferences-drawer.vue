@@ -57,19 +57,7 @@ async function handleClearCache() {
       class="sm:max-w-sm"
     >
       <template #extra>
-        <div class="flex items-center">
-          <!-- <VbenIconButton
-            :disabled="!diffPreference"
-            :tooltip="$t('preferences.resetTip')"
-            class="relative"
-          >
-            <span
-              v-if="diffPreference"
-              class="bg-primary absolute right-0.5 top-0.5 h-2 w-2 rounded"
-            ></span>
-            <RotateCw class="size-4" @click="handleReset" />
-          </VbenIconButton> -->
-        </div>
+        <div class="flex items-center"></div>
       </template>
 
       <div class="p-1">
