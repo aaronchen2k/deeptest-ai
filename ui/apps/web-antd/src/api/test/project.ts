@@ -13,8 +13,11 @@ export async function saveProjectApi(data: any) {
   return requestClient[method](`/projects`, data);
 }
 
-export async function loadProjectsApi() {
-  return requestClient.get('/projects/load');
+export async function listMyProjectApi() {
+  return requestClient.get('/projects/listMyProject');
+}
+export async function getCurrProjectApi() {
+  return requestClient.get('/projects/getCurrProject');
 }
 
 export async function updateUserProject(projectId: number) {

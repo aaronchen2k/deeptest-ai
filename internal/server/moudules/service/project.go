@@ -14,8 +14,17 @@ type ProjectService struct {
 	UserRepo        *repo.UserRepo        `inject:""`
 }
 
-func (s *ProjectService) Load(userId uint) (curr v1.ProjectReq, items []v1.ProjectReq, err error) {
-	curr, items, err = s.ProjectRepo.Load(userId)
+func (s *ProjectService) ListMyProject(userId uint) (projects []v1.ProjectReq, err error) {
+	projects, err = s.ProjectRepo.ListMyProject(userId)
+	if err != nil {
+		return
+	}
+
+	return
+}
+
+func (s *ProjectService) GetCurrProject(userId uint) (curr v1.ProjectReq, err error) {
+	curr, err = s.ProjectRepo.GetCurrProject(userId)
 	if err != nil {
 		return
 	}
@@ -56,6 +65,17 @@ func (s *ProjectService) Update(req v1.ProjectReq, userId uint) (err error) {
 
 func (s *ProjectService) DeleteById(id uint) error {
 	return s.ProjectRepo.DeleteById(id)
+}
+
+func (s *ProjectService) GetUserProjectId(userId uint) (projectId int, err error) {
+	curr, err := s.ProjectRepo.GetCurrProject(userId)
+	if err != nil {
+		return
+	}
+
+	projectId = int(curr.ID)
+
+	return
 }
 
 func (s *ProjectService) GetByUser(userId uint) (projects []model.ProjectMemberRole, currProject model.Project, recentProjects []model.Project, err error) {

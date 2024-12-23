@@ -1,7 +1,6 @@
 package handler
 
 import (
-	v1 "github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
 	multi_iris "github.com/deeptest-com/deeptest-next/internal/pkg/core/auth/iris"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/service"
@@ -11,28 +10,24 @@ import (
 )
 
 type CaseCtrl struct {
-	CaseService *service.CaseService `inject:""`
-	UserService *service.UserService `inject:""`
+	CaseService    *service.CaseService    `inject:""`
+	UserService    *service.UserService    `inject:""`
+	ProjectService *service.ProjectService `inject:""`
 	BaseCtrl
 }
 
-func (c *CaseCtrl) List(ctx iris.Context) {
-	projectId, err := ctx.URLParamInt("currProjectId")
-	if projectId == 0 {
-		ctx.JSON(_domain.Response{Code: _domain.ParamErr.Code, Msg: _domain.ParamErr.Msg})
+func (c *CaseCtrl) LoadTree(ctx iris.Context) {
+	projectId, _ := ctx.URLParamInt("projectId")
+	if projectId <= 0 { // first time page header not open
+		projectId, _ = c.ProjectService.GetUserProjectId(multi_iris.GetUserId(ctx))
+	}
+
+	if projectId < 0 {
+		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: "projectId is invalid"})
 		return
 	}
 
-	var req v1.ReqPaginate
-	err = ctx.ReadQuery(&req)
-	if err != nil {
-		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
-		return
-	}
-	req.ConvertParams()
-	req.Field = "updated_at"
-	req.Order = "desc"
-	data, err := c.CaseService.Paginate(req, projectId)
+	data, err := c.CaseService.LoadTree(projectId)
 	if err != nil {
 		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
 		return

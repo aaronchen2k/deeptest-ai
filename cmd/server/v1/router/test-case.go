@@ -15,7 +15,8 @@ func (m *CaseModule) Party() func(index iris.Party) {
 	return func(party iris.Party) {
 		party.Use(middleware.JwtHandler(), middleware.Casbin())
 
-		party.Get("/", m.CaseCtrl.List).Name = "用例列表"
+		party.Post("/load", m.CaseCtrl.LoadTree).Name = "用例树"
+
 		party.Get("/{id:uint}", m.CaseCtrl.Get).Name = "用例详情"
 		party.Post("/", m.CaseCtrl.Create).Name = "新建用例"
 		party.Put("/", m.CaseCtrl.Update).Name = "更新用例"

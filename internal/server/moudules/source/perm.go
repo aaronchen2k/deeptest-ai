@@ -25,7 +25,7 @@ func NewPermSource(routes []map[string]string) *PermSource {
 
 func GetPermMigration() *gormigrate.Migration {
 	return &gormigrate.Migration{
-		ID: "20240606000000_create_sys_permissions_table",
+		ID: "20241206000000_create_sys_permissions_table",
 		Migrate: func(tx *gorm.DB) error {
 			return tx.AutoMigrate(&model.SysPerm{})
 		},
@@ -36,9 +36,12 @@ func GetPermMigration() *gormigrate.Migration {
 }
 
 func (s *PermSource) Init() error {
-	s.routes = web.PermRoutes
-	if s.getSources() == nil {
-		return nil
+	if s.routes == nil {
+		s.routes = web.PermRoutes
+
+		if s.routes == nil {
+			return nil
+		}
 	}
 
 	return database.GetInstance().Transaction(func(tx *gorm.DB) error {

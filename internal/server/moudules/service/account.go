@@ -19,6 +19,7 @@ type AccountService struct {
 	AccountRepo *repo.AccountRepo `inject:""`
 	UserRepo    *repo.UserRepo    `inject:""`
 	ProfileRepo *repo.ProfileRepo `inject:""`
+	ProjectRepo *repo.ProjectRepo `inject:""`
 }
 
 func (s *AccountService) GetAccessToken(req *v1.LoginReq) (token string, id uint, err error) {

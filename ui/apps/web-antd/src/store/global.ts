@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
-import { loadProjectsApi, updateUserProject } from '#/api';
+import { listMyProjectApi, getCurrProjectApi, updateUserProject } from '#/api';
 
 export interface GlobalState {
   currProject: any;
@@ -13,13 +13,19 @@ export const useGlobalStore = defineStore('global', {
     projects: [],
   }),
   actions: {
-    loadUserProjects() {
-      loadProjectsApi().then((result) => {
-        window.console.log('loadProjectsApi', result);
-        this.setCurrProject(result.default);
-        this.setProjects(result.items);
+    listMyProject() {
+      listMyProjectApi().then((result) => {
+        window.console.log('listMyProjectApi', result);
+        this.setProjects(result);
       });
     },
+    getCurrProject() {
+      getCurrProjectApi().then((result) => {
+        window.console.log('getCurrProjectApi', result);
+        this.setCurrProject(result);
+      });
+    },
+
     updateUserProject(item: any) {
       updateUserProject(item.id).then(() => {
         this.setCurrProject(item);

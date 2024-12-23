@@ -42,3 +42,15 @@ const (
 func (e TestStatus) String() string {
 	return string(e)
 }
+
+type TreeNodeType string
+
+const (
+	NodeRoot   TreeNodeType = "root"
+	NodeBranch TreeNodeType = "branch"
+	NodeLeaf   TreeNodeType = "leaf"
+)
+
+func (e TreeNodeType) String() string {
+	return string(e)
+}

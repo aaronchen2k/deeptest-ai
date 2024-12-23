@@ -20,7 +20,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'CaseIndex',
         path: '/case/index',
-        component: () => import('#/views/empty/index.vue'),
+        component: () => import('#/views/test/case/index.vue'),
         meta: {
           title: $t('case.title'),
           icon: 'lucide:copyright',

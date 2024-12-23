@@ -11,7 +11,7 @@ type ProfileRepo struct {
 	RoleRepo  *RoleRepo `inject:""`
 }
 
-func (r *ProfileRepo) FindByUserId(userId uint) (profile model.SysUserProfile, err error) {
+func (r *ProfileRepo) Get(userId uint) (profile model.SysUserProfile, err error) {
 	db := r.DB.Model(&model.SysUserProfile{}).Where("user_id = ?", userId)
 	err = db.First(&profile).Error
 	return

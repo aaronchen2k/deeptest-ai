@@ -15,6 +15,7 @@ import { useAccessStore } from '@vben/stores';
 import { message } from 'ant-design-vue';
 
 import { useAuthStore } from '#/store';
+import { useGlobalStore } from '#/store/global';
 
 import { refreshTokenApi } from './core';
 
@@ -58,7 +59,8 @@ function createRequestClient(baseURL: string) {
     return token ? `Bearer ${token}` : null;
   }
 
-  // 请求头处理
+  // 请求拦截器
+  let globalStore = null as any;
   client.addRequestInterceptor({
     fulfilled: async (config) => {
       window.console.log('>>>>>> Request: ', config.url, config.method, config);
@@ -66,11 +68,21 @@ function createRequestClient(baseURL: string) {
 
       config.headers.Authorization = formatToken(accessStore.accessToken);
       config.headers['Accept-Language'] = preferences.app.locale;
+
+      if (!globalStore) {
+        globalStore = useGlobalStore();
+      }
+
+      if (!config.params) {
+        config.params = new URLSearchParams();
+        config.params.append('projectId', globalStore.currProject?.id);
+      }
+
       return config;
     },
   });
 
-  // response数据解构
+  // 响应拦截器
   client.addResponseInterceptor<HttpResponse>({
     fulfilled: (response) => {
       window.console.log(

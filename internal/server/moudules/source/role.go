@@ -20,7 +20,7 @@ type RoleSource struct {
 
 func GetRoleMigration() *gormigrate.Migration {
 	return &gormigrate.Migration{
-		ID: "20240606000000_create_sys_roles_table",
+		ID: "20241206000000_create_sys_roles_table",
 		Migrate: func(tx *gorm.DB) error {
 			return tx.AutoMigrate(&model.SysRole{})
 		},

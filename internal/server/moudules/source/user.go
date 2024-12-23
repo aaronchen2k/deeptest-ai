@@ -18,7 +18,7 @@ type UserSource struct {
 
 func GetUserMigration() *gormigrate.Migration {
 	return &gormigrate.Migration{
-		ID: "20240606000000_create_sys_users_table",
+		ID: "20241206000000_create_sys_users_table",
 		Migrate: func(tx *gorm.DB) error {
 			return tx.AutoMigrate(&model.SysUser{})
 		},
@@ -39,13 +39,17 @@ func (s UserSource) Init() error {
 			return err
 		}
 
+		repo := repo.UserRepo{
+			DB: database.GetInstance(),
+		}
+
 		for _, source := range sources {
-			repo := repo.UserRepo{
-				DB: database.GetInstance(),
+			exist, _ := repo.FindByName(source.Name)
+			if exist.ID > 0 {
+				continue
 			}
 
 			_, err := repo.Create(source)
-
 			if err != nil { // 遇到错误时回滚事务
 				return err
 			}

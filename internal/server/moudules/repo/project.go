@@ -5,6 +5,7 @@ import (
 	"fmt"
 	v1 "github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/domain"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
 	"github.com/deeptest-com/deeptest-next/pkg/domain"
 	_logs "github.com/deeptest-com/deeptest-next/pkg/libs/log"
@@ -16,30 +17,40 @@ type ProjectRepo struct {
 	DB        *gorm.DB `inject:""`
 	*BaseRepo `inject:""`
 
-	*UserRepo        `inject:""`
-	*ProfileRepo     `inject:""`
-	*ProjectRoleRepo `inject:""`
+	*UserRepo              `inject:""`
+	*ProfileRepo           `inject:""`
+	*ProjectRoleRepo       `inject:""`
+	*ProjectMemberRoleRepo `inject:""`
 }
 
-func (r *ProjectRepo) Load(userId uint) (curr v1.ProjectReq, items []v1.ProjectReq, err error) {
-	db := r.DB.Model(&model.Project{}).Where("NOT deleted")
+func (r *ProjectRepo) ListMyProject(userId uint) (ret []v1.ProjectReq, err error) {
+	projectIds, _ := r.ProjectMemberRoleRepo.GetProjectIdsByUser(userId)
 
-	err = db.Find(&items).Error
+	err = r.DB.Model(&model.Project{}).
+		Where("NOT deleted AND id IN (?)", projectIds).
+		Find(&ret).Error
 	if err != nil {
 		return
 	}
 
-	profile, err := r.ProfileRepo.FindByUserId(userId)
+	return
+}
 
-	for _, item := range items {
-		if profile.CurrProjectId == item.ID {
-			curr = item
-			break
-		}
+func (r *ProjectRepo) GetCurrProject(userId uint) (curr v1.ProjectReq, err error) {
+	profile, err := r.ProfileRepo.Get(userId)
+
+	po, err := r.Get(profile.CurrProjectId)
+	if err != nil {
+		return
 	}
 
-	if curr.ID == 0 && len(items) > 0 {
-		curr = items[0]
+	curr = v1.ProjectReq{
+		BaseDomain: v1.BaseDomain{
+			ID: po.ID,
+		},
+		ProjectBase: domain.ProjectBase{
+			Name: po.Name,
+		},
 	}
 
 	return

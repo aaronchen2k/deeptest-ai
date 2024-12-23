@@ -11,7 +11,8 @@ const globalStore = useGlobalStore();
 const currProject = computed(() => globalStore.currProject);
 const projects = computed(() => globalStore.projects);
 
-globalStore.loadUserProjects();
+globalStore.getCurrProject();
+globalStore.listMyProject();
 
 function selectProject(item: any) {
   window.console.log('selectProject', item);

@@ -139,6 +139,15 @@ func (r *UserRepo) Create(req *v1.UserReq) (user model.SysUser, err error) {
 		return
 	}
 
+	profile := model.SysUserProfile{
+		UserId: user.ID,
+	}
+	err = r.DB.Create(&profile).Error
+	if err != nil {
+		_logs.Error(err.Error())
+		return
+	}
+
 	err = r.AddRoleForUser(user)
 	if err != nil {
 		return

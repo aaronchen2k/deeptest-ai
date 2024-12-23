@@ -15,9 +15,10 @@ func (m *ProjectModule) Party() func(index iris.Party) {
 	return func(party iris.Party) {
 		party.Use(middleware.JwtHandler(), middleware.Casbin())
 
-		party.Get("/load", m.ProjectCtrl.Load).Name = "用户项目"
-		party.Post("/query", m.ProjectCtrl.Query).Name = "项目列表"
+		party.Get("/listMyProject", m.ProjectCtrl.ListMyProject).Name = "用户项目"
+		party.Get("/getCurrProject", m.ProjectCtrl.GetCurrProject).Name = "当前项目"
 
+		party.Post("/query", m.ProjectCtrl.Query).Name = "项目列表"
 		party.Get("/{id:uint}", m.ProjectCtrl.Get).Name = "项目详情"
 		party.Post("/", m.ProjectCtrl.Create).Name = "新建项目"
 		party.Put("/", m.ProjectCtrl.Update).Name = "更新项目"

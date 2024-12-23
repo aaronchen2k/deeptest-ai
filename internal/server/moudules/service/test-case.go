@@ -1,21 +1,20 @@
 package service
 
 import (
-	v1 "github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/domain"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/repo"
-	"github.com/deeptest-com/deeptest-next/pkg/domain"
 )
 
 type CaseService struct {
 	CaseRepo *repo.CaseRepo `inject:""`
 }
 
-func (s *CaseService) Paginate(req v1.ReqPaginate, projectId int) (ret _domain.PageData, err error) {
-	ret, err = s.CaseRepo.Paginate(req, projectId)
+func (s *CaseService) LoadTree(projectId int) (ret []*domain.CaseNode, err error) {
+	root, err := s.CaseRepo.LoadTree(uint(projectId))
 
-	if err != nil {
-		return
+	if root != nil {
+		ret = root.Children
 	}
 
 	return
