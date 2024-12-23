@@ -10,17 +10,19 @@ export const useCaseStore = defineStore('case', () => {
 
   const treeData = ref([]);
 
-  async function fetchTreeData() {
-    await loadCaseApi().then((result) => {
+  function fetchTreeData() {
+    if (!globalStore.currProject.id) return;
+
+    loadCaseApi().then((result) => {
       window.console.log('loadCaseApi', result);
       treeData.value = result;
     });
   }
 
   watch(
-    () => globalStore.currProject,
+    () => globalStore.currProject.id,
     (val: any) => {
-      window.console.log('watch currProject in CaseStore', val.id);
+      window.console.log('watch currProject in CaseStore', val);
       fetchTreeData();
     },
   );
