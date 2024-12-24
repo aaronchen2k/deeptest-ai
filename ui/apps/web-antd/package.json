@@ -40,11 +40,18 @@
     "@vben/styles": "workspace:*",
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
+    "@vue/reactivity": "^3.5.13",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",
+    "lodash": "^4.17.21",
+    "mitt": "^3.0.1",
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.13",
+    "localforage": "^1.10.0"
   }
 }

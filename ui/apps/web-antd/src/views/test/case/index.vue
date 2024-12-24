@@ -1,18 +1,21 @@
 <script lang="ts" setup>
-import { computed } from 'vue';
-
 import { Page } from '@vben/common-ui';
 
-import { useCaseStore } from '#/views/test/case/store';
+import ContentPane from '#/views/component/ContentPane/index.vue';
 
-const caseStore = useCaseStore();
-const treeData = computed(() => caseStore.treeData);
-
-caseStore.fetchTreeData();
+import Tree from './component/tree.vue';
 </script>
 
 <template>
-  <Page auto-content-height>
-    {{ treeData }}
+  <Page auto-content-height class="case-main">
+    <ContentPane
+      :container-style="{ padding: 0, margin: 0 }"
+      :show-expand="true"
+    >
+      <template #left>
+        <Tree />
+      </template>
+      <template #right> CONTENT </template>
+    </ContentPane>
   </Page>
 </template>

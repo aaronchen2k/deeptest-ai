@@ -1,0 +1,78 @@
+.lyapi-drop-menu-item {
+  padding: 0;
+  margin: 0;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.has-no-permission {
+    color: rgba(0, 0, 0, 0.25);
+    cursor: not-allowed;
+  }
+
+  .ant-dropdown-menu-title-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .drop-down-menu-text {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      min-width: 56px;
+      padding: 0 12px;
+
+      &:has(.exec-btn) {
+        padding: 0;
+        span {
+          width: 100%;
+        }
+      }
+
+      .exec-btn {
+        border: none;
+        outline: none;
+        height: 100%;
+        width: 100%;
+        padding: 0 12px;
+        text-align: left;
+      }
+
+      
+        .label-desc {
+          display: flex;
+          width: 250px;
+
+          .label {
+            flex: 1;
+            text-align: left;
+          }
+          .desc {
+            flex: 1;
+            font-weight: bold;
+            text-align: right;
+          }
+        }
+    }
+
+    
+  }
+}
+
+.action-item {
+  &:not(:last-child) {
+    margin-right: 6px;
+  }
+  display: inline-block;
+}
+
+.ly-drop-down-sub-menu {
+  .ant-dropdown-menu {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+}
+
+

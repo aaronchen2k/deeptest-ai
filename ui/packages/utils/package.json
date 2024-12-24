@@ -22,6 +22,11 @@
   "dependencies": {
     "@vben-core/shared": "workspace:*",
     "@vben-core/typings": "workspace:*",
+    "lodash": "^4.17.21",
+    "mitt": "^3.0.1",
     "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.13"
   }
 }

@@ -2,7 +2,7 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import {computed, ref} from 'vue';
+import { computed, ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
