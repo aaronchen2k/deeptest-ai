@@ -1,5 +1,7 @@
 import { defineComponent, inject, type PropType, ref, toRefs } from 'vue';
 
+import { Dropdown } from 'ant-design-vue';
+
 import { type MenuItem, type Recordable } from './type';
 
 import './index.less';
@@ -147,7 +149,7 @@ const DropdownList = defineComponent({
     };
 
     return () => {
-      return <a-dropdown v-slots={vslots} />;
+      return <Dropdown v-slots={vslots} />;
     };
   },
 });

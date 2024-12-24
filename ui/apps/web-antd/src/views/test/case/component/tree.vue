@@ -3,7 +3,7 @@ import { computed, unref } from 'vue';
 
 import { filterByKeyword } from '@vben/utils';
 
-import { Spin, Tree } from 'ant-design-vue';
+import { InputSearch, Spin, Tree } from 'ant-design-vue';
 import cloneDeep from 'lodash/cloneDeep';
 
 import { DropdownActionMenu } from '#/component/DropDownMenu';
@@ -64,7 +64,7 @@ const showKeywordsTip = computed(() => {
   <div class="case-tree-main">
     <div class="dp-tree-container">
       <div class="tree-filter">
-        <a-input-search
+        <InputSearch
           v-model:value="keywords"
           class="search-input"
           placeholder="输入关键字过滤"
@@ -81,7 +81,7 @@ const showKeywordsTip = computed(() => {
         <Tree
           :auto-expand-parent="caseStore.autoExpandParent"
           :expanded-keys="caseStore.expandedKeys"
-          :replace-fields="{ key: 'id' }"
+          :field-names="{ key: 'id' }"
           :selected-keys="caseStore.selectedKeys"
           :tree-data="treeDataComputed"
           block-node
@@ -162,7 +162,6 @@ const showKeywordsTip = computed(() => {
 <style scoped lang="less">
 .case-tree-main {
   height: 100%;
-  background: #ffffff;
 
   .loading-container {
     display: flex;

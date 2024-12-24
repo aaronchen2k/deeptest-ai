@@ -2,7 +2,6 @@ package domain
 
 import (
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
-	"github.com/kataras/iris/v12"
 )
 
 type CaseNode struct {
@@ -19,6 +18,5 @@ type CaseNode struct {
 
 	Ordr     int         `json:"ordr"`
 	Children []*CaseNode `json:"children,omitempty"`
-	Slots    iris.Map    `json:"slots"`
 	Count    int         `json:"count,omitempty"`
 }

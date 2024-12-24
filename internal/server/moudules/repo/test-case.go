@@ -5,7 +5,6 @@ import (
 	"github.com/deeptest-com/deeptest-next/internal/pkg/domain"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
 	"github.com/deeptest-com/deeptest-next/pkg/domain"
-	"github.com/kataras/iris/v12"
 	"gorm.io/gorm"
 )
 
@@ -114,9 +113,7 @@ func (r *CaseRepo) hasChild(categories []*domain.CaseNode, parent *domain.CaseNo
 
 	for _, item := range categories {
 		if item.ParentId == parent.Id {
-			item.Slots = iris.Map{"icon": "icon"}
 			//item.Parent = parent // loop json
-
 			ret = append(ret, item)
 		}
 	}
