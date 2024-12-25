@@ -2,7 +2,11 @@ import type { AntTreeNodeDropEvent } from 'ant-design-vue/lib/tree';
 
 import { ref, watch } from 'vue';
 
-import { filterTree, genNodeMap, isInArray } from '@vben/utils';
+import {
+  filterTreeNodes,
+  genNodeMap,
+  isInArray,
+} from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 import { debounce } from 'lodash';
@@ -10,7 +14,12 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 
 import { loadCaseApi } from '#/api/test/case';
 import { useGlobalStore } from '#/store/global';
-import { getSelectedKeyCache, setSelectedKeyCache } from '#/utils/cache';
+import {
+  getExpandedKeysCache,
+  getSelectedKeyCache,
+  setExpandedKeysCache,
+  setSelectedKeyCache
+} from '#/utils/cache';
 import { confirmToDelete } from '#/utils/confirm';
 
 export const useCaseStore = defineStore('case', () => {
@@ -28,16 +37,13 @@ export const useCaseStore = defineStore('case', () => {
   const selectedNode = ref(null as any);
 
   function selectNode(keys: any[], e: any) {
-    if (e?.node?.dataRef?.type === 'dir') {
-      return; // 目录不可被点击
+    window.console.log('selectNode', keys, e?.node?.dataRef);
+    if (!e?.node) {
+      return;
     }
 
-    if (keys.length === 0 && e) {
-      selectedKeys.value = [e.node.dataRef.id]; // un-select
-      return;
-    } else {
-      selectedKeys.value = keys;
-    }
+    selectedKeys.value = [e.node.dataRef.id];
+
     setSelectedKeyCache(
       'case_tree',
       globalStore.currProject.id,
@@ -64,7 +70,11 @@ export const useCaseStore = defineStore('case', () => {
       window.console.log('loadCaseApi', result);
       treeData.value = result;
 
-      treeDataMap.value = genNodeMap(treeData.value);
+      getExpandedKeysCache('case', globalStore.currProject.id).then((keys) => {
+        expandedKeys.value = keys;
+      });
+
+      treeDataMap.value = genNodeMap(treeData.value[0]);
     });
   }
 
@@ -72,6 +82,12 @@ export const useCaseStore = defineStore('case', () => {
     window.console.log('onExpand', keys, args);
     expandedKeys.value = keys;
     autoExpandParent.value = false;
+
+    setExpandedKeysCache(
+      'case',
+      globalStore.currProject.id,
+      expandedKeys.value,
+    );
   }
   function expandAll() {
     const keys: any = [];
@@ -93,13 +109,16 @@ export const useCaseStore = defineStore('case', () => {
   }
 
   function createNode(parentId: number, type: string) {
-    window.console.log('create', parentId, type);
+    window.console.log('createNode', parentId, type);
     selectedNode.value = { parentId, type };
   }
   function editNode(node: any) {
+    window.console.log('editNode', node.data);
     selectedNode.value = node;
   }
   async function deleteNode(node: any) {
+    window.console.log('deleteNode', node.data);
+
     const title =
       node.type === 'dir' ? '将级联删除目录下的所有子目录、快捷调试' : '';
     const context = '删除后无法恢复，请确认是否删除？';
@@ -171,7 +190,7 @@ export const useCaseStore = defineStore('case', () => {
   watch(
     () => keywords,
     (val: any) => {
-      expandedKeys.value = filterTree(treeData.value, val);
+      expandedKeys.value = filterTreeNodes(treeData.value, val);
       autoExpandParent.value = true;
     },
   );

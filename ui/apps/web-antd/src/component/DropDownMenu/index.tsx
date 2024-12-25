@@ -1,18 +1,25 @@
-import { defineComponent, inject, type PropType, ref, toRefs } from 'vue';
+import {
+  computed,
+  defineComponent,
+  inject,
+  type PropType,
+  ref,
+  toRefs,
+} from 'vue';
 
-import { Dropdown } from 'ant-design-vue';
+import { Dropdown, Menu, MenuItem } from 'ant-design-vue';
 
-import { type MenuItem, type Recordable } from './type';
+import { type MenuItem as MenuItemType, type Recordable } from './type';
 
 import './index.less';
 
 const DropdownMenuProps = {
   dropdownList: {
-    type: Array as PropType<MenuItem[]>,
+    type: Array as PropType<MenuItemType[]>,
     default: [],
   }, // 下拉菜单
   actionList: {
-    type: Array as PropType<MenuItem[]>,
+    type: Array as PropType<MenuItemType[]>,
     default: [],
   }, // 无下拉的菜单
   record: {
@@ -29,7 +36,7 @@ const RenderMenuItem = ({
   item,
   record,
 }: {
-  item: MenuItem;
+  item: MenuItemType;
   record: Recordable;
 }) => {
   const handleClick = (_e?: any) => {
@@ -45,10 +52,21 @@ const RenderMenuItem = ({
     item.action?.(record);
   };
 
+  const renderLabel = () => {
+    return typeof item.label === 'function' ? (
+      item.label(record)
+    ) : (
+      <div class="label-desc">
+        <div class="label">{item.label}</div>
+        <div class="desc">{item.desc}</div>
+      </div>
+    );
+  };
+
   return !item.children || item.children?.length === 0 ? (
-    <a-menu-item key={item.key} onClick={(e: any) => handleClick(e)}>
-      <span class="drop-down-menu-text">{item.label}</span>
-    </a-menu-item>
+    <MenuItem key={item.key} onClick={(e: any) => handleClick(e)}>
+      <span class="drop-down-menu-text">{renderLabel()}</span>
+    </MenuItem>
   ) : (
     <a-sub-menu
       class={{ 'dp-action-submenu': true }}
@@ -60,56 +78,18 @@ const RenderMenuItem = ({
   );
 };
 
-const ActionList = (opts: { list: MenuItem[]; record: Recordable }) => {
-  const { list, record } = opts;
-  const customRenderLoadingLabel = (item: any) => {
-    if (typeof item.customLoadingRender === 'function') {
-      return item.customLoadingRender(record);
-    }
-    return item.customLoadingRender;
-  };
-  const customRenderLabel = (item: any) => {
-    if (typeof item.customRender === 'function') {
-      return item.customRender(record);
-    }
-    return item.customRender;
-  };
-  return (
-    <div class="action-list">
-      {list.map((actionItem: MenuItem) => (
-        <div class="action-item" onClick={() => actionItem.action?.(record)}>
-          {actionItem.customLoadingRender ? (
-            <a-tooltip
-              placement="top"
-              title={
-                record.loading
-                  ? actionItem.loadingText || null
-                  : actionItem.label
-              }
-            >
-              {customRenderLoadingLabel(actionItem)}
-            </a-tooltip>
-          ) : (
-            actionItem.customRender ? customRenderLabel(actionItem) : actionItem.label
-          )}
-        </div>
-      ))}
-    </div>
-  );
-};
-
 const DropdownList = defineComponent({
   name: 'DropdownList',
   props: {
     list: {
-      type: Array as PropType<MenuItem[]>,
+      type: Array as PropType<MenuItemType[]>,
       default: () => [],
     },
     record: {
       type: Object,
       default: () => {},
     },
-    selectedkey: {
+    selectedKey: {
       type: [Number, String],
       default: '',
     },
@@ -134,16 +114,16 @@ const DropdownList = defineComponent({
       },
       overlay: () => {
         return (
-          <a-menu
+          <Menu
             onOpenChange={(e: any) => handleOpen(e)}
             openKeys={openKeys.value}
-            selectedKeys={[props.selectedkey]}
+            selectedKeys={[props.selectedKey]}
             style={{ maxHeight: '300px', overflowY: 'auto' }}
           >
             {props.list.map((e: any) =>
               RenderMenuItem({ item: e, record: props.record }),
             )}
-          </a-menu>
+          </Menu>
         );
       },
     };
@@ -161,25 +141,37 @@ export const DropdownActionMenu = defineComponent({
   name: 'DropdownMenu',
   props: DropdownMenuProps,
   setup(props, { slots }) {
-    const { dropdownList, actionList, record } = toRefs(props);
+    const { dropdownList, record } = toRefs(props);
+
+    const ifShow = (actionItem: MenuItemType, props: any) => {
+      if (typeof actionItem.ifShow === 'boolean') {
+        return actionItem.ifShow;
+      }
+      if (typeof actionItem.ifShow === 'function') {
+        return actionItem.ifShow(props.record);
+      }
+      return true;
+    };
+
+    const filterAction = (e: any, props: any) => {
+      return ifShow(e, props);
+    };
+    const filteredDropDownList = computed(() =>
+      dropdownList.value.filter((e) => filterAction(e, props)),
+    );
 
     return () => {
       return (
         <div class="drop-down-action-wrap">
-          {actionList.value.length > 0 && (
-            <ActionList list={actionList.value} record={record.value} />
-          )}
-          {actionList.value.length > 0 && dropdownList.value.length > 0 && (
-            <a-divider type="vertical" />
-          )}
-          {dropdownList.value.length > 0 && dropdownList.value.length > 0 && (
-            <DropdownList
-              list={dropdownList.value}
-              record={record.value}
-              selectedkey={props.selectedKey}
-              v-slots={slots}
-            />
-          )}
+          {filteredDropDownList.value.length > 0 &&
+            filteredDropDownList.value.length > 0 && (
+              <DropdownList
+                list={filteredDropDownList.value}
+                record={record.value}
+                selectedKey={props.selectedKey}
+                v-slots={slots}
+              />
+            )}
         </div>
       );
     };

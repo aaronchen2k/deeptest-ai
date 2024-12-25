@@ -136,11 +136,12 @@ func (r *CaseRepo) toTos(pos []*model.TestCase) (tos []*domain.CaseNode) {
 }
 func (r *CaseRepo) ToTo(po *model.TestCase) (to *domain.CaseNode) {
 	to = &domain.CaseNode{
-		Id:       int64(po.ID),
+		Id:       po.ID,
 		Title:    po.Title,
 		Desc:     po.Desc,
 		Type:     po.Type,
-		ParentId: int64(po.ParentId),
+		Ordr:     po.Ordr,
+		ParentId: po.ParentId,
 		IsDir:    true,
 	}
 

@@ -235,26 +235,22 @@ export const transTreeNodesToMap = (treeData: any[]): any => {
   return nodesMap;
 };
 
-export function genNodeMap(treeNode: any, ids?: number[]): any {
+export function genNodeMap(treeNode: any): any {
   const mp = {};
-  getNodeMap(treeNode, mp, ids);
+  getNodeMap(treeNode, mp);
 
   return mp;
 }
 
-export function getNodeMap(treeNode: any, mp: any, ids?: number[]): void {
+export function getNodeMap(treeNode: any, mp: any): void {
   if (!treeNode) return;
 
   treeNode.entity = null;
   mp[treeNode.id] = treeNode;
-  if (ids && treeNode.entityCategory !== 'processor_group') {
-    ids.push(treeNode.id);
-    // console.log('===', treeNode.entityCategory)
-  }
 
   if (treeNode.children) {
     treeNode.children.forEach((item: any) => {
-      getNodeMap(item, mp, ids);
+      getNodeMap(item, mp);
     });
   }
 }

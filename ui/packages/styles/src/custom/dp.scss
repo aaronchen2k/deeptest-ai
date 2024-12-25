@@ -10,4 +10,60 @@
   display: inline-block;
   padding: 0 3px;
 }
+.dp-antdv-icon {
+  mask-position: 2px 2px;
+  display: inline-block;
+}
 
+.dp-tree-container {
+  height: 100%;
+  .tree-filter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    .search-input {
+      margin-left: 16px;
+      margin-right: 8px;
+    }
+
+    .add-btn {
+      margin-left: 2px;
+      margin-right: 16px;
+      cursor: pointer;
+    }
+  }
+
+  .tree-content {
+    height: calc(100% - 50px);
+    overflow: auto;
+    overflow-x:hidden ;
+    margin: 0 8px;
+
+    .dp-tree {
+      .tree-icon {
+        margin-right: 10px;
+      }
+      .tree-title {
+        position: relative;
+        .tree-title-text {
+          display: inline-block;
+          width: calc(100% - 24px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .more-icon {
+          position: absolute;
+          right: -8px;
+          width: 20px;
+        }
+      }
+    }
+    .nodata-tip {
+      margin-top: 8px;
+      margin-left: 18px;
+      text-align: left;
+    }
+  }
+}

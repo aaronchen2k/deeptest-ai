@@ -2,9 +2,9 @@ import settings from '#/config/settings';
 
 import { getCache, setCache } from './cache-local';
 
-export const getExpandedKeysCache = async (type: string, id: number) => {
+export const getExpandedKeysCache = async (type: string, projectId: number) => {
   window.console.log('getExpandedKeysCache');
-  const key = `${type}-${id}`;
+  const key = `${type}-${projectId}`;
 
   const cachedData = await getCache(settings.expandedKeys);
   if (!cachedData || !cachedData[key]) {
@@ -18,12 +18,12 @@ export const getExpandedKeysCache = async (type: string, id: number) => {
 
 export const setExpandedKeysCache = async (
   type: string,
-  id: number,
-  keys: string[],
+  projectId: number,
+  keys: number[],
 ) => {
   window.console.log('setExpandedKeysCache');
   if (!keys) keys = [];
-  const key = `${type}-${id}`;
+  const key = `${type}-${projectId}`;
 
   let cachedData = await getCache(settings.expandedKeys);
   if (!cachedData) cachedData = {};

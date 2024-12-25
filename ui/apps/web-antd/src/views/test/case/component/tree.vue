@@ -28,29 +28,29 @@ const treeDataComputed = computed(() => {
 const DropdownMenuList = [
   {
     label: '新建目录',
-    ifShow: (nodeProps) => nodeProps.dataRef.type === 'dir',
-    action: (nodeProps) => caseStore.createNode(nodeProps.dataRef?.id, 'dir'),
+    ifShow: (nodeProps) => nodeProps.data.type !== 'leaf',
+    action: (nodeProps) => caseStore.createNode(nodeProps.data?.id, 'dir'),
   },
   {
     label: '新建用例',
-    ifShow: (nodeProps) => nodeProps.dataRef?.type === 'dir',
+    ifShow: (nodeProps) => nodeProps.data?.type !== 'leaf',
     action: (nodeProps) =>
-      caseStore.createNode(nodeProps.dataRef?.id, 'interface'),
+      caseStore.createNode(nodeProps.data?.id, 'case'),
   },
   {
     label: (nodeProps: any) => {
-      return `编辑${nodeProps.dataRef.type === 'interface' ? '请求' : '目录'}`;
+      return `编辑${nodeProps.data.type === 'leaf' ? '用例' : '目录'}`;
     },
-    ifShow: (nodeProps: any) => nodeProps.dataRef.id !== -1,
+    ifShow: (nodeProps: any) => nodeProps.data.type !== 'root',
     action: (nodeProps: any) => caseStore.editNode(nodeProps),
   },
   {
     label: (nodeProps: any) => {
-      return `删除${nodeProps.dataRef.type === 'interface' ? '请求' : '目录'}`;
+      return `删除${nodeProps.data.type === 'leaf' ? '用例' : '目录'}`;
     },
     auth: 'p-api-debug-del',
-    ifShow: (nodeProps) => nodeProps.dataRef.id !== -1,
-    action: (nodeProps) => caseStore.deleteNode(nodeProps.dataRef),
+    ifShow: (nodeProps) => nodeProps.data.type !== 'root',
+    action: (nodeProps) => caseStore.deleteNode(nodeProps),
   },
 ] as MenuItem[];
 
@@ -83,59 +83,64 @@ const showKeywordsTip = computed(() => {
           :expanded-keys="caseStore.expandedKeys"
           :field-names="{ key: 'id' }"
           :selected-keys="caseStore.selectedKeys"
+          :show-icon="true"
           :tree-data="treeDataComputed"
           block-node
-          class="deeptest-tree"
+          class="dp-tree"
           draggable
-          show-icon
           @drop="caseStore.onDrop"
           @expand="caseStore.onExpand"
           @select="caseStore.selectNode"
         >
-          <template #switcherIcon>
-            <span class="icon-[ant-design--care-down-outlined]"></span>
+          <template #switcherIcon="nodeProps">
+            <span
+              v-if="!nodeProps.expanded"
+              class="icon-[ant-design--caret-right-outlined]"
+            ></span>
+            <span v-else class="icon-[ant-design--caret-down-outlined]"></span>
           </template>
 
           <template #title="nodeProps">
             <div
-              :draggable="nodeProps.dataRef.id === -1"
-              :title="nodeProps.dataRef.title"
+              :draggable="nodeProps.data.type !== 'root'"
+              :title="nodeProps.data.title"
               class="tree-title"
             >
               <span class="tree-icon">
                 <span
-                  v-if="nodeProps.dataRef.type === 'dir' && !nodeProps.expanded"
-                  class="icon-[ant-design--folder-outlined]"
+                  v-if="nodeProps.data.type !== 'leaf' && !nodeProps.expanded"
+                  class="icon-[ant-design--folder-outlined] dp-antdv-icon"
                 >
                 </span>
                 <span
-                  v-if="nodeProps.dataRef.type === 'dir' && nodeProps.expanded"
-                  class="icon-[ant-design--folder-open-outlined]"
+                  v-if="nodeProps.data.type !== 'leaf' && nodeProps.expanded"
+                  class="icon-[ant-design--folder-open-outlined] dp-antdv-icon"
                 >
                 </span>
               </span>
+
               <span
-                v-if="nodeProps.dataRef.title.indexOf(keywords) > -1"
+                v-if="nodeProps.data.title.indexOf(keywords) > -1"
                 class="tree-title-text"
               >
                 <span>{{
-                  nodeProps.dataRef.title.substr(
+                  nodeProps.data.title.substring(
                     0,
-                    nodeProps.dataRef.title.indexOf(keywords),
+                    nodeProps.data.title.indexOf(keywords),
                   )
                 }}</span>
                 <span style="color: #f50">{{ keywords }}</span>
                 <span>{{
-                  nodeProps.dataRef.title.substr(
-                    nodeProps.dataRef.title.indexOf(keywords) + keywords.length,
+                  nodeProps.data.title.substring(
+                    nodeProps.data.title.indexOf(keywords) + keywords.length,
                   )
                 }}</span>
               </span>
               <span v-else class="tree-title-text">{{
-                nodeProps.dataRef.title
+                nodeProps.data.title
               }}</span>
 
-              <span v-if="nodeProps.dataRef.id > 0" class="more-icon">
+              <span v-if="nodeProps.data.id > 0" class="more-icon">
                 <DropdownActionMenu
                   :dropdown-list="DropdownMenuList"
                   :record="nodeProps"
@@ -144,6 +149,7 @@ const showKeywordsTip = computed(() => {
             </div>
           </template>
         </Tree>
+
         <div v-if="treeDataComputed.length === 0" class="loading-container">
           <div v-if="showKeywordsTip" class="nodata-tip">搜索结果为空 ~</div>
           <div
