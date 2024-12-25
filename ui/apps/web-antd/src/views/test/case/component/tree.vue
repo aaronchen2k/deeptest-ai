@@ -34,8 +34,7 @@ const DropdownMenuList = [
   {
     label: '新建用例',
     ifShow: (nodeProps) => nodeProps.data?.type !== 'leaf',
-    action: (nodeProps) =>
-      caseStore.createNode(nodeProps.data?.id, 'case'),
+    action: (nodeProps) => caseStore.createNode(nodeProps.data?.id, 'case'),
   },
   {
     label: (nodeProps: any) => {

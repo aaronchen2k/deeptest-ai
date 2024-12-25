@@ -1,3 +1,4 @@
 @use '@vben-core/design/bem' as *;
 
-@use '../custom/dp' as *;
+@use 'custom/dp' as *;
+@use 'custom/antdv' as *;

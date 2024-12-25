@@ -2,23 +2,19 @@ import type { AntTreeNodeDropEvent } from 'ant-design-vue/lib/tree';
 
 import { ref, watch } from 'vue';
 
-import {
-  filterTreeNodes,
-  genNodeMap,
-  isInArray,
-} from '@vben/utils';
+import { filterTreeNodes, genNodeMap, isInArray } from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 import { debounce } from 'lodash';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
-import { loadCaseApi } from '#/api/test/case';
+import { getCaseApi, loadCaseApi } from '#/api/test/case';
 import { useGlobalStore } from '#/store/global';
 import {
   getExpandedKeysCache,
   getSelectedKeyCache,
   setExpandedKeysCache,
-  setSelectedKeyCache
+  setSelectedKeyCache,
 } from '#/utils/cache';
 import { confirmToDelete } from '#/utils/confirm';
 
@@ -35,6 +31,10 @@ export const useCaseStore = defineStore('case', () => {
 
   const selectedKeys = ref([] as any[]);
   const selectedNode = ref(null as any);
+
+  const activeTabKey = ref(0);
+  const caseTabs = ref([] as any[]);
+  const caseModel = ref(null as any);
 
   function selectNode(keys: any[], e: any) {
     window.console.log('selectNode', keys, e?.node?.dataRef);
@@ -114,7 +114,7 @@ export const useCaseStore = defineStore('case', () => {
   }
   function editNode(node: any) {
     window.console.log('editNode', node.data);
-    selectedNode.value = node;
+    selectedNode.value = node.data;
   }
   async function deleteNode(node: any) {
     window.console.log('deleteNode', node.data);
@@ -141,9 +141,9 @@ export const useCaseStore = defineStore('case', () => {
     const pos = info.node.pos.split('-');
     const dropPosition = info.dropPosition - Number(pos[pos.length - 1]);
 
-    const res = await moveNode({
-      dragKey, // 移动谁
-      dropKey, // 移动那儿
+    const res = moveNode({
+      dragKey,
+      dropKey,
       dropPos: dropPosition, // 0 表示移动到目标节点的子节点，-1 表示移动到目标节点的前面， 1表示移动到目标节点的后面
     });
     if (res) {
@@ -166,8 +166,82 @@ export const useCaseStore = defineStore('case', () => {
     return true;
   }
 
-  function openCaseTab(item: any) {
-    window.console.log('openCaseTab', item);
+  function openCaseTab(id: number) {
+    window.console.log('openCaseTab', id);
+
+    if (id <= 0) {
+      caseModel.value = null;
+      return;
+    }
+
+    getCaseApi(id).then((result) => {
+      window.console.log(result);
+      caseModel.value = result;
+    });
+  }
+
+  function changeTab(key: any) {
+    window.console.log('changeTab', key);
+    activeTabKey.value = key;
+
+    openCaseTab(activeTabKey.value);
+  }
+  function onTabMenuClicked(key: any, action: any): void {
+    window.console.log('onTabMenuClicked', key, action);
+    if (action === 'remove') {
+      removeCaseTab(key);
+    }
+  }
+
+  async function removeCaseTab(id: number) {
+    window.console.log('removeInterfaceTab', id);
+
+    const needReload = id === caseModel.value.id;
+
+    caseTabs.value = caseTabs.value.filter((tab: any) => tab.id !== id);
+    window.console.log('after remove', caseTabs.value);
+
+    let newOpenTabId = 0;
+    // goto first one, if close curr tab
+    if (caseTabs.value.length > 0 && caseModel.value.id === id) {
+      newOpenTabId = caseTabs.value[0].id;
+    }
+
+    if (needReload) {
+      openCaseTab(newOpenTabId);
+    }
+  }
+  async function removeCaseTabs(id: number) {
+    const removeTabIds = [] as number[];
+    treeDataMap.value[id].children?.forEach((item: any) => {
+      removeTabIds.push(item.id);
+    });
+
+    const needReload = removeTabIds.includes(caseModel.value.id);
+
+    caseTabs.value = caseTabs.value.filter(
+      (tab: any) => !removeTabIds.includes(tab.id),
+    );
+
+    let newOpenTabId = 0;
+    // goto first one, if close curr tab
+    if (
+      caseTabs.value.length > 0 &&
+      removeTabIds.includes(caseModel.value.id)
+    ) {
+      newOpenTabId = caseTabs.value[0].id;
+    }
+
+    if (needReload) {
+      openCaseTab(newOpenTabId);
+    }
+  }
+
+  function setCaseTabs(val: any) {
+    caseTabs.value = val;
+  }
+  function setCaseModel(val: any) {
+    caseModel.value = val;
   }
 
   watch(
@@ -202,6 +276,10 @@ export const useCaseStore = defineStore('case', () => {
     loading,
     treeData,
 
+    caseTabs,
+    caseModel,
+    activeTabKey,
+
     fetchTreeData,
     onExpand,
     expandAll,
@@ -211,6 +289,14 @@ export const useCaseStore = defineStore('case', () => {
     createNode,
     editNode,
     deleteNode,
+    changeTab,
+    onTabMenuClicked,
+    removeCaseTab,
+    removeCaseTabs,
+    openCaseTab,
+
+    setCaseTabs,
+    setCaseModel,
 
     onDrop,
   };
