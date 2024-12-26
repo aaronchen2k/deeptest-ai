@@ -105,7 +105,7 @@ const send = async () => {
   scroll();
 
   const serverUrl = addSepIfNeeded(props.serverUrl);
-  const url = `${serverUrl}aichat/chat_completion`;
+  const url = `${serverUrl}chatbot/chat`;
   window.console.log('chat', url);
 
   const ctrl = new AbortController();
