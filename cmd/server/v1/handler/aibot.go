@@ -8,12 +8,12 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-type AibotCtrl struct {
+type ChatbotCtrl struct {
 	BaseCtrl
 	ChatbotService *service.ChatbotService `inject:""`
 }
 
-func (c *AibotCtrl) ChatCompletion(ctx iris.Context) {
+func (c *ChatbotCtrl) ChatCompletion(ctx iris.Context) {
 	flusher, ok := ctx.ResponseWriter().Flusher()
 	if !ok {
 		ctx.StopWithText(iris.StatusHTTPVersionNotSupported, "Streaming unsupported!")
@@ -24,7 +24,7 @@ func (c *AibotCtrl) ChatCompletion(ctx iris.Context) {
 	//ctx.Header("content-type", "text/event-stream")
 	ctx.Header("Cache-Control", "no-cache")
 
-	req := v1.ChatCompletionReq{}
+	req := v1.ChatReq{}
 	err := ctx.ReadJSON(&req)
 	if err != nil {
 		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})

@@ -55,14 +55,25 @@ func (e TreeNodeType) String() string {
 	return string(e)
 }
 
-type PlatformType string
+type LlmPlatformType string
 
 const (
-	Dify         PlatformType = "dify"
-	Ollama       PlatformType = "ollama"
-	LlamaFactory TreeNodeType = "llama_factory"
+	Dify         LlmPlatformType = "dify"
+	Ollama       LlmPlatformType = "ollama"
+	LlamaFactory TreeNodeType    = "llama_factory"
 )
 
-func (e PlatformType) String() string {
+func (e LlmPlatformType) String() string {
+	return string(e)
+}
+
+type LlmResponseMode string
+
+const (
+	Streaming LlmResponseMode = "streaming"
+	Blocking  LlmResponseMode = "blocking"
+)
+
+func (e LlmResponseMode) String() string {
 	return string(e)
 }

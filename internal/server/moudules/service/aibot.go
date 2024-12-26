@@ -5,11 +5,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	v1 "github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
+	"github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
-	_domain "github.com/deeptest-com/deeptest-next/pkg/domain"
-	_http "github.com/deeptest-com/deeptest-next/pkg/libs/http"
-	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
+	"github.com/deeptest-com/deeptest-next/pkg/domain"
+	"github.com/deeptest-com/deeptest-next/pkg/libs/http"
+	"github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"github.com/kataras/iris/v12"
 	"io"
 	"net/http"
@@ -19,27 +20,21 @@ import (
 type ChatbotService struct {
 }
 
-func (s *ChatbotService) ChatCompletion(req v1.ChatCompletionReq, flusher http.Flusher, ctx iris.Context) (ret _domain.PageData, err error) {
-	if len(req.Messages) > 0 && strings.TrimSpace(req.Messages[len(req.Messages)-1].Content) == "小深" {
-		str := s.genResp("您好，有什么可以帮助您的？")
-
-		ctx.Writef("%s\n\n", str)
-		flusher.Flush()
-		return
+func (s *ChatbotService) ChatCompletion(req v1.ChatReq, flusher http.Flusher, ctx iris.Context) (ret _domain.PageData, err error) {
+	url := ""
+	if config.CONFIG.Ai.PlatformType == consts.Dify {
+		url = _http.AddSepIfNeeded(config.CONFIG.Ai.PlatformUrl) + "v1/chat-messages"
 	}
+	_logs.Infof("%s url = %s", config.CONFIG.Ai.PlatformType, url)
 
-	req.Model = "qwen2.5-coder:1.5b-instruct"
-
-	url := _http.AddSepIfNeeded(config.CONFIG.System.ChatchatUrl) + "chat/chat/completions"
-	_logUtils.Info("url=" + url)
 	bts, err := json.Marshal(req)
-
 	reader := bytes.NewReader(bts)
 	request, err := http.NewRequest("POST", url, reader)
 	if err != nil {
 		return
 	}
 
+	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", config.CONFIG.Ai.ApiKey))
 	request.Header.Set("Cache-Control", "no-cache")
 	request.Header.Set("Content-Type", "application/json")
 	request.Header.Set("Accept", "text/event-stream")
@@ -60,7 +55,12 @@ func (s *ChatbotService) ChatCompletion(req v1.ChatCompletionReq, flusher http.F
 
 	for {
 		bytes, err1 := r.ReadBytes('\n')
-		str := string(bytes)
+		str := s.genResp(bytes, req.ResponseMode)
+		if str == "" {
+			continue
+		}
+
+		fmt.Println("\n>>> " + str + "\n")
 
 		if err1 != nil && err1 != io.EOF {
 			err = err1
@@ -69,8 +69,6 @@ func (s *ChatbotService) ChatCompletion(req v1.ChatCompletionReq, flusher http.F
 		if err1 == io.EOF {
 			break
 		}
-
-		fmt.Println("\n>>>" + str + "\n")
 
 		// must with prefix "data:" for openai response
 		// must add a postfix "\n\n"
@@ -81,137 +79,35 @@ func (s *ChatbotService) ChatCompletion(req v1.ChatCompletionReq, flusher http.F
 	return
 }
 
-func (s *ChatbotService) KnowledgeBaseChat(req v1.KnowledgeBaseChatReq, flusher http.Flusher, ctx iris.Context) (ret _domain.PageData, err error) {
-	if len(req.Messages) > 0 && strings.TrimSpace(req.Messages[len(req.Messages)-1].Content) == "小深" {
-		str := s.genResp("您好，有什么可以帮助您的？")
-
-		ctx.Writef("%s\n\n", str)
-		flusher.Flush()
+func (s *ChatbotService) genResp(input []byte, typ consts.LlmResponseMode) (ret string) {
+	str := strings.TrimSpace(string(input))
+	if str == "" {
 		return
 	}
 
-	if strings.TrimSpace(req.Model) == "" {
-		req.Model = "glm4-chat"
+	str = strings.TrimPrefix(str, "data:")
 
-		//models, _ := s.ListValidModel("llm")
-		//
-		//if len(models) > 0 {
-		//	req.Model = models[0].ModelName
-		//} else {
-		//	str := s.genResp("没有可使用的大模型，请联系管理员。")
-		//
-		//	ctx.Writef("%s\n\n", str)
-		//	flusher.Flush()
-		//	return
-		//}
-	}
+	output := make([]byte, 0)
+	if typ == consts.Blocking {
+		resp := v1.ChatRespBlocking{}
+		json.Unmarshal([]byte(str), &resp)
+		output, _ = json.Marshal(resp)
 
-	url := _http.AddSepIfNeeded(config.CONFIG.System.ChatchatUrl) +
-		fmt.Sprintf("knowledge_base/local_kb/%s/chat/completions", req.KbName)
-	bts, err := json.Marshal(req)
+	} else if typ == consts.Streaming {
+		resp := v1.ChatRespStreaming{}
+		json.Unmarshal([]byte(str), &resp)
 
-	reader := bytes.NewReader(bts)
-	request, err := http.NewRequest("POST", url, reader)
-	if err != nil {
-		return
-	}
-
-	request.Header.Set("Cache-Control", "no-cache")
-	request.Header.Set("Content-Type", "application/json")
-	request.Header.Set("Accept", "text/event-stream")
-	request.Header.Set("Connection", "keep-alive")
-
-	client := &http.Client{}
-	transport := &http.Transport{}
-	transport.DisableCompression = true
-	client.Transport = transport
-
-	resp, err := client.Do(request)
-	if err != nil {
-		return
-	}
-
-	req.KbName = ""
-	r := bufio.NewReader(resp.Body)
-	defer resp.Body.Close()
-
-	for {
-		bytes, err1 := r.ReadBytes('\n')
-		str := string(bytes)
-
-		if err1 != nil && err1 != io.EOF {
-			err = err1
-			break
-		}
-		if err1 == io.EOF {
-			break
+		if resp.Answer == "" {
+			return
 		}
 
-		fmt.Println("\n>>>" + str + "\n")
-
-		// must with prefix "data:" for openai response
-		// must add a postfix "\n\n"
-		ctx.Writef("%s\n\n", str)
-		flusher.Flush()
-	}
-
-	return
-}
-
-func (s *ChatbotService) ListValidModel(typ string) (ret []v1.ChatchatModelData, err error) {
-	url := _http.AddSepIfNeeded(config.CONFIG.System.ChatchatUrl) + "v1/models"
-
-	bytes, err := _http.Get(url)
-	if err != nil {
-		return
-	}
-
-	resp := v1.ChatchatModelResp{}
-	err = json.Unmarshal(bytes, &resp)
-	if err != nil {
-		return
-	}
-
-	for _, item := range resp.Data {
-		if strings.ToLower(item.ModelType) == typ {
-			ret = append(ret, item)
+		simple := v1.ChatRespStreaming{
+			Answer: resp.Answer,
 		}
+		output, _ = json.Marshal(simple)
 	}
 
-	return
-}
-
-func (s *ChatbotService) ListKnowledgeBase() (ret []v1.ChatchatKnowledgeBaseData, err error) {
-	url := _http.AddSepIfNeeded(config.CONFIG.System.ChatchatUrl) + "knowledge_base/list_knowledge_bases"
-
-	bytes, err := _http.Get(url)
-	if err != nil {
-		return
-	}
-
-	resp := v1.ChatchatKnowledgeBaseResp{}
-	err = json.Unmarshal(bytes, &resp)
-	if err != nil {
-		return
-	}
-
-	ret = resp.Data
-
-	return
-}
-
-func (s *ChatbotService) genResp(content string) (ret string) {
-	resp := v1.ChatchatResponse{}
-	choice := v1.ChatchatChoice{
-		Delta: v1.ChatchatDelta{
-			Content: content,
-		},
-	}
-	resp.Choices = append(resp.Choices, choice)
-
-	bytes, _ := json.Marshal(resp)
-
-	ret = "data:" + string(bytes)
+	ret = "data:" + string(output)
 
 	return
 }

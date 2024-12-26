@@ -32,8 +32,6 @@ var CONFIG = Web{
 		Addr:       "0.0.0.0:9085",
 		DbType:     "mysql",
 		TimeFormat: "2006-01-02 15:04:05",
-
-		ChatchatUrl: "http://127.0.0.1:7861/",
 	},
 	Limit: Limit{
 		Disable: true,
@@ -95,15 +93,12 @@ type System struct {
 	DbType       string `mapstructure:"db-type" json:"db-type" yaml:"db-type"`
 	TimeFormat   string `mapstructure:"time-format" json:"time-format" yaml:"time-format"`
 
-	ChatchatUrl string `mapstructure:"chatchat-url" json:"chatchat-url" yaml:"chatchat-url"`
-	LLmUrl      string `mapstructure:"llm-url" json:"llm-url" yaml:"llm-url"`
-
 	DatabaseType string `mapstructure:"database-type" json:"database-type" yaml:"database-type"`
 }
 
 type Ai struct {
-	PlatformType consts.PlatformType `mapstructure:"platform-type" json:"platform-type" yaml:"platform-type"`
-	PlatformUrl  string              `mapstructure:"platform-url" json:"platform-url" yaml:"platform-url"`
+	PlatformType consts.LlmPlatformType `mapstructure:"platform-type" json:"platform-type" yaml:"platform-type"`
+	PlatformUrl  string                 `mapstructure:"platform-url" json:"platform-url" yaml:"platform-url"`
 	ApiKey       string
 }
 
@@ -213,8 +208,7 @@ func GetViperConfig() viper_server.ViperConfig {
 			"level": "` + CONFIG.System.Level + `",
 			"addr": "` + CONFIG.System.Addr + `",
 			"db-type": "` + CONFIG.System.DbType + `",
-			"time-format": "` + CONFIG.System.TimeFormat + `",
-    		"chatchat-url": "` + CONFIG.System.ChatchatUrl + `"
+			"time-format": "` + CONFIG.System.TimeFormat + `"
 		}
  }`),
 	}
