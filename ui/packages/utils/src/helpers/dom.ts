@@ -91,7 +91,7 @@ export function scroll(id: string): void {
 export function scrollTo(id: string, top?: number): void {
   window.console.log('scrollTo');
 
-  const elem = document.querySelector(`#${id}}`);
+  const elem = document.querySelector(`#${id}`);
   if (elem) {
     setTimeout(() => {
       elem.scrollTop = elem.scrollHeight + (top || 100);

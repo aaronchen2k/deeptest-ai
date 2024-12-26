@@ -7,7 +7,6 @@ import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { message } from 'ant-design-vue';
 import { Markdown } from 'vue3-markdown-it';
 
-import { listKnowledgeBase } from '#/api/test/chat';
 import consts from '#/config/constant';
 import { getCache, setCache } from '#/utils/cache-local';
 
@@ -41,13 +40,12 @@ const props = defineProps({
 const wikiAddress = 'https://wiki.deeptestcloud.com';
 const wakeUpWord = '小深';
 const humanName = 'Albert';
-const humanAvatar = '../../../../assets/images/chat-einstein.png';
+const humanAvatar = '/static/chat-einstein.png';
 
 const CHAT_HISTORIES = 'chat_history_key';
 const histories = ref([] as any[]);
 const historyIndex = ref(-1);
 
-const aiKbs = ref([] as any[]);
 const kb = ref(props.defaultKb);
 const msg = ref('');
 const isChatting = ref(false);
@@ -68,11 +66,10 @@ messages.value.push(
   {
     type: 'robot',
     name: 'ChatGPT',
-    content: '您好，有什么可以帮助您的？',
+    content: '你好，有什么可以帮助您的？',
     docs: '',
   },
 );
-scroll();
 
 const send = async () => {
   window.console.log('send ...');
@@ -310,10 +307,6 @@ const keyDown = (event: any) => {
 
 const initChatData = async () => {
   // const serverUrl = addSepIfNeeded(props.serverUrl);
-
-  const kbsResp = await listKnowledgeBase();
-  window.console.log('list_knowledge_bases', kbsResp);
-  if (kbsResp.code === 0) aiKbs.value = kbsResp.data;
 };
 
 const initHistory = async () => {
@@ -370,6 +363,8 @@ onMounted(async () => {
   initHistory();
   initChatData();
   document.addEventListener('click', handleLinkClick);
+
+  scroll();
 });
 onBeforeUnmount(async () => {
   document.removeEventListener('click', handleLinkClick);
@@ -390,7 +385,7 @@ onBeforeUnmount(async () => {
     <div v-if="showChat" class="chatbot-container">
       <div class="header">
         <div class="logo">
-          <img src="@/assets/images/chat-robot.png" />
+          <img src="/static/icon/chat-robot.png" />
         </div>
 
         <div class="label">ChatOPS</div>
@@ -412,7 +407,7 @@ onBeforeUnmount(async () => {
                 v-if="isChatting && index === messages.length - 1"
                 class="loading"
               >
-                <img src="@/assets/images/chat-loading.gif" />
+                <img src="/static/icon/chat-loading.gif" />
               </span>
             </div>
           </div>
@@ -423,7 +418,9 @@ onBeforeUnmount(async () => {
             </div>
 
             <div class="content markdown-container">
+              <span v-if="item.content">{{ item.content }}</span>
               <Markdown
+                v-else
                 :html="false"
                 :linkify="true"
                 :source="`${item.docs}\n\n${item.content}`"
