@@ -55,13 +55,6 @@ func (s *ChatbotService) ChatCompletion(req v1.ChatReq, flusher http.Flusher, ct
 
 	for {
 		bytes, err1 := r.ReadBytes('\n')
-		str := s.genResp(bytes, req.ResponseMode)
-		if str == "" {
-			continue
-		}
-
-		fmt.Println("\n>>> " + str + "\n")
-
 		if err1 != nil && err1 != io.EOF {
 			err = err1
 			break
@@ -69,6 +62,13 @@ func (s *ChatbotService) ChatCompletion(req v1.ChatReq, flusher http.Flusher, ct
 		if err1 == io.EOF {
 			break
 		}
+
+		str := s.genResp(bytes, req.ResponseMode)
+		if str == "" {
+			continue
+		}
+
+		fmt.Println("\n>>> " + str + "\n")
 
 		// must with prefix "data:" for openai response
 		// must add a postfix "\n\n"
