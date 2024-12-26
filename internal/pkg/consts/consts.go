@@ -9,11 +9,14 @@ const (
 
 	ConfigType     = "json"
 	CasbinFileName = "rbac_model.conf"
-	DirUpload      = "upload"
+
+	DirUpload = "upload"
+	DirUi     = "deeptest-ui"
 )
 
 var (
-	App = "server"
+	System = "deeptest"
+	App    = "server"
 
 	ExecDir = ""
 	WorkDir = ""

@@ -5,16 +5,15 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-type AibotModule struct {
-	AibotCtrl *handler.AibotCtrl `inject:""`
+type ChatbotModule struct {
+	ChatbotCtrl *handler.AibotCtrl `inject:""`
 }
 
-func (m *AibotModule) Party() func(public iris.Party) {
+func (m *ChatbotModule) Party() func(public iris.Party) {
 	return func(party iris.Party) {
-		party.Post("/chat_completion", m.AibotCtrl.ChatCompletion).Name = "聊天"
-		party.Post("/knowledge_base_chat", m.AibotCtrl.KnowledgeBaseChat).Name = "与知识库对话"
+		party.Post("/chat_completion", m.ChatbotCtrl.ChatCompletion).Name = "聊天"
 
-		party.Get("/list_valid_model", m.AibotCtrl.ListValidModel).Name = "列出可用的大模型"
-		party.Get("/list_knowledge_base", m.AibotCtrl.ListKnowledgeBase).Name = "列出可用的知识库"
+		party.Get("/list_valid_model", m.ChatbotCtrl.ListValidModel).Name = "列出可用的大模型"
+		party.Get("/list_knowledge_base", m.ChatbotCtrl.ListKnowledgeBase).Name = "列出可用的知识库"
 	}
 }

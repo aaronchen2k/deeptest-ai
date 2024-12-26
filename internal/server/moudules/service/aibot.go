@@ -16,10 +16,10 @@ import (
 	"strings"
 )
 
-type AibotService struct {
+type ChatbotService struct {
 }
 
-func (s *AibotService) ChatCompletion(req v1.ChatCompletionReq, flusher http.Flusher, ctx iris.Context) (ret _domain.PageData, err error) {
+func (s *ChatbotService) ChatCompletion(req v1.ChatCompletionReq, flusher http.Flusher, ctx iris.Context) (ret _domain.PageData, err error) {
 	if len(req.Messages) > 0 && strings.TrimSpace(req.Messages[len(req.Messages)-1].Content) == "小深" {
 		str := s.genResp("您好，有什么可以帮助您的？")
 
@@ -81,7 +81,7 @@ func (s *AibotService) ChatCompletion(req v1.ChatCompletionReq, flusher http.Flu
 	return
 }
 
-func (s *AibotService) KnowledgeBaseChat(req v1.KnowledgeBaseChatReq, flusher http.Flusher, ctx iris.Context) (ret _domain.PageData, err error) {
+func (s *ChatbotService) KnowledgeBaseChat(req v1.KnowledgeBaseChatReq, flusher http.Flusher, ctx iris.Context) (ret _domain.PageData, err error) {
 	if len(req.Messages) > 0 && strings.TrimSpace(req.Messages[len(req.Messages)-1].Content) == "小深" {
 		str := s.genResp("您好，有什么可以帮助您的？")
 
@@ -158,7 +158,7 @@ func (s *AibotService) KnowledgeBaseChat(req v1.KnowledgeBaseChatReq, flusher ht
 	return
 }
 
-func (s *AibotService) ListValidModel(typ string) (ret []v1.ChatchatModelData, err error) {
+func (s *ChatbotService) ListValidModel(typ string) (ret []v1.ChatchatModelData, err error) {
 	url := _http.AddSepIfNeeded(config.CONFIG.System.ChatchatUrl) + "v1/models"
 
 	bytes, err := _http.Get(url)
@@ -181,7 +181,7 @@ func (s *AibotService) ListValidModel(typ string) (ret []v1.ChatchatModelData, e
 	return
 }
 
-func (s *AibotService) ListKnowledgeBase() (ret []v1.ChatchatKnowledgeBaseData, err error) {
+func (s *ChatbotService) ListKnowledgeBase() (ret []v1.ChatchatKnowledgeBaseData, err error) {
 	url := _http.AddSepIfNeeded(config.CONFIG.System.ChatchatUrl) + "knowledge_base/list_knowledge_bases"
 
 	bytes, err := _http.Get(url)
@@ -200,7 +200,7 @@ func (s *AibotService) ListKnowledgeBase() (ret []v1.ChatchatKnowledgeBaseData, 
 	return
 }
 
-func (s *AibotService) genResp(content string) (ret string) {
+func (s *ChatbotService) genResp(content string) (ret string) {
 	resp := v1.ChatchatResponse{}
 	choice := v1.ChatchatChoice{
 		Delta: v1.ChatchatDelta{

@@ -54,3 +54,15 @@ const (
 func (e TreeNodeType) String() string {
 	return string(e)
 }
+
+type PlatformType string
+
+const (
+	Dify         PlatformType = "dify"
+	Ollama       PlatformType = "ollama"
+	LlamaFactory TreeNodeType = "llama_factory"
+)
+
+func (e PlatformType) String() string {
+	return string(e)
+}

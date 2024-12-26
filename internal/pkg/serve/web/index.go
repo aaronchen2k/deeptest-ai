@@ -4,12 +4,19 @@ import (
 	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/viper_server"
 	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
+	"github.com/joho/godotenv"
+	"log"
+	"os"
 )
 
 // init
 func init() {
 	viper_server.Init(config.GetViperConfig())
-}
+
+	err := godotenv.Load()
+	if err == nil {
+		config.CONFIG.Ai.ApiKey = os.Getenv("AI_PLATFORM_API_KEY")
+	}
 
 type WebBaseFunc interface {
 	AddWebStatic(staticAbsPath, webPrefix string, paths ...string)

@@ -45,16 +45,21 @@ var CONFIG = Web{
 		ImgWidth:  240,
 		ImgHeight: 80,
 	},
+	Ai: Ai{
+		PlatformType: "dify",
+		PlatformUrl:  "http://localhost/",
+	},
 }
 
 type Web struct {
 	FileMaxSize    int64   `mapstructure:"file-max-size" json:"file-max-size" yaml:"file-max-siz"`
 	SessionTimeout int64   `mapstructure:"session-timeout" json:"session-timeout" yaml:"session-timeout"`
 	Except         Route   `mapstructure:"except" json:"except" yaml:"except"`
-	System         System  `mapstructure:"system" json:"system" yaml:"system"`
 	Limit          Limit   `mapstructure:"limit" json:"limit" yaml:"limit"`
 	Captcha        Captcha `mapstructure:"captcha" json:"captcha" yaml:"captcha"`
 	Cors           Cors    `mapstructure:"cors" json:"cors" yaml:"cors"`
+	System         System  `mapstructure:"system" json:"system" yaml:"system"`
+	Ai             Ai      `mapstructure:"ai" json:"ai" yaml:"ai"`
 }
 
 type Cors struct {
@@ -94,6 +99,12 @@ type System struct {
 	LLmUrl      string `mapstructure:"llm-url" json:"llm-url" yaml:"llm-url"`
 
 	DatabaseType string `mapstructure:"database-type" json:"database-type" yaml:"database-type"`
+}
+
+type Ai struct {
+	PlatformType consts.PlatformType `mapstructure:"platform-type" json:"platform-type" yaml:"platform-type"`
+	PlatformUrl  string              `mapstructure:"platform-url" json:"platform-url" yaml:"platform-url"`
+	ApiKey       string
 }
 
 // SetDefaultAddrAndTimeFormat
@@ -147,6 +158,7 @@ func GetViperConfig() viper_server.ViperConfig {
 	disable := strconv.FormatBool(CONFIG.Limit.Disable)
 	tls := strconv.FormatBool(CONFIG.System.Tls)
 	configName := "web"
+
 	return viper_server.ViperConfig{
 		Debug:     true,
 		Directory: consts.ConfDir,
@@ -189,6 +201,11 @@ func GetViperConfig() viper_server.ViperConfig {
 			"limit": ` + limit + `,
 			"disable": ` + disable + `,
 			"burst": ` + burst + `
+		},
+	"ai":
+		{
+			"platform-type": ` + CONFIG.Ai.PlatformType.String() + `,
+			"platform-url": ` + CONFIG.Ai.PlatformUrl + `
 		},
 	"system":
 		{

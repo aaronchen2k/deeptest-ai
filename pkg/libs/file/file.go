@@ -15,14 +15,10 @@ import (
 
 // GetExecDir 当前执行目录
 func GetExecDir() (ret string) {
-	exePath, err := os.Executable()
-	if err != nil {
-		return
-	}
-
-	if strings.Index(strings.ToLower(exePath), "goland") > -1 { // idea debug
+	if IsDebug() {
 		ret, _ = os.Getwd()
 	} else {
+		exePath, _ := os.Executable()
 		ret = filepath.Dir(exePath)
 	}
 
@@ -37,16 +33,25 @@ func GetWorkDir() (dir string) {
 		return consts.WorkDir
 	}
 
-	home, _ := GetUserHome()
+	if IsDebug() {
+		dir, _ = os.Getwd()
+	} else {
+		home, _ := GetUserHome()
 
-	dir = filepath.Join(home, consts.App)
-	dir = AddSepIfNeeded(dir)
+		dir = filepath.Join(home, consts.System, consts.App)
+		dir = AddSepIfNeeded(dir)
+	}
 
 	InsureDir(dir)
-
 	consts.WorkDir = dir
 
 	return
+}
+
+func IsDebug() bool {
+	// is debug in ide or not
+	exePath, _ := os.Executable()
+	return strings.Index(strings.ToLower(exePath), "goland") > -1
 }
 
 func GetUserHome() (dir string, err error) {

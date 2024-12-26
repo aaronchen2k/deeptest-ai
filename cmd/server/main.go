@@ -14,8 +14,9 @@ import (
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/web/web_iris"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/serve/zap_server"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/repo"
-	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
+	"github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"github.com/facebookgo/inject"
+	"github.com/kataras/iris/v12"
 	"github.com/sirupsen/logrus"
 	"os"
 )
@@ -43,7 +44,7 @@ func main() {
 		UniversalClient: cache.Instance(),
 	})
 	if err != nil {
-		_logUtils.Zap.Panic(err.Error())
+		_logs.Zap.Panic(err.Error())
 	}
 
 	// inject objects
@@ -60,17 +61,24 @@ func main() {
 		&inject.Object{Value: indexModule},
 	)
 	if err != nil {
-		_logUtils.Errorf("provide usecase objects to the Graph: %v", err)
+		_logs.Errorf("provide usecase objects to the Graph: %v", err)
 	}
 	err = g.Populate()
 	if err != nil {
-		_logUtils.Errorf("populate the incomplete Objects: %v", err)
+		_logs.Errorf("populate the incomplete Objects: %v", err)
 	}
 	cronServer.Start()
 
 	webServer.AddModule(web_iris.Party{
 		Perfix:    "/api/v1",
 		PartyFunc: indexModule.ApiParty(),
+	}, web_iris.Party{
+		Perfix: "/",
+		PartyFunc: func(public iris.Party) {
+			public.Get("", func(ctx iris.Context) {
+				ctx.Text("DeepTest is running")
+			})
+		},
 	})
 
 	web.Start(webServer)

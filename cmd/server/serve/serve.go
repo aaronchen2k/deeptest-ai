@@ -6,7 +6,6 @@ import (
 	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/core/router"
-	"github.com/snowlyg/helper/dir"
 	"path/filepath"
 )
 
@@ -17,9 +16,8 @@ func AddStatic(app *iris.Application) {
 
 // addWebUi 添加前端页面访问
 func addWebUi(app *iris.Application) {
-	pth := filepath.Join(dir.GetCurrentAbPath(), "deeptest-ui")
-
-	//fileUtils.MkDirIfNeeded(pth)
+	pth := filepath.Join(consts.WorkDir, consts.DirUi)
+	_file.InsureDir(pth)
 	_logUtils.Infof("*** ui dir: %s", pth)
 
 	app.HandleDir("/", iris.Dir(pth), iris.DirOptions{

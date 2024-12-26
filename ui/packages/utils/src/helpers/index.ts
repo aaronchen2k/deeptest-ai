@@ -10,3 +10,4 @@ export * from './merge-route-modules';
 export * from './reset-routes';
 export * from './tree';
 export * from './unmount-global-loading';
+export * from './url';
