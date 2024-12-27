@@ -427,6 +427,7 @@ onBeforeUnmount(async () => {
             </div>
 
             <div class="content markdown-container">
+              {{item.content}}
               <Markdown
                 :html="false"
                 :linkify="true"
@@ -450,14 +451,15 @@ onBeforeUnmount(async () => {
       </div>
 
       <div class="sender">
-        <input
+        <textarea
           id="msgInput"
           v-model="msg"
           autocomplete="off"
           class="input"
+          rows="3"
           @keydown="keyDown"
           @keyup.enter="send"
-        />
+        ></textarea>
 
         <span v-if="!isChatting" class="button dp-link" @click="send"></span>
         <span v-if="isChatting" class="button"></span>

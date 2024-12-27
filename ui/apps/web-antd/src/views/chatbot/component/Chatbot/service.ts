@@ -31,10 +31,15 @@ export function replaceImageUrl(str: string, imageRepoUrl: string) {
   window.console.log('replaceImageUrl');
   try {
     // ![海报](./img/poster.jpg \"海报\")
-    str = str.replaceAll(/(\[.+?\])\((.+?)\)/g, `$1(${imageRepoUrl}$2)`);
+    str = str.replaceAll(
+      /(\[.+?\])\(([^http].+?)\)/g,
+      `$1(${imageRepoUrl}$2)`,
+    );
   } catch (error) {
     window.console.log('replaceImageUrl error', error);
   }
+
+  window.console.log('******', str);
 
   return str;
 }
