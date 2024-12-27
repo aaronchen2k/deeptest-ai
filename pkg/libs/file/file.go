@@ -3,14 +3,20 @@ package _file
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	_consts "github.com/deeptest-com/deeptest-next/pkg/libs/consts"
+	_logs "github.com/deeptest-com/deeptest-next/pkg/libs/log"
+	"github.com/oklog/ulid/v2"
+	"github.com/snowlyg/helper/str"
+	"math/rand"
 	"os"
 	"os/exec"
 	"os/user"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 )
 
 // GetExecDir 当前执行目录
@@ -52,6 +58,9 @@ func IsDebug() bool {
 	// is debug in ide or not
 	exePath, _ := os.Executable()
 	return strings.Index(strings.ToLower(exePath), "goland") > -1
+}
+func IsRelease() bool {
+	return !IsDebug()
 }
 
 func GetUserHome() (dir string, err error) {
@@ -129,4 +138,28 @@ func ReadFileBuf(filePath string) []byte {
 	}
 
 	return buf
+}
+
+func GetUploadFileName(name string) (ret string, err error) {
+	name = strings.TrimPrefix(name, "./")
+
+	index := strings.LastIndex(name, ".")
+
+	if index <= 0 {
+		msg := fmt.Sprintf("文件名错误 %s", name)
+		_logs.Info(msg)
+		err = errors.New(msg)
+		return
+	}
+
+	base := name[:index]
+	ext := name[index+1:]
+
+	entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
+	ms := ulid.Timestamp(time.Now())
+	rand, _ := ulid.New(ms, entropy)
+
+	ret = str.Join(base, "-", strings.ToLower(rand.String()), ".", ext)
+
+	return
 }

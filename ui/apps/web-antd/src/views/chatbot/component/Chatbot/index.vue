@@ -12,10 +12,12 @@ import Markdown from 'vue3-markdown-it';
 import consts from '#/config/constant';
 import { getCache, setCache } from '#/utils/cache-local';
 
+import Uploder from '../Uploder/index.vue';
 import {
   getDocLink,
   getLatestRobotMsg,
-  isUnderRobotMsg, replaceImageUrl,
+  isUnderRobotMsg,
+  replaceImageUrl,
   replaceLinkWithoutTitle,
   scroll,
   setSelectionRange,
@@ -427,7 +429,6 @@ onBeforeUnmount(async () => {
             </div>
 
             <div class="content markdown-container">
-              {{item.content}}
               <Markdown
                 :html="false"
                 :linkify="true"
@@ -441,10 +442,7 @@ onBeforeUnmount(async () => {
                 </span>
               </div>
 
-              <div class="copy dp-link" @click="copy">
-                <img alt="copy" src="/static/logo.png" />
-                复制
-              </div>
+              <div class="copy dp-link" @click="copy">复制</div>
             </div>
           </div>
         </template>
@@ -456,7 +454,7 @@ onBeforeUnmount(async () => {
           v-model="msg"
           autocomplete="off"
           class="input"
-          rows="3"
+          rows="2"
           @keydown="keyDown"
           @keyup.enter="send"
         ></textarea>
@@ -466,6 +464,9 @@ onBeforeUnmount(async () => {
       </div>
 
       <div class="actions">
+        <div class="uploader-container">
+          <Uploder />
+        </div>
         <slot name="actions"></slot>
       </div>
     </div>

@@ -9,7 +9,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       badgeType: 'dot',
       icon: 'ic:baseline-view-in-ar',
-      order: 1000,
+      order: 9999,
       title: $t('chatbot.title'),
       hideChildrenInMenu: true,
     },

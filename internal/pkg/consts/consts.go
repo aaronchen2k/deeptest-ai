@@ -12,6 +12,8 @@ const (
 
 	DirUpload = "upload"
 	DirUi     = "deeptest-ui"
+
+	TemplateKbQuery = "kb_query"
 )
 
 var (

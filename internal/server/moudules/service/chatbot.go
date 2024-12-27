@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/deeptest-com/deeptest-next"
 	"github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
@@ -14,6 +15,7 @@ import (
 	"github.com/kataras/iris/v12"
 	"io"
 	"net/http"
+	"path/filepath"
 	"strings"
 )
 
@@ -26,6 +28,8 @@ func (s *ChatbotService) Chat(req v1.ChatReq, flusher http.Flusher, ctx iris.Con
 		url = _http.AddSepIfNeeded(config.CONFIG.Ai.PlatformUrl) + "v1/chat-messages"
 	}
 	_logs.Infof("%s url = %s", config.CONFIG.Ai.PlatformType, url)
+
+	req.Query = s.getTemplateResult(req.Query, consts.TemplateKbQuery)
 
 	bts, err := json.Marshal(req)
 	reader := bytes.NewReader(bts)
@@ -113,6 +117,33 @@ func (s *ChatbotService) genResp(input []byte, typ consts.LlmResponseMode) (ret 
 	}
 
 	ret = "data:" + string(output)
+
+	return
+}
+
+func (s *ChatbotService) getTemplateResult(query, tmpl string) (ret string) {
+	if tmpl != "" {
+		pth := filepath.Join("res", "tmpl", tmpl+".tmpl")
+
+		bts, err := deeptest.ReadResData(pth)
+		if err == nil {
+			str := string(bts)
+			ret = fmt.Sprintf(str, query)
+		}
+	}
+
+	return
+}
+
+func (s *ChatbotService) UploadToKb(pth string) (err error) {
+	_logs.Info(pth)
+
+	url := ""
+	if config.CONFIG.Ai.PlatformType == consts.Dify {
+		url = _http.AddSepIfNeeded(config.CONFIG.Ai.PlatformUrl) +
+			"datasets/b0b12d74-2f56-49a8-9fad-8f5c6919b85e/document/create-by-file"
+	}
+	_logs.Infof("%s url = %s", config.CONFIG.Ai.PlatformType, url)
 
 	return
 }
