@@ -15,7 +15,7 @@ import { getCache, setCache } from '#/utils/cache-local';
 import {
   getDocLink,
   getLatestRobotMsg,
-  isUnderRobotMsg,
+  isUnderRobotMsg, replaceImageUrl,
   replaceLinkWithoutTitle,
   scroll,
   setSelectionRange,
@@ -41,7 +41,10 @@ const props = defineProps({
 
 const userStore = useUserStore();
 
-const { imageRepoUrl, docRepoUrl } = useAppConfig(import.meta.env, import.meta.env.PROD);
+const { imageRepoUrl, docRepoUrl } = useAppConfig(
+  import.meta.env,
+  import.meta.env.PROD,
+);
 const wakeUpWord = '小深';
 const humanName = 'Albert';
 const humanAvatar = '/static/chat-einstein.png';
@@ -208,13 +211,15 @@ const send = async () => {
         const index = getLatestRobotMsg(messages.value);
         if (index >= 0) {
           if (content.length > 0)
-            messages.value[index].content = replaceLinkWithoutTitle(
+            messages.value[index].content = replaceImageUrl(
               messages.value[index].content + content,
+              imageRepoUrl,
             );
 
           if (docs.length > 0)
-            messages.value[index].docs = replaceLinkWithoutTitle(
+            messages.value[index].docs = replaceImageUrl(
               messages.value[index].docs + docs,
+              docRepoUrl,
             );
 
           window.console.log('!!!', messages.value[index]);

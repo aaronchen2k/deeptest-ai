@@ -27,28 +27,40 @@ export function getDocLink(doc: any): any {
   };
 }
 
+export function replaceImageUrl(str: string, imageRepoUrl: string) {
+  window.console.log('replaceImageUrl');
+  try {
+    // ![海报](./img/poster.jpg \"海报\")
+    str = str.replaceAll(/(\[.+?\])\((.+?)\)/g, `$1(${imageRepoUrl}$2)`);
+  } catch (error) {
+    window.console.log('replaceImageUrl error', error);
+  }
+
+  return str;
+}
+
 export function replaceLinkWithoutTitle(str: string) {
   window.console.log('replaceLinkWithoutTitle');
   try {
-    // html page
-    str = str.replaceAll(
-      /\[(\d+)-([^\]]+)\]\([^)]+\.html\)[\s\S]/g,
-      '[$2](https://wiki.deeptestcloud.com/pages/viewpage.action?pageId=$1)',
-    );
-
-    // diffpagesbyversion page
-    // ABC (/pages/diffpagesbyversion.action?pageId=5969977&selectedPageVersions=1&selectedPageVersions=2) 123
-    str = str.replaceAll(
-      /([^\]])\((\/pages\/.+?\.action\?pageId=.+?)\)/g,
-      '$1[链接](https://wiki.deeptestcloud.com$2)',
-    );
-
+    // // html page
+    // str = str.replaceAll(
+    //   /\[(\d+)-([^\]]+)\]\([^)]+\.html\)[\s\S]/g,
+    //   '[$2](https://wiki.deeptestcloud.com/pages/viewpage.action?pageId=$1)',
+    // );
+    //
+    // // diffpagesbyversion page
+    // // ABC (/pages/diffpagesbyversion.action?pageId=5969977&selectedPageVersions=1&selectedPageVersions=2) 123
+    // str = str.replaceAll(
+    //   /([^\]])\((\/pages\/.+?\.action\?pageId=.+?)\)/g,
+    //   '$1[链接](https://wiki.deeptestcloud.com$2)',
+    // );
+    //
     // change markdown link to html link.
     // str = str.replace(/([^\]])\((http.+?)\)/g, '$1<a href="$2" target="_blank">$2</a>')
 
     return str;
   } catch (error) {
-    window.console.log('replace error', error);
+    window.console.log('replaceLinkWithoutTitle error', error);
   }
 }
 
