@@ -3,11 +3,11 @@ import { onBeforeUnmount, onMounted, ref } from 'vue';
 
 import { useAppConfig } from '@vben/hooks';
 import { useUserStore } from '@vben/stores';
-import { addSepIfNeeded, genUuid } from '@vben/utils';
+import { addSepIfNeeded } from '@vben/utils';
 
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { message } from 'ant-design-vue';
-import { Markdown } from 'vue3-markdown-it';
+import Markdown from 'vue3-markdown-it';
 
 import consts from '#/config/constant';
 import { getCache, setCache } from '#/utils/cache-local';
@@ -41,7 +41,7 @@ const props = defineProps({
 
 const userStore = useUserStore();
 
-const { docRepoURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
+const { imageRepoUrl, docRepoUrl } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const wakeUpWord = '小深';
 const humanName = 'Albert';
 const humanAvatar = '/static/chat-einstein.png';
@@ -184,7 +184,9 @@ const send = async () => {
         jsn.metadata?.retriever_resources.forEach((res: any) => {
           const { docId, docName, docType } = getDocLink(res);
           if (!docMap[docId] && docType === 'upload_file') {
-            const doc_content = `[${docName}](${docRepoURL}/view?docId=${docId})`;
+            const url = docRepoUrl + docName;
+            const doc_content = `[${docName}](${url})`;
+
             doc_contents.push(doc_content);
             docMap[docId] = true;
           }
@@ -195,7 +197,7 @@ const send = async () => {
       let docs = '';
       let content = '';
       if (doc_contents.length > 0) {
-        docs = `  \n参考资料：\n1. ${doc_contents.join('  \n1. ')}`;
+        docs = `  \n参考资料：\n1. ${doc_contents.join('  \n1. ')}\n`;
       } else if (msg_content.length > 0) {
         content = `${msg_content}`;
       }
@@ -205,15 +207,17 @@ const send = async () => {
         // append
         const index = getLatestRobotMsg(messages.value);
         if (index >= 0) {
+          if (content.length > 0)
+            messages.value[index].content = replaceLinkWithoutTitle(
+              messages.value[index].content + content,
+            );
+
           if (docs.length > 0)
             messages.value[index].docs = replaceLinkWithoutTitle(
               messages.value[index].docs + docs,
             );
 
-          if (content.length > 0)
-            messages.value[index].content = replaceLinkWithoutTitle(
-              messages.value[index].content + content,
-            );
+          window.console.log('!!!', messages.value[index]);
         }
       } else {
         // create
@@ -418,12 +422,10 @@ onBeforeUnmount(async () => {
             </div>
 
             <div class="content markdown-container">
-              <span v-if="item.content">{{ item.content }}</span>
               <Markdown
-                v-else
                 :html="false"
                 :linkify="true"
-                :source="`${item.docs}\n\n${item.content}`"
+                :source="`${item.content}\n\n${item.docs}`"
               />
             </div>
             <div class="toolbar">

@@ -19,7 +19,7 @@ export function useAppConfig(
 
   return {
     apiURL: VITE_GLOB_API_URL,
-    imageRepoURL: VITE_IMAGE_REPO_URL,
+    imageRepoUrl: VITE_IMAGE_REPO_URL,
     docRepoUrl: VITE_DOC_REPO_URL,
   };
 }

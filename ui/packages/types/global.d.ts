@@ -15,7 +15,7 @@ export interface VbenAdminProAppConfigRaw {
 
 export interface ApplicationConfig {
   apiURL: string;
-  imageRepoURL: string;
+  imageRepoUrl: string;
   docRepoUrl: string;
 }
 
