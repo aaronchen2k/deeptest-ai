@@ -134,16 +134,3 @@ func (s *ChatbotService) getTemplateResult(query, tmpl string) (ret string) {
 
 	return
 }
-
-func (s *ChatbotService) UploadToKb(pth string) (err error) {
-	_logs.Info(pth)
-
-	url := ""
-	if config.CONFIG.Ai.PlatformType == consts.Dify {
-		url = _http.AddSepIfNeeded(config.CONFIG.Ai.PlatformUrl) +
-			"datasets/b0b12d74-2f56-49a8-9fad-8f5c6919b85e/document/create-by-file"
-	}
-	_logs.Infof("%s url = %s", config.CONFIG.Ai.PlatformType, url)
-
-	return
-}

@@ -22,7 +22,7 @@ type FileService struct {
 }
 
 // UploadFile 上传文件
-func (s *FileService) UploadFile(ctx iris.Context, fh *multipart.FileHeader) (ret string, err error) {
+func (s *FileService) UploadFile(ctx iris.Context, fh *multipart.FileHeader, kb string) (ret string, err error) {
 	filename, err := _file.GetUploadFileName(fh.Filename)
 	if err != nil {
 		_logs.Errorf("获取文件名失败，错误%s", err.Error())

@@ -4,13 +4,13 @@ import (
 	v1 "github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/service"
 	_domain "github.com/deeptest-com/deeptest-next/pkg/domain"
-
 	"github.com/kataras/iris/v12"
 )
 
 type ChatbotCtrl struct {
 	BaseCtrl
 	ChatbotService *service.ChatbotService `inject:""`
+	FileService    *service.FileService    `inject:""`
 }
 
 func (c *ChatbotCtrl) Chat(ctx iris.Context) {

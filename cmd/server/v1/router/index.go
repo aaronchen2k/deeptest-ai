@@ -17,7 +17,9 @@ type IndexModule struct {
 	CaseModule    *CaseModule    `inject:""`
 	SetModule     *SetModule     `inject:""`
 	PlanModule    *PlanModule    `inject:""`
-	ChatbotModule *ChatbotModule `inject:""`
+
+	ChatbotModule       *ChatbotModule       `inject:""`
+	KnowledgeBaseModule *KnowledgeBaseModule `inject:""`
 }
 
 func NewIndexModule() *IndexModule {
@@ -40,5 +42,6 @@ func (m *IndexModule) ApiParty() func(rbac iris.Party) {
 		rbac.PartyFunc("/file", m.FileModule.Party())
 
 		rbac.PartyFunc("/chatbot", m.ChatbotModule.Party())
+		rbac.PartyFunc("/knowledgeBase", m.KnowledgeBaseModule.Party())
 	}
 }

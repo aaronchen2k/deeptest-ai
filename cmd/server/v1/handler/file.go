@@ -23,13 +23,11 @@ func (c *FileCtrl) Upload(ctx iris.Context) {
 	defer f.Close()
 
 	name := fh.Filename
-	pth, err := c.FileService.UploadFile(ctx, fh)
+	pth, err := c.FileService.UploadFile(ctx, fh, "")
 	if err != nil {
 		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
 		return
 	}
-
-	c.ChatbotService.UploadToKb(pth)
 
 	ctx.JSON(_domain.Response{Code: _domain.Success.Code, Data: iris.Map{"path": pth, "name": name}})
 }
