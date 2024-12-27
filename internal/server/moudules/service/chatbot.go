@@ -20,7 +20,7 @@ import (
 type ChatbotService struct {
 }
 
-func (s *ChatbotService) ChatCompletion(req v1.ChatReq, flusher http.Flusher, ctx iris.Context) (ret _domain.PageData, err error) {
+func (s *ChatbotService) Chat(req v1.ChatReq, flusher http.Flusher, ctx iris.Context) (ret _domain.PageData, err error) {
 	url := ""
 	if config.CONFIG.Ai.PlatformType == consts.Dify {
 		url = _http.AddSepIfNeeded(config.CONFIG.Ai.PlatformUrl) + "v1/chat-messages"
@@ -63,12 +63,13 @@ func (s *ChatbotService) ChatCompletion(req v1.ChatReq, flusher http.Flusher, ct
 			break
 		}
 
+		fmt.Println("\n====== " + string(bytes))
 		str := s.genResp(bytes, req.ResponseMode)
 		if str == "" {
 			continue
 		}
 
-		fmt.Println("\n>>> " + str + "\n")
+		fmt.Println("------ " + str + "\n")
 
 		// must with prefix "data:" for openai response
 		// must add a postfix "\n\n"
@@ -94,17 +95,21 @@ func (s *ChatbotService) genResp(input []byte, typ consts.LlmResponseMode) (ret 
 		output, _ = json.Marshal(resp)
 
 	} else if typ == consts.Streaming {
-		resp := v1.ChatRespStreaming{}
+		resp := v1.ChatRespStreamingAnswer{}
 		json.Unmarshal([]byte(str), &resp)
 
-		if resp.Answer == "" {
-			return
-		}
+		if resp.Answer != "" { // answer
+			simple := v1.ChatRespStreamingAnswer{
+				Answer:         resp.Answer,
+				ConversationId: resp.ConversationId,
+			}
+			output, _ = json.Marshal(simple)
+		} else { // data
+			resp := v1.ChatRespStreamingData{}
+			json.Unmarshal([]byte(str), &resp)
 
-		simple := v1.ChatRespStreaming{
-			Answer: resp.Answer,
+			output, _ = json.Marshal(resp)
 		}
-		output, _ = json.Marshal(simple)
 	}
 
 	ret = "data:" + string(output)

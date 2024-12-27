@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 
-import { addSepIfNeeded } from '@vben/utils';
+import { useAppConfig } from '@vben/hooks';
+import { useUserStore } from '@vben/stores';
+import { addSepIfNeeded, genUuid } from '@vben/utils';
 
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { message } from 'ant-design-vue';
@@ -37,7 +39,9 @@ const props = defineProps({
   },
 });
 
-const wikiAddress = 'https://wiki.deeptestcloud.com';
+const userStore = useUserStore();
+
+const { docRepoURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const wakeUpWord = '小深';
 const humanName = 'Albert';
 const humanAvatar = '/static/chat-einstein.png';
@@ -46,8 +50,8 @@ const CHAT_HISTORIES = 'chat_history_key';
 const histories = ref([] as any[]);
 const historyIndex = ref(-1);
 
-const kb = ref(props.defaultKb);
 const msg = ref('');
+const conversationId = ref('' as string);
 const isChatting = ref(false);
 const continueOnCurrMsg = ref(false);
 
@@ -93,6 +97,7 @@ const send = async () => {
   }
 
   isChatting.value = true;
+  conversationId.value = '';
   continueOnCurrMsg.value = false;
 
   const humanMsg = {
@@ -111,23 +116,14 @@ const send = async () => {
   const ctrl = new AbortController();
 
   const data = {
-    model: 'qwen2.5-coder:7b-instruct',
-    messages: [
-      { role: 'user', content: '你好' },
-      { role: 'assistant', content: '你好，我是人工智能大模型' },
-      { role: 'user', content: userMsg },
-    ],
-    stream: true,
+    user: `${userStore.userInfo?.id}`,
+    query: userMsg,
+    response_mode: 'streaming',
     temperature: 0.7,
-    extra_body: {
-      top_k: 3,
-      score_threshold: 1.8,
-      return_direct: false,
-    },
-    kb_name: kb.value,
+    inputs: {},
+    has_thoughts: true,
   };
-
-  window.console.log('======', data);
+  window.console.log('====== request data:', data);
 
   isChatting.value = true;
   ctrl.abort();
@@ -143,7 +139,7 @@ const send = async () => {
     signal: ctrl.signal,
 
     async onopen(response) {
-      window.console.log('onopen', response);
+      window.console.log('------ onopen', response);
 
       if (!response.ok) {
         throw new FetchError();
@@ -151,42 +147,46 @@ const send = async () => {
     },
 
     onmessage(msg: any) {
-      // return if no data
       if (!msg.data) return;
-
-      window.console.log('onmessage', msg);
+      window.console.log('------ onmessage', msg);
 
       let jsn = {} as any;
       try {
         jsn = JSON.parse(msg.data);
       } catch {
-        window.console.log('parse chatchat msg failed', msg.data);
+        window.console.log('parse chat response failed', msg.data);
         throw new FetchError();
       }
 
       const doc_contents = [] as any[];
       let msg_content = '';
 
-      // parse msg
-      if (jsn.docs && jsn.docs.length > 0) {
-        // docs
+      // drop if not same conversation
+      if (
+        conversationId.value !== '' &&
+        jsn.conversation_id !== '' &&
+        conversationId.value !== jsn.conversation_id
+      ) {
+        return;
+      }
+
+      if (conversationId.value === '' && jsn.conversation_id !== '') {
+        conversationId.value = jsn.conversation_id;
+      }
+
+      if (jsn.answer) {
+        // answer
+        msg_content += jsn.answer;
+      } else if (jsn.metadata?.retriever_resources) {
+        // data
         const docMap = {} as any;
 
-        jsn.docs.forEach((doc: any) => {
-          const { pageId, pageTitle, pageType } = getDocLink(doc.trim());
-          if (!docMap[pageId] && pageType === 'html') {
-            // is link
-            const doc_content = `[${pageTitle}](${wikiAddress}/pages/viewpage.action?pageId=${pageId})`;
-
+        jsn.metadata?.retriever_resources.forEach((res: any) => {
+          const { docId, docName, docType } = getDocLink(res);
+          if (!docMap[docId] && docType === 'upload_file') {
+            const doc_content = `[${docName}](${docRepoURL}/view?docId=${docId})`;
             doc_contents.push(doc_content);
-            docMap[pageId] = true;
-          }
-        });
-      } else if (jsn.choices && jsn.choices.length > 0) {
-        // msg
-        jsn.choices?.forEach((choice: any) => {
-          if (choice.delta?.content && choice.delta?.content !== '__BREAK__') {
-            msg_content += choice.delta?.content;
+            docMap[docId] = true;
           }
         });
       }

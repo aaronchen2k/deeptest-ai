@@ -13,7 +13,7 @@ type ChatbotCtrl struct {
 	ChatbotService *service.ChatbotService `inject:""`
 }
 
-func (c *ChatbotCtrl) ChatCompletion(ctx iris.Context) {
+func (c *ChatbotCtrl) Chat(ctx iris.Context) {
 	flusher, ok := ctx.ResponseWriter().Flusher()
 	if !ok {
 		ctx.StopWithText(iris.StatusHTTPVersionNotSupported, "Streaming unsupported!")
@@ -31,5 +31,5 @@ func (c *ChatbotCtrl) ChatCompletion(ctx iris.Context) {
 		return
 	}
 
-	c.ChatbotService.ChatCompletion(req, flusher, ctx)
+	c.ChatbotService.Chat(req, flusher, ctx)
 }

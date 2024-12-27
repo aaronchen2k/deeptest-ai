@@ -11,6 +11,6 @@ type ChatbotModule struct {
 
 func (m *ChatbotModule) Party() func(public iris.Party) {
 	return func(party iris.Party) {
-		party.Post("/chat", m.ChatbotCtrl.ChatCompletion).Name = "聊天"
+		party.Post("/chat", m.ChatbotCtrl.Chat).Name = "聊天"
 	}
 }

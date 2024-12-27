@@ -17,22 +17,14 @@ export function getDocDesc(str: string) {
   return `${first} ... ${last}`;
 }
 
-export function getDocLink(source: any): any {
-  // docs/66666666-API - 20226666 - 文档中心 - 用户知识库.html
-
-  // eslint-disable-next-line regexp/no-super-linear-backtracking
-  const regex = /.+?(\d+)-(.+?)-.*\.(html)/g;
-
-  const matches = regex.exec(source) as any;
-  if (matches && matches.length > 3) {
-    return {
-      pageId: matches[1],
-      pageTitle: matches[2].trim(),
-      pageType: matches[3].trim(),
-    };
-  }
-
-  return {};
+export function getDocLink(doc: any): any {
+  return {
+    docId: doc.document_id,
+    docName: doc.document_name,
+    docType: doc.data_source_type,
+    datasetId: doc.dataset_id,
+    datasetName: doc.dataset_name,
+  };
 }
 
 export function replaceLinkWithoutTitle(str: string) {
