@@ -77,6 +77,7 @@ func (s *KnowledgeBaseService) ClearAll(kb string) (err error) {
 	if config.CONFIG.Ai.PlatformType == consts.Dify {
 		queryUrl = _http.AddSepIfNeeded(config.CONFIG.Ai.PlatformUrl) +
 			fmt.Sprintf(kbQueryDocUri, kb)
+		queryUrl += "?limit=100"
 	}
 	_logs.Infof("%s queryUrl = %s", config.CONFIG.Ai.PlatformType, queryUrl)
 

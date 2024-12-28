@@ -6,6 +6,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
+	"fmt"
 	_http "github.com/deeptest-com/deeptest-next/pkg/libs/http"
 	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	_str "github.com/deeptest-com/deeptest-next/pkg/libs/string"
@@ -219,6 +220,22 @@ func GenBodyFormDataFromItems(items []BodyFormDataItem) (formData []BodyFormData
 			formData = append(formData, item)
 			mp[key] = true
 		}
+	}
+
+	return
+}
+
+func GenQueryParamsStr(params map[string]interface{}) (ret string) {
+	index := 0
+	for key, val := range params {
+		if index == 0 {
+			ret += "?"
+		} else {
+			ret += "&"
+		}
+
+		ret += fmt.Sprintf("%v=%v", key, val)
+		index++
 	}
 
 	return
