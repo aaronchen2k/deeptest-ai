@@ -7,6 +7,7 @@ import (
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/domain"
 	httpUtils "github.com/deeptest-com/deeptest-next/internal/pkg/libs/http"
+	_file "github.com/deeptest-com/deeptest-next/pkg/libs/file"
 	"github.com/deeptest-com/deeptest-next/pkg/libs/http"
 	"github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"os"
@@ -23,6 +24,20 @@ var (
 	kbRemoveDocUri = "datasets/%s/documents/%s"
 )
 
+func (s *KnowledgeBaseService) UploadZipFile(zipPath, kb string) (err error) {
+	unzipDir := _file.Unzip(zipPath)
+	filePaths := s.ListFile(unzipDir)
+
+	for _, filePath := range filePaths {
+		err := s.UploadDoc(filePath, kb)
+		if err != nil {
+			continue
+		}
+	}
+
+	return
+}
+
 func (s *KnowledgeBaseService) UploadDoc(pth, kb string) (err error) {
 	if kb == "" {
 		kb = defaultDb
@@ -34,6 +49,16 @@ func (s *KnowledgeBaseService) UploadDoc(pth, kb string) (err error) {
 			fmt.Sprintf(kbCreateDocUri, kb)
 	}
 	_logs.Infof("%s url = %s", config.CONFIG.Ai.PlatformType, url)
+
+	data := domain.KbCreateReq{
+		IndexingTechnique: "high_quality",
+	}
+
+	bts, err := httpUtils.PostFile(url, data, pth, s.getHeaders())
+	if err != nil {
+		return
+	}
+	_logs.Infof("create doc resp %s", string(bts))
 
 	return
 }
@@ -78,5 +103,9 @@ func (s *KnowledgeBaseService) ClearAll(kb string) (err error) {
 
 func (s *KnowledgeBaseService) getHeaders() (ret map[string]string) {
 	ret = map[string]string{"Authorization": "Bearer " + os.Getenv("AI_DATASET_API_KEY")}
+	return
+}
+
+func (s *KnowledgeBaseService) ListFile(pth string) (ret []string) {
 	return
 }

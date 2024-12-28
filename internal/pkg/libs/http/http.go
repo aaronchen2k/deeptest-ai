@@ -1,13 +1,16 @@
 package httpUtils
 
 import (
+	"bytes"
 	"compress/gzip"
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	_http "github.com/deeptest-com/deeptest-next/pkg/libs/http"
 	_logUtils "github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	_str "github.com/deeptest-com/deeptest-next/pkg/libs/string"
 	"github.com/fatih/color"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -30,6 +33,83 @@ func Put(url string, data interface{}, headers map[string]string) (ret []byte, e
 }
 func Delete(url string, headers map[string]string) (ret []byte, err error) {
 	return gets(url, "DELETE", headers)
+}
+func PostFile(url string, data interface{}, filePath string, headers map[string]string) (ret []byte, err error) {
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+		Timeout: 8 * time.Second,
+	}
+
+	var dataBytes []byte
+
+	dataBytes, err = json.Marshal(data)
+	formData := []BodyFormDataItem{}
+	formItemText := BodyFormDataItem{
+		Name:  "data",
+		Value: string(dataBytes),
+		Type:  FormDataTypeText,
+	}
+	formData = append(formData, formItemText)
+
+	formItemFile := BodyFormDataItem{
+		Name:  "file",
+		Value: filePath,
+		Type:  FormDataTypeFile,
+	}
+	formData = append(formData, formItemFile)
+
+	bodyFormData := GenBodyFormDataFromItems(formData)
+
+	formDataWriter, _ := MultipartEncoder(bodyFormData)
+	formDataContentType := MultipartContentType(formDataWriter)
+
+	dataBytes = formDataWriter.Payload.Bytes()
+
+	if err != nil {
+		_logUtils.Infof(color.RedString("marshal httpReq failed, error: %s.", err.Error()))
+		return
+	}
+
+	httpReq, reqErr := http.NewRequest("POST", url, bytes.NewReader(dataBytes))
+	if reqErr != nil {
+		_logUtils.Error(reqErr.Error())
+		return
+	}
+
+	httpReq.Header.Set("Content-Type", formDataContentType)
+	for key, value := range headers {
+		httpReq.Header.Set(key, value)
+	}
+
+	resp, err := client.Do(httpReq)
+	if err != nil {
+		return
+	}
+
+	defer resp.Body.Close()
+
+	if err != nil {
+		_logUtils.Infof(color.RedString("post request failed, error: %s.", err.Error()))
+		return
+	}
+
+	if !_http.IsSuccessCode(resp.StatusCode) {
+		_logUtils.Infof(color.RedString("post request return '%s'.", resp.Status))
+		err = errors.New(resp.Status)
+		return
+	}
+
+	reader := resp.Body
+	if resp.Header.Get("Content-Encoding") == "gzip" {
+		reader, _ = gzip.NewReader(resp.Body)
+	}
+
+	unicodeContent, _ := io.ReadAll(reader)
+	ret, _ = _str.UnescapeUnicode(unicodeContent)
+
+	return
 }
 
 func gets(url, method string, headers map[string]string) (ret []byte, err error) {
@@ -124,8 +204,26 @@ func posts(url string, method string, data interface{}, headers map[string]strin
 		reader, _ = gzip.NewReader(resp.Body)
 	}
 
-	unicodeContent, _ := ioutil.ReadAll(reader)
+	unicodeContent, _ := io.ReadAll(reader)
 	ret, _ = _str.UnescapeUnicode(unicodeContent)
+
+	return
+}
+
+func GenBodyFormDataFromItems(items []BodyFormDataItem) (formData []BodyFormDataItem) {
+	mp := map[string]bool{}
+
+	if items != nil {
+		for _, item := range items {
+			key := item.Name
+			if _, ok := mp[key]; ok { // skip duplicate one
+				continue
+			}
+
+			formData = append(formData, item)
+			mp[key] = true
+		}
+	}
 
 	return
 }
