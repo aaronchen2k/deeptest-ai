@@ -11,19 +11,27 @@ import {
   type UploadProps,
 } from 'ant-design-vue';
 
+import { clearKnowledgeBase } from '#/api/test/chat';
+
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
-const uploadUrl = `${apiURL}/file/upload`;
+const uploadUrl = `${apiURL}/knowledgeBase/uploadDoc`;
 
-const handleChange = (info: UploadChangeParam) => {
+const upload = (info: UploadChangeParam) => {
   if (info.file.status !== 'uploading') {
     window.console.log(info.file, info.fileList);
   }
   if (info.file.status === 'done') {
-    message.success(`${info.file.name} file uploaded successfully`);
+    message.success(`${info.file.name} 文件上传成功。`);
   } else if (info.file.status === 'error') {
     message.error(`${info.file.name} file upload failed.`);
   }
+};
+const clear = () => {
+  window.console.log('clear');
+  clearKnowledgeBase('').then(() => {
+    message.success(`清理知识库成功。`);
+  });
 };
 
 const fileList = ref([]);
@@ -39,7 +47,6 @@ const progress: UploadProps['progress'] = {
   class: 'test',
 };
 const headers = { authorization: 'authorization-text' };
-
 </script>
 
 <template>
@@ -50,7 +57,8 @@ const headers = { authorization: 'authorization-text' };
       :headers="headers"
       :progress="progress"
       name="file"
-      @change="handleChange"
+      style="float: left"
+      @change="upload"
     >
       <Button class="upload-btn">
         <span
@@ -59,13 +67,25 @@ const headers = { authorization: 'authorization-text' };
         <!-- <span class="upload-text">Upload</span>-->
       </Button>
     </Upload>
+
+    <span
+      class="icon dp-dropdown-icon icon-[ant-design--clear-outlined]"
+      @click="clear"
+    ></span>
   </div>
 </template>
 
+<style lang="less">
+.uploader-main {
+  .ant-upload-list {
+    display: none;
+    color: rgba(0, 0, 0, 0.88);
+  }
+}
+</style>
+
 <style lang="less" scoped>
 .uploader-main {
-  width: 44px;
-
   .upload-btn {
     background-color: transparent;
     color: rgba(0, 0, 0, 0.88);
@@ -75,6 +95,13 @@ const headers = { authorization: 'authorization-text' };
   .upload-text {
     display: inline-block;
     padding-left: 5px;
+  }
+  .icon {
+    float: left;
+    height: 30px;
+    line-height: 32px;
+    display: inline-block;
+    cursor: pointer;
   }
 }
 </style>

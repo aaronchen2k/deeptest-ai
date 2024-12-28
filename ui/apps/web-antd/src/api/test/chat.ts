@@ -1,5 +1,5 @@
 import { requestClient } from '#/api/request';
 
-export async function listKnowledgeBase(): Promise<any> {
-  return requestClient.get(`/list_knowledge_base`);
+export async function clearKnowledgeBase(kb: string): Promise<any> {
+  return requestClient.post(`/knowledgeBase/clearAll`, {}, { params: { kb } });
 }
