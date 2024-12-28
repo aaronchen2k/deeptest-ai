@@ -5,18 +5,6 @@ export function scroll() {
     scrollTo('chat-messages', 0);
   }, 200);
 }
-
-export function getDocDesc(str: string) {
-  if (str.length < 30) {
-    return str;
-  }
-
-  const first = str.slice(0, 16);
-  const last = str.slice(Math.max(0, str.length - 8));
-
-  return `${first} ... ${last}`;
-}
-
 export function getDocLink(doc: any): any {
   return {
     docId: doc.document_id,

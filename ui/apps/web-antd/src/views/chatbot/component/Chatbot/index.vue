@@ -43,7 +43,7 @@ const props = defineProps({
 
 const userStore = useUserStore();
 
-const { imageRepoUrl, docRepoUrl } = useAppConfig(
+const { docRepoUrl } = useAppConfig(
   import.meta.env,
   import.meta.env.PROD,
 );
@@ -215,7 +215,7 @@ const send = async () => {
           if (content.length > 0)
             messages.value[index].content = replaceImageUrl(
               messages.value[index].content + content,
-              imageRepoUrl,
+              docRepoUrl,
             );
 
           if (docs.length > 0)

@@ -115,7 +115,7 @@ func (c *Client) newRequest(ctx context.Context, method, url string, setters ...
 func (c *Client) sendRequest(req *http.Request, v Response) error {
 	req.Header.Set("Accept", "application/json")
 
-	// Check whether Content-Type is already set, UploadZipFile Files API requires
+	// Check whether Content-Type is already set, UnzipAndUploadFiles Files API requires
 	// Content-Type == multipart/form-data
 	contentType := req.Header.Get("Content-Type")
 	if contentType == "" {

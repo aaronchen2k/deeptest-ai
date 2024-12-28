@@ -36,7 +36,7 @@ func (c *KnowledgeBaseCtrl) UploadDoc(ctx iris.Context) {
 		return
 	}
 
-	err = c.KnowledgeBaseService.UploadZipFile(pth, kb)
+	err = c.KnowledgeBaseService.UnzipAndUploadFiles(pth, kb)
 	if err != nil {
 		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
 		return

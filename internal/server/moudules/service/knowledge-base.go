@@ -10,6 +10,7 @@ import (
 	_file "github.com/deeptest-com/deeptest-next/pkg/libs/file"
 	"github.com/deeptest-com/deeptest-next/pkg/libs/http"
 	"github.com/deeptest-com/deeptest-next/pkg/libs/log"
+	"github.com/snowlyg/helper/dir"
 	"os"
 	"path/filepath"
 	"strings"
@@ -26,15 +27,16 @@ var (
 	kbRemoveDocUri = "datasets/%s/documents/%s"
 )
 
-func (s *KnowledgeBaseService) UploadZipFile(zipPath, kb string) (err error) {
+func (s *KnowledgeBaseService) UnzipAndUploadFiles(zipPath, kb string) (err error) {
 	unzipDir, err := _file.Unzip(zipPath, filepath.Join(consts.WorkDir, "_temp"))
 	if err != nil {
 		return
 	}
-	filePaths, _ := s.ListFile(unzipDir, "img")
 
-	for _, filePath := range filePaths {
-		err := s.UploadDoc(filePath, kb)
+	uploadFiles, _ := s.backupKbFiles(unzipDir, unzipDir, "img")
+	for _, filePath := range uploadFiles {
+		err := s.uploadDocToKnowledgeBase(filePath, kb)
+
 		if err != nil {
 			continue
 		}
@@ -43,7 +45,7 @@ func (s *KnowledgeBaseService) UploadZipFile(zipPath, kb string) (err error) {
 	return
 }
 
-func (s *KnowledgeBaseService) UploadDoc(pth, kb string) (err error) {
+func (s *KnowledgeBaseService) uploadDocToKnowledgeBase(pth, kb string) (err error) {
 	if kb == "" {
 		kb = defaultDb
 	}
@@ -109,8 +111,10 @@ func (s *KnowledgeBaseService) getHeaders() (ret map[string]string) {
 	return
 }
 
-func (s *KnowledgeBaseService) ListFile(dirName, exclude string) (ret []string, err error) {
-	dirName = strings.TrimSuffix(dirName, string(os.PathSeparator))
+func (s *KnowledgeBaseService) backupKbFiles(root, dirName, exclude string) (ret []string, err error) {
+	dirKbDocs := filepath.Join(consts.WorkDir, consts.DirKbDocs)
+
+	dirName = strings.TrimSuffix(dirName, _file.PathSep)
 
 	infos, err := os.ReadDir(dirName)
 	if err != nil {
@@ -118,30 +122,36 @@ func (s *KnowledgeBaseService) ListFile(dirName, exclude string) (ret []string, 
 	}
 
 	for _, info := range infos {
-		if info.Name() == exclude {
-			continue
-		}
-
-		path := dirName + string(os.PathSeparator) + info.Name()
+		path := filepath.Join(dirName, info.Name())
 		realInfo, err := os.Stat(path)
 		if err != nil {
 			return nil, err
 		}
 
-		if !realInfo.Mode().IsRegular() {
+		if realInfo.Name() == "__MACOSX" {
 			continue
 		}
 
 		if realInfo.IsDir() {
-			children, err := s.ListFile(path, exclude)
+			children, err := s.backupKbFiles(root, path, exclude)
 			if err != nil {
 				return nil, err
 			}
 			ret = append(ret, children...)
-			continue
-		}
 
-		ret = append(ret, path)
+		} else {
+			if info.Name() != exclude {
+				ret = append(ret, path)
+			}
+
+			dist := filepath.Join(dirKbDocs, strings.TrimPrefix(path, root))
+
+			_file.InsureDir(dir.Dir(dist))
+			err = _file.CopyFile(path, dist)
+			if err != nil {
+				continue
+			}
+		}
 
 	}
 	return
