@@ -25,7 +25,7 @@ type ChatbotService struct {
 func (s *ChatbotService) Chat(req v1.ChatReq, flusher http.Flusher, ctx iris.Context) (ret _domain.PageData, err error) {
 	url := ""
 	if config.CONFIG.Ai.PlatformType == consts.Dify {
-		url = _http.AddSepIfNeeded(config.CONFIG.Ai.PlatformUrl) + "v1/chat-messages"
+		url = _http.AddSepIfNeeded(config.CONFIG.Ai.PlatformUrl) + "chat-messages"
 	}
 	_logs.Infof("%s url = %s", config.CONFIG.Ai.PlatformType, url)
 

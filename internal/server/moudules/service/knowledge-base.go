@@ -12,6 +12,7 @@ import (
 	"github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type KnowledgeBaseService struct {
@@ -30,7 +31,7 @@ func (s *KnowledgeBaseService) UploadZipFile(zipPath, kb string) (err error) {
 	if err != nil {
 		return
 	}
-	filePaths := s.ListFile(unzipDir)
+	filePaths, _ := s.ListFile(unzipDir, "img")
 
 	for _, filePath := range filePaths {
 		err := s.UploadDoc(filePath, kb)
@@ -54,9 +55,7 @@ func (s *KnowledgeBaseService) UploadDoc(pth, kb string) (err error) {
 	}
 	_logs.Infof("%s url = %s", config.CONFIG.Ai.PlatformType, url)
 
-	data := domain.KbCreateReq{
-		IndexingTechnique: "high_quality",
-	}
+	data := s.getData()
 
 	bts, err := httpUtils.PostFile(url, data, pth, s.getHeaders())
 	if err != nil {
@@ -110,6 +109,64 @@ func (s *KnowledgeBaseService) getHeaders() (ret map[string]string) {
 	return
 }
 
-func (s *KnowledgeBaseService) ListFile(pth string) (ret []string) {
+func (s *KnowledgeBaseService) ListFile(dirName, exclude string) (ret []string, err error) {
+	dirName = strings.TrimSuffix(dirName, string(os.PathSeparator))
+
+	infos, err := os.ReadDir(dirName)
+	if err != nil {
+		return
+	}
+
+	for _, info := range infos {
+		if info.Name() == exclude {
+			continue
+		}
+
+		path := dirName + string(os.PathSeparator) + info.Name()
+		realInfo, err := os.Stat(path)
+		if err != nil {
+			return nil, err
+		}
+
+		if !realInfo.Mode().IsRegular() {
+			continue
+		}
+
+		if realInfo.IsDir() {
+			children, err := s.ListFile(path, exclude)
+			if err != nil {
+				return nil, err
+			}
+			ret = append(ret, children...)
+			continue
+		}
+
+		ret = append(ret, path)
+
+	}
+	return
+}
+
+func (s *KnowledgeBaseService) getData() (ret domain.KbCreateReq) {
+	rules := domain.Rules{Segmentation: domain.Segmentation{
+		Separator: "###", MaxTokens: 500,
+	}}
+	rules.PreProcessingRules = append(rules.PreProcessingRules, domain.PreProcessingRule{
+		Id:      "remove_extra_spaces",
+		Enabled: true,
+	})
+	rules.PreProcessingRules = append(rules.PreProcessingRules, domain.PreProcessingRule{
+		Id:      "remove_urls_emails",
+		Enabled: true,
+	})
+
+	ret = domain.KbCreateReq{
+		IndexingTechnique: "high_quality",
+		ProcessRule: domain.ProcessRule{
+			Rules: rules,
+			Mode:  "custom",
+		},
+	}
+
 	return
 }

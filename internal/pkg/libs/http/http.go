@@ -85,21 +85,11 @@ func PostFile(url string, data interface{}, filePath string, headers map[string]
 
 	resp, err := client.Do(httpReq)
 	if err != nil {
-		return
-	}
-
-	defer resp.Body.Close()
-
-	if err != nil {
 		_logUtils.Infof(color.RedString("post request failed, error: %s.", err.Error()))
 		return
 	}
 
-	if !_http.IsSuccessCode(resp.StatusCode) {
-		_logUtils.Infof(color.RedString("post request return '%s'.", resp.Status))
-		err = errors.New(resp.Status)
-		return
-	}
+	defer resp.Body.Close()
 
 	reader := resp.Body
 	if resp.Header.Get("Content-Encoding") == "gzip" {
@@ -108,6 +98,12 @@ func PostFile(url string, data interface{}, filePath string, headers map[string]
 
 	unicodeContent, _ := io.ReadAll(reader)
 	ret, _ = _str.UnescapeUnicode(unicodeContent)
+
+	// check response status
+	if !_http.IsSuccessCode(resp.StatusCode) {
+		_logUtils.Infof(color.RedString("post request return '%s'.", resp.Status))
+		err = errors.New(resp.Status)
+	}
 
 	return
 }
