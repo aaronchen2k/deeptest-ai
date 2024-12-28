@@ -11,6 +11,7 @@ import (
 	"github.com/deeptest-com/deeptest-next/pkg/libs/http"
 	"github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"os"
+	"path/filepath"
 )
 
 type KnowledgeBaseService struct {
@@ -25,7 +26,10 @@ var (
 )
 
 func (s *KnowledgeBaseService) UploadZipFile(zipPath, kb string) (err error) {
-	unzipDir := _file.Unzip(zipPath)
+	unzipDir, err := _file.Unzip(zipPath, filepath.Join(consts.WorkDir, "_temp"))
+	if err != nil {
+		return
+	}
 	filePaths := s.ListFile(unzipDir)
 
 	for _, filePath := range filePaths {

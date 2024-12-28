@@ -118,17 +118,24 @@ require (
 )
 
 require (
+	github.com/dsnet/compress v0.0.2-0.20210315054119-f66993602bf5 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/glebarez/go-sqlite v1.20.3 // indirect
 	github.com/glebarez/sqlite v1.7.0 // indirect
 	github.com/jackc/pgx/v5 v5.4.3 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
+	github.com/klauspost/pgzip v1.2.5 // indirect
 	github.com/mattn/go-sqlite3 v1.14.22 // indirect
+	github.com/mholt/archiver/v3 v3.5.1 // indirect
+	github.com/nwaples/rardecode v1.1.0 // indirect
 	github.com/oklog/ulid/v2 v2.1.0 // indirect
+	github.com/pierrec/lz4/v4 v4.1.2 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230126093431-47fa9a501578 // indirect
 	github.com/tidwall/gjson v1.14.4 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
+	github.com/ulikunitz/xz v0.5.9 // indirect
+	github.com/xi2/xz v0.0.0-20171230120015-48954b6210f8 // indirect
 	gopkg.in/cenkalti/backoff.v1 v1.1.0 // indirect
 	modernc.org/libc v1.22.2 // indirect
 	modernc.org/mathutil v1.5.0 // indirect

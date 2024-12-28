@@ -1,12 +1,14 @@
 package _file
 
 import (
+	"archive/zip"
 	"bytes"
 	"errors"
 	"fmt"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	_consts "github.com/deeptest-com/deeptest-next/pkg/libs/consts"
 	_logs "github.com/deeptest-com/deeptest-next/pkg/libs/log"
+	"github.com/mholt/archiver/v3"
 	"github.com/oklog/ulid/v2"
 	"github.com/snowlyg/helper/str"
 	"math/rand"
@@ -17,6 +19,10 @@ import (
 	"runtime"
 	"strings"
 	"time"
+)
+
+var (
+	PathSep = string(os.PathSeparator)
 )
 
 // GetExecDir 当前执行目录
@@ -162,4 +168,54 @@ func GetUploadFileName(name string) (ret string, err error) {
 	ret = str.Join(base, "-", strings.ToLower(rand.String()), ".", ext)
 
 	return
+}
+
+func GetZipSingleDir(path string) string {
+	folder := ""
+	z := archiver.Zip{}
+	err := z.Walk(path, func(f archiver.File) error {
+		if f.IsDir() {
+			zfh, ok := f.Header.(zip.FileHeader)
+			if ok {
+				fmt.Println("file: ", zfh.Name)
+
+				if folder == "" && zfh.Name != "__MACOSX" {
+					folder = zfh.Name
+				} else {
+					if strings.Index(zfh.Name, folder) != 0 {
+						return errors.New("found more than one folder")
+					}
+				}
+			}
+		}
+		return nil
+	})
+
+	if err != nil {
+		return ""
+	}
+
+	return folder
+}
+
+func GetFileName(pathOrUrl string) string {
+	index := strings.LastIndex(pathOrUrl, PathSep)
+
+	name := pathOrUrl[index+1:]
+	return name
+}
+
+func GetFileNameWithoutExt(pathOrUrl string) string {
+	name := GetFileName(pathOrUrl)
+	index := strings.LastIndex(name, ".")
+	return name[:index]
+}
+
+func GetExtName(pathOrUrl string) string {
+	index := strings.LastIndex(pathOrUrl, ".")
+
+	if index == -1 {
+		return ""
+	}
+	return pathOrUrl[index:]
 }
