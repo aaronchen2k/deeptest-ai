@@ -6,10 +6,10 @@ import (
 	"github.com/deeptest-com/deeptest-next/internal/pkg/config"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/domain"
-	httpUtils "github.com/deeptest-com/deeptest-next/internal/pkg/libs/http"
+	"github.com/deeptest-com/deeptest-next/internal/pkg/libs/http"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/repo"
-	_file "github.com/deeptest-com/deeptest-next/pkg/libs/file"
+	"github.com/deeptest-com/deeptest-next/pkg/libs/file"
 	"github.com/deeptest-com/deeptest-next/pkg/libs/http"
 	"github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"github.com/snowlyg/helper/dir"
@@ -52,8 +52,10 @@ func (s *KnowledgeBaseService) UnzipAndUploadFiles(zipPath, dataset string) (err
 		}
 	}
 
-	if len(unzipDir)-len(tempDir) > 26 { // 26 is the length of uuid in unzip dir name
-		os.RemoveAll(unzipDir)
+	// ensure it is a dir that unzip from an uploaded file.
+	// 26 is the length of uuid in unzip dir name.
+	if len(unzipDir)-len(tempDir) > 26 {
+		//os.RemoveAll(unzipDir)
 	}
 
 	return
