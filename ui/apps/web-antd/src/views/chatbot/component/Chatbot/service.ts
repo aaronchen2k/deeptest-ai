@@ -21,7 +21,7 @@ export function replaceImageUrl(str: string, imageRepoUrl: string) {
     // ![海报](./img/poster.jpg \"海报\")
     str = str.replaceAll(
       /(\[.+?\])\(([^http].+?)\)/g,
-      `$1(${imageRepoUrl}$2)`,
+      `$1(${imageRepoUrl}/$2)`,
     );
   } catch (error) {
     window.console.log('replaceImageUrl error', error);
@@ -97,4 +97,16 @@ export function isUnderRobotMsg(elem: any) {
   }
 
   return isUnderRobotMsg(parent);
+}
+
+export function getMaterialIdInDocName(docName: string) {
+  // 百年孤独_8.md
+  const start = docName.lastIndexOf('_');
+  const end = docName.lastIndexOf('.');
+
+  const materialId = docName.slice(start + 1, end);
+
+  const newDocName = `${docName.slice(0, start)}${docName.slice(end)}`;
+
+  return { materialId, newDocName };
 }

@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	_consts "github.com/deeptest-com/deeptest-next/pkg/libs/consts"
-	_logs "github.com/deeptest-com/deeptest-next/pkg/libs/log"
 	"github.com/mholt/archiver/v3"
 	"github.com/oklog/ulid/v2"
 	"github.com/snowlyg/helper/str"
@@ -147,25 +146,28 @@ func ReadFileBuf(filePath string) []byte {
 }
 
 func GetUploadFileName(name string) (ret string, err error) {
+	entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
+	ms := ulid.Timestamp(time.Now())
+	rand, _ := ulid.New(ms, entropy)
+
+	ret = AddFileNamePostfix(name, strings.ToLower(rand.String()))
+
+	return
+}
+
+func AddFileNamePostfix(name, postfix string) (ret string) {
 	name = strings.TrimPrefix(name, "./")
 
 	index := strings.LastIndex(name, ".")
 
 	if index <= 0 {
-		msg := fmt.Sprintf("文件名错误 %s", name)
-		_logs.Info(msg)
-		err = errors.New(msg)
 		return
 	}
 
 	base := name[:index]
 	ext := name[index+1:]
 
-	entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
-	ms := ulid.Timestamp(time.Now())
-	rand, _ := ulid.New(ms, entropy)
-
-	ret = str.Join(base, "-", strings.ToLower(rand.String()), ".", ext)
+	ret = str.Join(base, "_", postfix, ".", ext)
 
 	return
 }

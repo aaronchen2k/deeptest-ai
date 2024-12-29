@@ -10,9 +10,9 @@ const (
 	ConfigType     = "json"
 	CasbinFileName = "rbac_model.conf"
 
-	DirUi     = "deeptest-ui"
-	DirUpload = "upload"
-	DirKbDocs = "upload/public/docs"
+	DirUi             = "deeptest-ui"
+	DirUpload         = "upload"
+	DirKnowledgeBases = "upload/public/knowledge_base"
 
 	TemplateKbQuery = "kb_query"
 )

@@ -6,6 +6,9 @@ var (
 		&TestSet{},
 		&TestPlan{},
 
+		KbMaterial{},
+		KbDoc{},
+
 		&ProjectRole{},
 		&Org{},
 		&Project{},

@@ -16,6 +16,7 @@ import Uploder from '../Uploder/index.vue';
 import {
   getDocLink,
   getLatestRobotMsg,
+  getMaterialIdInDocName,
   isUnderRobotMsg,
   replaceImageUrl,
   replaceLinkWithoutTitle,
@@ -43,10 +44,7 @@ const props = defineProps({
 
 const userStore = useUserStore();
 
-const { docRepoUrl } = useAppConfig(
-  import.meta.env,
-  import.meta.env.PROD,
-);
+const { docRepoUrl } = useAppConfig(import.meta.env, import.meta.env.PROD);
 const wakeUpWord = '小深';
 const humanName = 'Albert';
 const humanAvatar = '/static/chat-einstein.png';
@@ -189,8 +187,9 @@ const send = async () => {
         jsn.metadata?.retriever_resources.forEach((res: any) => {
           const { docId, docName, docType } = getDocLink(res);
           if (!docMap[docId] && docType === 'upload_file') {
-            const url = docRepoUrl + docName;
-            const doc_content = `[${docName}](${url})`;
+            const { materialId, newDocName } = getMaterialIdInDocName(docName);
+            const url = `${docRepoUrl}/${materialId}/${docName}`; // important
+            const doc_content = `[${newDocName}](${url})`;
 
             doc_contents.push(doc_content);
             docMap[docId] = true;
@@ -213,16 +212,22 @@ const send = async () => {
         const index = getLatestRobotMsg(messages.value);
         if (index >= 0) {
           if (content.length > 0)
+            // add http base url for image
+            // ![剧照](7/./img/stills_02.jpg "剧照")
             messages.value[index].content = replaceImageUrl(
               messages.value[index].content + content,
               docRepoUrl,
             );
 
           if (docs.length > 0)
-            messages.value[index].docs = replaceImageUrl(
-              messages.value[index].docs + docs,
-              docRepoUrl,
-            );
+            // add http base url for doc
+            // [百年孤独_8.md](http://localhost:9085/upload/public/knowledge_base/百年孤独_8.md)
+            messages.value[index].docs = messages.value[index].docs + docs;
+          // messages.value[index].docs = replaceDocUrl(
+          //   messages.value[index].docs + docs,
+          //   docRepoUrl,
+          // );
+          window.console.log('====== docs like', messages.value[index].docs);
 
           window.console.log('!!!', messages.value[index]);
         }
