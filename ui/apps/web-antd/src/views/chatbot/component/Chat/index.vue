@@ -440,6 +440,7 @@ onBeforeUnmount(async () => {
                 :source="`${item.content}\n\n${item.docs}`"
               />
             </div>
+            <div style="clear: both"></div>
             <div class="toolbar">
               <div class="call">
                 <span class="dp-link-primary" @click="recall(index)">
