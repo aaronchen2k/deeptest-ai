@@ -11,10 +11,17 @@
     color: #1677ff !important;
   }
  .markdown-container {
-    img {
-      margin-bottom: 3px;
-      width: 60px;
-    }
+   p {
+     > img {
+       float: left;
+       margin: 3px;
+       height: 60px;
+     }
+
+     &:last-of-type:not(:first-of-type) {
+       clear: both;
+     }
+   }
   }
 
   .chatbot-container {

@@ -201,7 +201,7 @@ const send = async () => {
       let docs = '';
       let content = '';
       if (doc_contents.length > 0) {
-        docs = `  \n参考资料：\n1. ${doc_contents.join('  \n1. ')}\n`;
+        docs = `  \n *参考资料：* \n1. ${doc_contents.join('  \n1. ')}\n`;
       } else if (msg_content.length > 0) {
         content = `${msg_content}`;
       }

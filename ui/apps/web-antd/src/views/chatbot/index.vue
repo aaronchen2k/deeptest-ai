@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue';
 
-import Chatbot from './component/Chatbot/index.vue';
+import Chatbot from './component/Chat/index.vue';
 
 const chatbotServerUrl = ref(import.meta.env.VITE_GLOB_API_SERVER);
 </script>
