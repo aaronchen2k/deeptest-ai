@@ -167,7 +167,7 @@ func AddFileNamePostfix(name, postfix string) (ret string) {
 	base := name[:index]
 	ext := name[index+1:]
 
-	ret = str.Join(base, "_", postfix, ".", ext)
+	ret = str.Join(base, "@", postfix, ".", ext)
 
 	return
 }

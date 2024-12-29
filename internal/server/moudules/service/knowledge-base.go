@@ -52,6 +52,7 @@ func (s *KnowledgeBaseService) UnzipAndUploadFiles(zipPath, dataset string) (err
 		}
 	}
 
+	// remove temporary files
 	// ensure it is a dir that unzip from an uploaded file.
 	// 26 is the length of uuid in unzip dir name.
 	if len(unzipDir)-len(tempDir) > 26 {

@@ -101,7 +101,7 @@ export function isUnderRobotMsg(elem: any) {
 
 export function getMaterialIdInDocName(docName: string) {
   // 百年孤独_8.md
-  const start = docName.lastIndexOf('_');
+  const start = docName.lastIndexOf('@');
   const end = docName.lastIndexOf('.');
 
   const materialId = docName.slice(start + 1, end);
