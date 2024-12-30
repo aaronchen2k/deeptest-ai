@@ -391,7 +391,7 @@ onBeforeUnmount(async () => {
     <div v-if="showChat" class="chatbot-container">
       <div class="header">
         <div class="logo">
-          <img src="/static/icon/chat-robot.png" />
+          <img src="/static/icon/chat-logo.png" />
         </div>
 
         <div class="label">ChatOPS</div>
