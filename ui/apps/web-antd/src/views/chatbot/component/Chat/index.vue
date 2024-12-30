@@ -457,6 +457,7 @@ onBeforeUnmount(async () => {
           v-model="msg"
           autocomplete="off"
           class="input"
+          placeholder="可使用上下键切换历史聊天记录"
           rows="2"
           @keydown="keyDown"
           @keyup.enter="send"
