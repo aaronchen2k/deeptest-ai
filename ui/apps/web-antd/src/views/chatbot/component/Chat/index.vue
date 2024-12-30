@@ -30,11 +30,6 @@ const props = defineProps({
     default: '', // will use the first llm in chatchat server if empty
     required: false,
   },
-  defaultKb: {
-    type: String,
-    default: 'wiki',
-    required: true,
-  },
   serverUrl: {
     type: String,
     default: 'http://127.0.0.1:9085/api/v1',
@@ -57,10 +52,6 @@ const msg = ref('');
 const conversationId = ref('' as string);
 const isChatting = ref(false);
 const continueOnCurrMsg = ref(false);
-
-const mdText = `提取器用于将请求响应结果中的数据经过解析后提取出来，并存储在变量中，用于结果的校验或传递给下个请求调用等进一步操作。使用方法如下：1.响应头参数值提取：直接从响应头中提取所需参数值。2.响应体内容提取：-使用Xpath对响应体进行解析。-本系统使用jsonquery工具进行解析。-Xpath语法详见：https://github.com/antchfx/jsonquery示例XPath写法：\`\`\`xml<response-body><example><data>所需数据</data></example></response-body>\`\`\`XPath表达式可能如下：\`\`\`xpath/response-body/example/data\`\`\`请注意，具体的XPath表达式需要根据实际的响应体结构进行调整。
-dom.ts:10 606`;
-window.console.log(mdText);
 
 const messages = ref([] as any[]);
 messages.value.push(
@@ -321,10 +312,6 @@ const keyDown = (event: any) => {
   }
 };
 
-const initChatData = async () => {
-  // const serverUrl = addSepIfNeeded(props.serverUrl);
-};
-
 const initHistory = async () => {
   histories.value = await getCache(CHAT_HISTORIES);
   if (!histories.value) histories.value = [];
@@ -375,9 +362,12 @@ const handleLinkClick = (event: any) => {
   }
 };
 
+function getRobotMsg(item: any) {
+  return item.content || item.docs ? `${item.content}\n\n${item.docs}` : '...';
+}
+
 onMounted(async () => {
   initHistory();
-  initChatData();
   document.addEventListener('click', handleLinkClick);
 
   scroll();
@@ -388,10 +378,10 @@ onBeforeUnmount(async () => {
 </script>
 
 <template>
-  <div class="chatbot-main">
+  <div class="chat-main">
     <div
       v-if="!showChat"
-      class="fix-action-open dp-link clear-both"
+      class="open-window-btn dp-link clear-both"
       title="开始聊天"
       @click="showOrNot"
     >
@@ -405,11 +395,18 @@ onBeforeUnmount(async () => {
         </div>
 
         <div class="label">ChatOPS</div>
+
+        <div class="contrl">
+          <div class="select-kb-wrapper"></div>
+          <div class="action dp-link" @click="showOrNot">
+            <span class="close"></span>
+          </div>
+        </div>
       </div>
 
       <div id="chat-messages" class="messages">
         <template v-for="(item, index) in messages" :key="index">
-          <div v-if="item.type === 'human'" class="chat-sender human">
+          <div v-if="item.type === 'human'" class="chat-record human">
             <div class="avatar-container">
               <div class="avatar"></div>
             </div>
@@ -428,7 +425,7 @@ onBeforeUnmount(async () => {
             </div>
           </div>
 
-          <div v-if="item.type === 'robot'" class="chat-sender robot">
+          <div v-if="item.type === 'robot'" class="chat-record robot">
             <div class="avatar-container">
               <div class="avatar"></div>
             </div>
@@ -437,7 +434,7 @@ onBeforeUnmount(async () => {
               <Markdown
                 :html="false"
                 :linkify="true"
-                :source="`${item.content}\n\n${item.docs}`"
+                :source="getRobotMsg(item)"
               />
             </div>
             <div style="clear: both"></div>

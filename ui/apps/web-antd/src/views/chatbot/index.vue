@@ -8,7 +8,7 @@ const chatbotServerUrl = ref(import.meta.env.VITE_GLOB_API_SERVER);
 
 <template>
   <div class="chatbot-main">
-    <Chatbot :server-url="chatbotServerUrl" default-kb="wiki">
+    <Chatbot :server-url="chatbotServerUrl">
       <template #actions>
         <span class="icon-container" title="帮助">
           <span class="help icon dp-link"></span>
@@ -35,6 +35,5 @@ const chatbotServerUrl = ref(import.meta.env.VITE_GLOB_API_SERVER);
 <style lang="less" scoped>
 .chatbot-main {
   padding: 16px;
-  width: 320px;
 }
 </style>

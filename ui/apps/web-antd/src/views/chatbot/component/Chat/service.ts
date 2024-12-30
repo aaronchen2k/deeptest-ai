@@ -3,7 +3,7 @@ import { scrollTo } from '@vben/utils';
 export function scroll() {
   setTimeout(() => {
     scrollTo('chat-messages', 0);
-  }, 200);
+  }, 100);
 }
 export function getDocLink(doc: any): any {
   return {

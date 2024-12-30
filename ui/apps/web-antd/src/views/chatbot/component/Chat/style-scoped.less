@@ -1,12 +1,12 @@
 .chatbot-main {
-  .fix-action-open {
+  .open-window-btn {
     position: fixed;
-    z-index: 99;
     padding: 4px;
     bottom: 70px;
     right: 16px;
     width: 32px;
     height: 32px;
+    z-index: 9999;
 
     .open {
       display: inline-block;
@@ -19,10 +19,6 @@
   }
 
   .chatbot-container {
-    z-index: 9;
-    position: fixed;
-    top: 0;
-    right: 0;
     padding: 16px 16px 0 16px;
     height: 100%;
     width: 800px;
@@ -55,14 +51,14 @@
       }
       .contrl {
         flex: 1;
+        display: flex;
 
-        .select-wrapper {
+        .select-kb-wrapper {
+          flex: 1;
           padding: 0 6px;
-          width: 210px;
           height: 32px;
-          border: solid 1px #E0E0E0;
 
-          .select {
+          .select-kb {
             width: 100%;
             height: 100%;
             &:focus {
@@ -70,17 +66,18 @@
             }
           }
         }
-      }
-      .action {
-        width: 30px;
-        padding: 7px;
 
-        .close {
-          display: inline-block;
-          height: 16px;
-          width: 16px;
-          background-size: cover;
-          background-image: url('/static/icon/chat-close.png');
+        .action {
+          width: 30px;
+          padding: 7px;
+
+          .close {
+            display: inline-block;
+            height: 16px;
+            width: 16px;
+            background-size: cover;
+            background-image: url('/static/icon/chat-close.png');
+          }
         }
       }
     }
@@ -92,15 +89,17 @@
       border-radius: 8px;
       background: linear-gradient(180deg, #F3F3F6 0%, #EAEDF6 100%);
 
-      .chat-sender {
+      .chat-record {
         clear: both;
         font-size: 100%;
 
         &.human .avatar-container .avatar {
           background-image: url('/static/icon/chat-human.png');
+          background-size: 28px;
         }
         &.robot .avatar-container .avatar {
           background-image: url('/static/icon/chat-robot.png');
+          background-size: 28px;
         }
 
         .avatar-container {
@@ -169,7 +168,7 @@
         }
       }
 
-      .chat-sender div:first-child img {
+      .chat-record div:first-child img {
         width: 40px;
         height: 40px;
         /*border-radius: 10%;*/

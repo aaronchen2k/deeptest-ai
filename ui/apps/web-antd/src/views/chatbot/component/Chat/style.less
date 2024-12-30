@@ -1,77 +1,80 @@
 .chatbot-main {
-  .dp-link {
-    cursor: pointer;
-  }
+  z-index: 9;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
 
-  .dp-link-primary {
-    cursor: pointer;
-    color: #1677ff;
-  }
-  a {
-    color: #1677ff !important;
-  }
- .markdown-container {
-   p {
-     > img {
-       float: left;
-       margin: 3px;
-       height: 60px;
+  .chat-main {
+    height: 100%;
+
+   .markdown-container {
+     a {
+       color: #1677ff !important;
      }
+     p {
+       > img {
+         float: left;
+         margin: 3px;
+         height: 60px;
+       }
 
-     &:last-of-type:not(:first-of-type) {
-       clear: both;
+       &:last-of-type:not(:first-of-type) {
+         clear: both;
+       }
      }
-   }
-   hr {
-     color: rgba(0, 0, 0, 0.2);
-     border-color: rgba(0, 0, 0, 0.2);
-   }
-  }
-
-  .chatbot-container {
-    .robot .content {
-      p {
-        margin-top: 0.3em !important;
-        margin-bottom: 0.3em !important;
-      }
+     hr {
+       color: rgba(0, 0, 0, 0.2);
+       border-color: rgba(0, 0, 0, 0.2);
+     }
     }
 
-    .actions {
-      padding: 9px;
-      text-align: right;
-      height: 58px;
+    .chatbot-container {
+      .robot .content {
+        p {
+          margin-top: 0.3em !important;
+          margin-bottom: 0.3em !important;
+        }
+      }
 
-      .icon-container {
-        display: inline-block;
-        margin-left: 10px;
-        padding: 10px;
-        width: 40px;
-        height: 40px;
-        border-radius: 40px;
-        background: #FFFFFF;
-        border: 1px solid #F5F5F5;
-        box-shadow: 0 6px 32px -2px rgba(0, 0, 0, 0.1);
+      .actions {
+        padding: 9px;
+        text-align: right;
+        height: 58px;
 
-        .icon {
+        .icon-container {
           display: inline-block;
-          width: 18px;
-          height: 18px;
-          background-size: cover;
+          margin-left: 10px;
+          padding: 10px;
+          width: 40px;
+          height: 40px;
+          border-radius: 40px;
+          background: #FFFFFF;
+          border: 1px solid #F5F5F5;
+          box-shadow: 0 6px 32px -2px rgba(0, 0, 0, 0.1);
 
-          &.help {
-            background-image: url("/static/icon/chat-help.png");
-          }
-          &.comments {
-            background-image: url("/static/icon/chat-comments.png");
-          }
-          &.up {
-            background-image: url("/static/icon/chat-up.png");
-          }
-          &.down {
-            background-image: url("/static/icon/chat-down.png");
+          .icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background-size: cover;
+
+            &.help {
+              background-image: url("/static/icon/chat-help.png");
+            }
+            &.comments {
+              background-image: url("/static/icon/chat-comments.png");
+            }
+            &.up {
+              background-image: url("/static/icon/chat-up.png");
+            }
+            &.down {
+              background-image: url("/static/icon/chat-down.png");
+            }
           }
         }
       }
     }
+
   }
 }

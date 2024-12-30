@@ -95,8 +95,7 @@ export function scrollTo(id: string, top?: number): void {
   if (elem) {
     setTimeout(() => {
       elem.scrollTop = elem.scrollHeight + (top || 100);
-
-      window.console.log(elem.scrollHeight);
+      // window.console.log(elem.scrollHeight);
     }, 500);
   }
 }
