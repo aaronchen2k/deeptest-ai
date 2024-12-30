@@ -64,7 +64,7 @@ messages.value.push(
   {
     type: 'robot',
     name: 'ChatGPT',
-    content: '你好，有什么可以帮助您的？',
+    content: '你好，有什么可以帮助你的吗？',
     docs: '',
   },
 );
