@@ -34,7 +34,7 @@ export const useCaseStore = defineStore('case', () => {
 
   const activeTabKey = ref(0);
   const caseTabs = ref([] as any[]);
-  const caseModel = ref(null as any);
+  const caseModel = ref({} as any);
 
   function selectNode(keys: any[], e: any) {
     window.console.log('selectNode', keys, e?.node?.dataRef);
@@ -51,7 +51,10 @@ export const useCaseStore = defineStore('case', () => {
     );
 
     selectedNode.value = treeDataMap.value[selectedKeys.value[0]];
-    openCaseTab(selectedNode.value);
+
+    if (selectedNode.value.type === 'leaf') {
+      openCaseTab(selectedNode.value.id);
+    }
   }
 
   const selectStoredKeyCall = debounce(async () => {
@@ -168,15 +171,22 @@ export const useCaseStore = defineStore('case', () => {
 
   function openCaseTab(id: number) {
     window.console.log('openCaseTab', id);
-
     if (id <= 0) {
       caseModel.value = null;
       return;
     }
 
+    const found = caseTabs.value.find((item) => {
+      return item.id === id;
+    });
+
     getCaseApi(id).then((result) => {
       window.console.log(result);
       caseModel.value = result;
+
+      if (!found) {
+        caseTabs.value.push(result);
+      }
     });
   }
 

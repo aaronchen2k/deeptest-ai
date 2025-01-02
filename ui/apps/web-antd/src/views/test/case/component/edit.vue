@@ -1,13 +1,15 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
 
+import { vOnClickOutside } from '@vueuse/components';
 import { Dropdown, Empty, Menu, MenuItem, TabPane, Tabs } from 'ant-design-vue';
 
 import { useCaseStore } from '#/views/test/case/store';
 
 const caseStore = useCaseStore();
+const model = computed(() => caseStore.caseModel);
 
 /**
  * tabs 右键菜单操作
@@ -63,8 +65,10 @@ const onContextMenuClick = (e: any, record?: any) => {
 };
 
 const getTitle = (title: string) => {
-  const len = title.length;
-  if (len <= 12) return title;
+  window.console.log('getTitle');
+
+  const len = title?.length;
+  if (!title || len <= 12) return title;
 
   // eslint-disable-next-line unicorn/prefer-string-slice
   return `${title.slice(0, 16)}...${title.substring(len - 6, len)}`;
@@ -89,7 +93,7 @@ const tabsContextMenu = [
 <template>
   <Page auto-content-height class="case-main">
     <Tabs
-      v-if="caseStore.caseTabs?.length"
+      v-if="caseStore.caseTabs?.length > 0"
       :active-key="caseStore.caseModel.id"
       :closable="true"
       class="dp-tabs-full-height"
@@ -104,7 +108,7 @@ const tabsContextMenu = [
         class="dp-relative"
       >
         <template #tab>
-          <Dropdown :trigger="['contextmenu']" :visible="visible[tab.id]">
+          <Dropdown :open="visible[tab.id]" :trigger="['contextmenu']">
             <div
               v-on-click-outside="cancelVisible"
               @contextmenu="openDropdown(tab)"
@@ -121,7 +125,9 @@ const tabsContextMenu = [
           </Dropdown>
         </template>
 
-        <div class="interface-tabs-content">FORM</div>
+        <div class="interface-tabs-content">
+          {{ model }}
+        </div>
       </TabPane>
 
       <template #addIcon>
@@ -148,3 +154,77 @@ const tabsContextMenu = [
     </div>
   </Page>
 </template>
+
+<style lang="less">
+.case-main {
+  .ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: rgba(242, 242, 242, 0.85);
+  }
+
+  .ant-tabs-nav-wrap {
+    overflow: visible !important;
+    scrollbar-width: none;
+    z-index: 999;
+    width: 100%;
+
+    &.ant-tabs-nav-wrap-ping-right,
+    &.ant-tabs-nav-wrap-ping-left {
+      overflow: hidden;
+    }
+  }
+
+  .ant-tabs-nav-more {
+    display: none;
+  }
+
+  .extra-menu {
+    position: relative;
+
+    &.visible {
+      .ant-menu {
+        height: max-content;
+        transition: all 0.3s ease-in-out;
+        opacity: 1;
+      }
+    }
+
+    .ant-menu {
+      position: absolute;
+      width: 126px;
+      right: 16px;
+      top: 12px;
+      height: 0;
+      border-radius: 8px;
+      box-shadow:
+        0 6px 16px 0 rgba(0, 0, 0, 0.08),
+        0 3px 6px -4px rgba(0, 0, 0, 0.12),
+        0 9px 28px 8px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: all 0.3s ease-in-out;
+      opacity: 0;
+      z-index: 9999;
+      .ant-menu-item {
+        padding: 0 0 0 3px;
+        margin: 0;
+        width: 100% !important;
+        line-height: 32px;
+        height: 32px !important;
+        text-align: center;
+
+        &:first-child {
+          margin-top: 4px;
+        }
+
+        &:last-child {
+          margin-bottom: 4px;
+        }
+      }
+    }
+  }
+}
+</style>
+
+<style scoped lang="less">
+.case-main {
+}
+</style>

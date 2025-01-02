@@ -52,6 +52,7 @@
     "@changesets/changelog-github": "catalog:",
     "@changesets/cli": "catalog:",
     "@playwright/test": "catalog:",
+    "@types/lodash": "^4.17.13",
     "@types/node": "catalog:",
     "@vben/commitlint-config": "workspace:*",
     "@vben/eslint-config": "workspace:*",
@@ -105,5 +106,9 @@
       "canvas",
       "node-gyp"
     ]
+  },
+  "dependencies": {
+    "@vueuse/components": "^12.2.0",
+    "@vueuse/core": "^12.2.0"
   }
 }

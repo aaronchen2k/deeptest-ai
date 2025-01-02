@@ -42,6 +42,7 @@
     "@vben/types": "workspace:*",
     "@vben/utils": "workspace:*",
     "@vue/reactivity": "^3.5.13",
+    "@vueuse/components": "catalog:",
     "@vueuse/core": "catalog:",
     "ant-design-vue": "catalog:",
     "dayjs": "catalog:",

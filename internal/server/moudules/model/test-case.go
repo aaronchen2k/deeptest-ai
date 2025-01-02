@@ -6,7 +6,7 @@ type TestCase struct {
 	BaseModel
 
 	Version float64             `json:"version" yaml:"version"`
-	Title   string              `json:"name" yaml:"title"`
+	Title   string              `json:"title" yaml:"title"`
 	Type    consts.TreeNodeType `json:"type"`
 	Desc    string              `json:"desc" yaml:"desc"`
 
