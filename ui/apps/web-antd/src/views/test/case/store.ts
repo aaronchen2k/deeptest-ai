@@ -39,6 +39,7 @@ export const useCaseStore = defineStore('case', () => {
   function selectNode(keys: any[], e: any) {
     window.console.log('selectNode', keys, e?.node?.dataRef);
 
+    // eslint-disable-next-line unicorn/prefer-ternary
     if (keys.length === 0 && e) {
       // un-select, keep the old one
       selectedKeys.value = [e.node.dataRef.id];
