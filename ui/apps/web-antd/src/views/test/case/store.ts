@@ -42,7 +42,6 @@ export const useCaseStore = defineStore('case', () => {
     if (keys.length === 0 && e) {
       // un-select, keep the old one
       selectedKeys.value = [e.node.dataRef.id];
-      return;
     } else {
       selectedKeys.value = keys;
     }
