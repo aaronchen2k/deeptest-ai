@@ -38,11 +38,14 @@ export const useCaseStore = defineStore('case', () => {
 
   function selectNode(keys: any[], e: any) {
     window.console.log('selectNode', keys, e?.node?.dataRef);
-    if (!e?.node) {
-      return;
-    }
 
-    selectedKeys.value = [e.node.dataRef.id];
+    if (keys.length === 0 && e) {
+      // un-select, keep the old one
+      selectedKeys.value = [e.node.dataRef.id];
+      return;
+    } else {
+      selectedKeys.value = keys;
+    }
 
     setSelectedKeyCache(
       'case_tree',
@@ -54,11 +57,13 @@ export const useCaseStore = defineStore('case', () => {
 
     if (selectedNode.value.type === 'leaf') {
       openCaseTab(selectedNode.value.id);
+    } else {
+      // TODO: select a dir
     }
   }
 
-  const selectStoredKeyCall = debounce(async () => {
-    window.console.log('selectStoredKeyCall');
+  const selectStoredKey = debounce(async () => {
+    window.console.log('selectStoredKey');
     const key = await getSelectedKeyCache(
       'case_tree',
       globalStore.currProject.id,
@@ -258,8 +263,9 @@ export const useCaseStore = defineStore('case', () => {
     () => globalStore.currProject.id,
     (val: any) => {
       window.console.log('watch currProject in CaseStore', val);
+      if (!val) return;
 
-      selectStoredKeyCall();
+      selectStoredKey();
 
       loading.value = true;
       keywords.value = '';
@@ -278,6 +284,23 @@ export const useCaseStore = defineStore('case', () => {
       autoExpandParent.value = true;
     },
   );
+
+  function $reset() {
+    keywords.value = '';
+    expandedKeys.value = [];
+    autoExpandParent.value = false;
+    loading.value = false;
+
+    treeData.value = [];
+    treeDataMap.value = {};
+
+    selectedKeys.value = [];
+    selectedNode.value = null;
+
+    activeTabKey.value = 0;
+    caseTabs.value = [];
+    caseModel.value = {};
+  }
 
   return {
     keywords,
@@ -309,6 +332,8 @@ export const useCaseStore = defineStore('case', () => {
     setCaseModel,
 
     onDrop,
+
+    $reset,
   };
 });
 
