@@ -3,7 +3,7 @@ import { Page } from '@vben/common-ui';
 
 import ContentPane from '#/views/component/ContentPane/index.vue';
 
-import Edit from './component/edit.vue';
+import Right from './component/right.vue';
 import Tree from './component/tree.vue';
 </script>
 
@@ -17,7 +17,7 @@ import Tree from './component/tree.vue';
         <Tree />
       </template>
       <template #right>
-        <Edit />
+        <Right />
       </template>
     </ContentPane>
   </Page>
