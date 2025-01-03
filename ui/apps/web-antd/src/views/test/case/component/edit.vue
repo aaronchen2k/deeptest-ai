@@ -15,12 +15,8 @@ const model = computed(() => caseStore.caseModel);
   </Page>
 </template>
 
-<style lang="less">
-.case-edit {
-}
-</style>
-
 <style scoped lang="less">
 .case-edit-main {
+  height: 100%;
 }
 </style>

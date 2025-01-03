@@ -227,5 +227,6 @@ const tabsContextMenu = [
 
 <style scoped lang="less">
 .case-main {
+  height: 100%;
 }
 </style>

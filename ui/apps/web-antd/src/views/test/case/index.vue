@@ -8,7 +8,7 @@ import Tree from './component/tree.vue';
 </script>
 
 <template>
-  <Page class="case-main">
+  <Page auto-content-height class="case-main">
     <ContentPane
       :container-style="{ padding: 0, margin: 0 }"
       :show-expand="true"
