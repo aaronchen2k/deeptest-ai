@@ -10,7 +10,7 @@ const model = computed(() => caseStore.caseModel);
 </script>
 
 <template>
-  <Page auto-content-height class="case-main">
+  <Page class="case-edit-main">
     {{ model }}
   </Page>
 </template>
@@ -21,6 +21,6 @@ const model = computed(() => caseStore.caseModel);
 </style>
 
 <style scoped lang="less">
-.case-edit {
+.case-edit-main {
 }
 </style>

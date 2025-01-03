@@ -92,7 +92,7 @@ const tabsContextMenu = [
 </script>
 
 <template>
-  <Page auto-content-height class="case-main">
+  <Page class="case-main">
     <Tabs
       v-if="caseStore.caseTabs?.length > 0"
       :active-key="caseStore.caseModel.id"
