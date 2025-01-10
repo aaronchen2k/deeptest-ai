@@ -8,7 +8,13 @@ import { message } from 'ant-design-vue';
 import { debounce } from 'lodash';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
-import { getCaseApi, loadCaseApi } from '#/api/test/case';
+import {
+  getCaseApi,
+  loadCaseApi,
+  moveCaseApi,
+  remove,
+  saveCaseApi,
+} from '#/api/test/case';
 import { useGlobalStore } from '#/store/global';
 import {
   getExpandedKeysCache,
@@ -26,7 +32,7 @@ export const useCaseStore = defineStore('case', () => {
   const autoExpandParent = ref<boolean>(false);
   const loading = ref<boolean>(false);
 
-  const treeData = ref([]);
+  const treeData = ref([] as any[]);
   const treeDataMap = ref({} as any);
 
   const selectedKeys = ref([] as any[]);
@@ -34,7 +40,8 @@ export const useCaseStore = defineStore('case', () => {
 
   const activeTabKey = ref(0);
   const caseTabs = ref([] as any[]);
-  const caseModel = ref({} as any);
+  const editModel = ref(null as any);
+  const designModel = ref(null as any);
 
   function selectNode(keys: any[], e: any) {
     window.console.log('selectNode', keys, e?.node?.dataRef);
@@ -71,7 +78,7 @@ export const useCaseStore = defineStore('case', () => {
     selectNode(key ? [key] : [], null);
   }, 300);
 
-  function fetchTreeData() {
+  const fetchTreeData = () => {
     if (!globalStore.currProject.id) return;
 
     loadCaseApi().then((result) => {
@@ -84,9 +91,9 @@ export const useCaseStore = defineStore('case', () => {
 
       treeDataMap.value = genNodeMap(treeData.value[0]);
     });
-  }
+  };
 
-  function onExpand(keys: any[], args: any) {
+  const onExpand = (keys: any[], args: any) => {
     window.console.log('onExpand', keys, args);
     expandedKeys.value = keys;
     autoExpandParent.value = false;
@@ -96,8 +103,8 @@ export const useCaseStore = defineStore('case', () => {
       globalStore.currProject.id,
       expandedKeys.value,
     );
-  }
-  function expandAll() {
+  };
+  const expandAll = () => {
     const keys: any = [];
     const data = treeData.value;
 
@@ -114,17 +121,28 @@ export const useCaseStore = defineStore('case', () => {
     }
     fn(data);
     expandedKeys.value = keys;
-  }
+  };
 
-  function createNode(parentId: number, type: string) {
+  const createNode = (parentId: number, type: string) => {
     window.console.log('createNode', parentId, type);
-    selectedNode.value = { parentId, type };
-  }
-  function editNode(node: any) {
+    editModel.value = { parentId, type };
+  };
+  const saveNode = (data: any) => {
+    window.console.log('saveNode', data);
+    saveCaseApi(data);
+
+    return data;
+  };
+
+  const editNode = (node: any) => {
     window.console.log('editNode', node.data);
     selectedNode.value = node.data;
-  }
-  async function deleteNode(node: any) {
+  };
+  const saveCase = (node: any) => {
+    window.console.log('saveCase', node.data);
+  };
+
+  const deleteNode = (node: any) => {
     window.console.log('deleteNode', node.data);
 
     const title =
@@ -132,11 +150,11 @@ export const useCaseStore = defineStore('case', () => {
     const context = '删除后无法恢复，请确认是否删除？';
 
     confirmToDelete(title, context, () => {
-      // TODO: delete
+      remove(node.data.id);
     });
-  }
+  };
 
-  async function onDrop(info: AntTreeNodeDropEvent) {
+  const onDrop = async (info: AntTreeNodeDropEvent) => {
     if (info.node?.dataRef?.type === 'interface') {
       message.error('仅可移动到目录下');
       return;
@@ -149,12 +167,12 @@ export const useCaseStore = defineStore('case', () => {
     const pos = info.node.pos.split('-');
     const dropPosition = info.dropPosition - Number(pos[pos.length - 1]);
 
-    const res = moveNode({
+    const res = await moveCaseApi({
       dragKey,
       dropKey,
       dropPos: dropPosition, // 0 表示移动到目标节点的子节点，-1 表示移动到目标节点的前面， 1表示移动到目标节点的后面
     });
-    if (res) {
+    if (res.code === 0) {
       // 移动到目标节点的子节点，则需要展开目标节点
       if (
         dropKey &&
@@ -167,17 +185,12 @@ export const useCaseStore = defineStore('case', () => {
     } else {
       message.warn('移动失败');
     }
-  }
-
-  function moveNode(data: any) {
-    window.console.log(moveNode, data);
-    return true;
-  }
+  };
 
   function openCaseTab(id: number) {
     window.console.log('openCaseTab', id);
     if (id <= 0) {
-      caseModel.value = null;
+      designModel.value = null;
       return;
     }
 
@@ -187,7 +200,7 @@ export const useCaseStore = defineStore('case', () => {
 
     getCaseApi(id).then((result) => {
       window.console.log(result);
-      caseModel.value = result;
+      designModel.value = result;
 
       if (!found) {
         caseTabs.value.push(result);
@@ -211,14 +224,14 @@ export const useCaseStore = defineStore('case', () => {
   async function removeCaseTab(id: number) {
     window.console.log('removeInterfaceTab', id);
 
-    const needReload = id === caseModel.value.id;
+    const needReload = id === designModel.value.id;
 
     caseTabs.value = caseTabs.value.filter((tab: any) => tab.id !== id);
     window.console.log('after remove', caseTabs.value);
 
     let newOpenTabId = 0;
     // goto first one, if close curr tab
-    if (caseTabs.value.length > 0 && caseModel.value.id === id) {
+    if (caseTabs.value.length > 0 && designModel.value.id === id) {
       newOpenTabId = caseTabs.value[0].id;
     }
 
@@ -232,7 +245,7 @@ export const useCaseStore = defineStore('case', () => {
       removeTabIds.push(item.id);
     });
 
-    const needReload = removeTabIds.includes(caseModel.value.id);
+    const needReload = removeTabIds.includes(designModel.value.id);
 
     caseTabs.value = caseTabs.value.filter(
       (tab: any) => !removeTabIds.includes(tab.id),
@@ -242,7 +255,7 @@ export const useCaseStore = defineStore('case', () => {
     // goto first one, if close curr tab
     if (
       caseTabs.value.length > 0 &&
-      removeTabIds.includes(caseModel.value.id)
+      removeTabIds.includes(designModel.value.id)
     ) {
       newOpenTabId = caseTabs.value[0].id;
     }
@@ -254,9 +267,6 @@ export const useCaseStore = defineStore('case', () => {
 
   function setCaseTabs(val: any) {
     caseTabs.value = val;
-  }
-  function setCaseModel(val: any) {
-    caseModel.value = val;
   }
 
   watch(
@@ -285,6 +295,13 @@ export const useCaseStore = defineStore('case', () => {
     },
   );
 
+  function setEditModel(val: any) {
+    editModel.value = val;
+  }
+  function setDesignModel(val: any) {
+    designModel.value = val;
+  }
+
   function $reset() {
     keywords.value = '';
     expandedKeys.value = [];
@@ -299,7 +316,7 @@ export const useCaseStore = defineStore('case', () => {
 
     activeTabKey.value = 0;
     caseTabs.value = [];
-    caseModel.value = {};
+    designModel.value = {};
   }
 
   return {
@@ -310,7 +327,8 @@ export const useCaseStore = defineStore('case', () => {
     treeData,
 
     caseTabs,
-    caseModel,
+    editModel,
+    designModel,
     activeTabKey,
 
     fetchTreeData,
@@ -329,8 +347,11 @@ export const useCaseStore = defineStore('case', () => {
     openCaseTab,
 
     setCaseTabs,
-    setCaseModel,
+    setEditModel,
+    setDesignModel,
 
+    saveNode,
+    saveCase,
     onDrop,
 
     $reset,

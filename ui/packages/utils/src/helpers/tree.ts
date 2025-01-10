@@ -271,6 +271,8 @@ export function expandOneKey(
   key: number,
   expandedKeys: number[],
 ) {
+  window.console.log('expandOneKey', treeMap, key, expandedKeys);
+
   if (!expandedKeys.includes(key)) expandedKeys.push(key);
 
   if (treeMap[key]) {

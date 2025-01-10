@@ -1,6 +1,7 @@
 package handler
 
 import (
+	v1 "github.com/deeptest-com/deeptest-next/cmd/server/v1/domain"
 	multi_iris "github.com/deeptest-com/deeptest-next/internal/pkg/core/auth/iris"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/service"
@@ -102,7 +103,26 @@ func (c *CaseCtrl) Delete(ctx iris.Context) {
 		return
 	}
 
-	err = c.CaseService.DeleteById(req.Id)
+	err = c.CaseService.Delete(req.Id)
+	if err != nil {
+		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
+		return
+	}
+
+	ctx.JSON(_domain.Response{Code: _domain.Success.Code})
+}
+
+func (c *CaseCtrl) Move(ctx iris.Context) {
+	projectId, _ := ctx.URLParamInt("currProjectId")
+
+	var req v1.CaseMoveReq
+	err := ctx.ReadJSON(&req)
+	if err != nil {
+		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
+		return
+	}
+
+	_, err = c.CaseService.Move(uint(req.DragKey), uint(req.DropKey), req.DropPos, uint(projectId))
 	if err != nil {
 		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
 		return

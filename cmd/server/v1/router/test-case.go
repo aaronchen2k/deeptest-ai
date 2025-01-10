@@ -21,5 +21,6 @@ func (m *CaseModule) Party() func(index iris.Party) {
 		party.Post("/", m.CaseCtrl.Create).Name = "新建用例"
 		party.Put("/", m.CaseCtrl.Update).Name = "更新用例"
 		party.Delete("/{id:uint}", m.CaseCtrl.Delete).Name = "删除用例"
+		party.Post("/move", m.CaseCtrl.Move).Name = "移动用例"
 	}
 }

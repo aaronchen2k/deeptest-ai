@@ -8,7 +8,7 @@ import { Dropdown, Empty, Menu, MenuItem, TabPane, Tabs } from 'ant-design-vue';
 
 import { useCaseStore } from '#/views/test/case/store';
 
-import Edit from './edit.vue';
+import Design from './design.vue';
 
 const caseStore = useCaseStore();
 
@@ -36,21 +36,21 @@ const onContextMenuClick = (e: any, record?: any) => {
   switch (e.key) {
     case 'close_all': {
       caseStore.setCaseTabs([]);
-      caseStore.setCaseModel(null);
+      caseStore.setDesignModel(null);
       break;
     }
     case 'close_cur': {
-      if (!record || record?.id === caseStore.caseModel.id) {
-        caseStore.removeCaseTab(caseStore.caseModel.id);
+      if (!record || record?.id === caseStore.designModel.id) {
+        caseStore.removeCaseTab(caseStore.designModel.id);
       } else {
         caseStore.removeCaseTab(record.id);
       }
       break;
     }
     case 'close_other': {
-      if (!record || record?.id === caseStore.caseModel.id) {
+      if (!record || record?.id === caseStore.designModel.id) {
         const caseTabs = caseStore.caseTabs.filter(
-          (e) => e.id === caseStore.caseModel.id,
+          (e) => e.id === caseStore.designModel.id,
         );
         caseStore.setCaseTabs(caseTabs);
       } else {
@@ -95,7 +95,7 @@ const tabsContextMenu = [
   <Page class="case-main">
     <Tabs
       v-if="caseStore.caseTabs?.length > 0"
-      :active-key="caseStore.caseModel.id"
+      :active-key="caseStore.designModel.id"
       :closable="true"
       class="dp-tabs-full-height"
       type="editable-card"
@@ -127,7 +127,7 @@ const tabsContextMenu = [
         </template>
 
         <div class="interface-tabs-content">
-          <Edit />
+          <Design />
         </div>
       </TabPane>
 

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/domain"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/repo"
@@ -41,8 +42,17 @@ func (s *CaseService) Update(req model.TestCase) (err error) {
 	return
 }
 
-func (s *CaseService) DeleteById(id uint) (err error) {
+func (s *CaseService) Delete(id uint) (err error) {
 	err = s.CaseRepo.Delete(id)
+
+	return
+}
+
+func (s *CaseService) Move(srcId, targetId uint, pos consts.DropPos, projectId uint) (srcNode model.TestCase, err error) {
+	srcNode, err = s.CaseRepo.Get(srcId)
+
+	srcNode.ParentId, srcNode.Ordr = s.CaseRepo.UpdateOrder(pos, targetId, projectId)
+	err = s.CaseRepo.UpdateOrdAndParent(srcNode)
 
 	return
 }

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { ref, watch } from 'vue';
 
-import {Page, useVbenModal} from '@vben/common-ui';
-import { useVbenForm, z } from '#/adapter/form';
-import {getProjectApi, saveProjectApi} from '#/api';
+import { useVbenModal } from '@vben/common-ui';
+
+import { useVbenForm } from '#/adapter/form';
+import { getProjectApi, saveProjectApi } from '#/api';
 
 interface Props {
   data: any;
@@ -11,6 +12,10 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   data: {},
 });
+
+const emits = defineEmits<{
+  finish: [event: any];
+}>();
 
 const model = ref(null as any);
 
@@ -84,15 +89,12 @@ watch(
   { immediate: true, deep: true },
 );
 
-const emits = defineEmits<{
-  finish: [event: any];
-}>();
 function submit(values: Record<string, any>) {
   window.console.log('submit', values, model.value);
 
   const data = Object.assign({}, model.value, values);
 
-  saveProjectApi(data).then((result) => {
+  saveProjectApi(data).then(() => {
     emits('finish', null);
     modalApi.close();
   });

@@ -1,19 +1,25 @@
 <script setup lang="ts">
 import { computed, unref } from 'vue';
 
-import { filterByKeyword } from '@vben/utils';
+import { expandOneKey, filterByKeyword } from '@vben/utils';
 
 import { InputSearch, Spin, Tree } from 'ant-design-vue';
 import cloneDeep from 'lodash/cloneDeep';
 
 import { DropdownActionMenu } from '#/component/DropDownMenu';
 import { type MenuItem } from '#/component/DropDownMenu/type';
+import { useGlobalStore } from '#/store/global';
 import { useCaseStore } from '#/views/test/case/store';
 
-const caseStore = useCaseStore();
-const treeData = computed(() => caseStore.treeData);
+import EditModal from './edit.vue';
 
+const globalStore = useGlobalStore();
+const caseStore = useCaseStore();
+
+const currProject = computed(() => globalStore.currProject);
+const treeData = computed(() => caseStore.treeData);
 const keywords = computed(() => caseStore.keywords);
+const editModel = computed(() => caseStore.editModel);
 
 caseStore.fetchTreeData();
 
@@ -57,6 +63,29 @@ const DropdownMenuList = [
 const showKeywordsTip = computed(() => {
   return keywords.value && treeDataComputed.value.length === 0;
 });
+
+async function saveModel(model: any) {
+  window.console.log('saveModel');
+
+  Object.assign(model, {
+    projectId: currProject.value.id,
+  });
+
+  const caseData = await caseStore.saveNode(model);
+  if (caseData) {
+    caseStore.setEditModel(null);
+
+    if (caseData.type !== 'dir') {
+      expandOneKey(caseStore.treeData, model.parentId, caseStore.expandedKeys);
+      caseStore.selectNode([caseData.id], null);
+    }
+  }
+}
+
+function cancelSaveModel() {
+  window.console.log('cancelSaveCase');
+  caseStore.setEditModel(null);
+}
 </script>
 
 <template>
@@ -161,6 +190,13 @@ const showKeywordsTip = computed(() => {
         </div>
       </div>
     </div>
+
+    <EditModal
+      v-if="editModel"
+      :node-info="editModel"
+      @abandon="cancelSaveModel"
+      @ok="saveModel"
+    />
   </div>
 </template>
 

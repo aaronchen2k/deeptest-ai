@@ -55,8 +55,12 @@ func (r *CaseRepo) Get(id uint) (scenario model.TestCase, err error) {
 	return
 }
 
-func (r *CaseRepo) Create(scenario model.TestCase) (ret model.TestCase, bizErr *_domain.BizErr) {
-	err := r.DB.Model(&model.TestCase{}).Create(&scenario).Error
+func (r *CaseRepo) Create(po model.TestCase) (ret model.TestCase, bizErr *_domain.BizErr) {
+	if po.ID == 0 {
+		po.Ordr = r.GetMaxOrder(po.ParentId)
+	}
+
+	err := r.DB.Model(&model.TestCase{}).Create(&po).Error
 	if err != nil {
 		bizErr = &_domain.BizErr{Code: _domain.SystemErr.Code}
 
@@ -159,4 +163,64 @@ func (r *CaseRepo) mountCount(node *domain.CaseNode) (count int) {
 	}
 	return node.Count
 
+}
+
+func (r *CaseRepo) GetMaxOrder(parentId uint) (order int) {
+	node := model.TestCase{}
+
+	err := r.DB.Where("parent_id=?", parentId).
+		Order("ordr DESC").
+		First(&node).Error
+
+	if err == nil {
+		order = node.Ordr + 1
+	}
+
+	return
+}
+
+func (r *CaseRepo) UpdateOrder(pos consts.DropPos, targetId uint, projectId uint) (
+	parentId uint, ordr int) {
+	if pos == consts.Inner {
+		parentId = targetId
+
+		var preChild model.TestCase
+		r.DB.Where("parent_id=? AND project_id = ?", parentId, projectId).
+			Order("ordr DESC").Limit(1).
+			First(&preChild)
+
+		ordr = preChild.Ordr + 1
+
+	} else if pos == consts.Before {
+		brother, _ := r.Get(targetId)
+		parentId = brother.ParentId
+
+		r.DB.Model(&model.TestCase{}).
+			Where("NOT deleted AND parent_id=? AND project_id = ? AND ordr >= ?",
+				parentId, projectId, brother.Ordr).
+			Update("ordr", gorm.Expr("ordr + 1"))
+
+		ordr = brother.Ordr
+
+	} else if pos == consts.After {
+		brother, _ := r.Get(targetId)
+		parentId = brother.ParentId
+
+		r.DB.Model(&model.TestCase{}).
+			Where("NOT deleted AND parent_id=? AND project_id = ? AND ordr > ?",
+				parentId, parentId, brother.Ordr).
+			Update("ordr", gorm.Expr("ordr + 1"))
+
+		ordr = brother.Ordr + 1
+
+	}
+
+	return
+}
+func (r *CaseRepo) UpdateOrdAndParent(node model.TestCase) (err error) {
+	err = r.DB.Model(&node).
+		Updates(model.TestCase{Ordr: node.Ordr, ParentId: node.ParentId}).
+		Error
+
+	return
 }

@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
-import { listMyProjectApi, getCurrProjectApi, updateUserProject } from '#/api';
+import { getCurrProjectApi, listMyProjectApi, updateUserProject } from '#/api';
 
 export interface GlobalState {
   currProject: any;
