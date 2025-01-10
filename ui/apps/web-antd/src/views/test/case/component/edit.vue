@@ -71,7 +71,7 @@ function abandon() {
     :open="!!nodeInfo"
     :title="
       (!nodeInfo.id ? '新建' : '编辑') +
-      (formState.type === 'interface' ? '请求' : '目录')
+      (formState.type === 'leaf' ? '用例' : '目录')
     "
     width="600px"
     @cancel="abandon"
@@ -79,18 +79,16 @@ function abandon() {
   >
     <Form :wrapper-col="{ span: 14 }" class="custom-center-form">
       <FormItem
-        :label="`${formState.type === 'interface' ? '请求' : '目录'}名称`"
+        :label="`${formState.type === 'leaf' ? '用例' : '目录'}名称`"
         v-bind="validateInfos.title"
       >
         <Input v-model:value="formState.title" placeholder="请输入名称" />
       </FormItem>
 
-      <!-- <FormItem :label="(formState.type === 'interface' ? '接口' : '目录') + '备注'" name="desc">
+      <!-- <FormItem :label="(formState.type === 'leaf' ? '接口' : '目录') + '备注'" name="desc">
         <Input placeholder="请输入备注" v-model:value="formState.desc"/>
       </FormItem> -->
     </Form>
-
-    {{formState}}
   </Modal>
 </template>
 

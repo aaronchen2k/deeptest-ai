@@ -2,7 +2,7 @@ import type { AntTreeNodeDropEvent } from 'ant-design-vue/lib/tree';
 
 import { ref, watch } from 'vue';
 
-import { filterTreeNodes, genNodeMap, isInArray } from '@vben/utils';
+import {expandOneKey, filterTreeNodes, genNodeMap, isInArray} from '@vben/utils';
 
 import { message } from 'ant-design-vue';
 import { debounce } from 'lodash';
@@ -62,7 +62,7 @@ export const useCaseStore = defineStore('case', () => {
 
     selectedNode.value = treeDataMap.value[selectedKeys.value[0]];
 
-    if (selectedNode.value.type === 'leaf') {
+    if (selectedNode.value?.type === 'leaf') {
       openCaseTab(selectedNode.value.id);
     } else {
       // TODO: select a dir
@@ -129,14 +129,22 @@ export const useCaseStore = defineStore('case', () => {
   };
   const saveNode = async (data: any) => {
     window.console.log('saveNode', data);
-    await saveCaseApi(data);
+    const result = await saveCaseApi(data);
 
-    return data;
+    if (result?.id > 0) {
+      if (result?.type !== 'dir') {
+        expandOneKey(treeData, data.parentId, expandedKeys.value);
+        selectNode([result.id], null);
+      }
+
+      editModel.value = null;
+      fetchTreeData();
+    }
   };
 
   const editNode = (node: any) => {
     window.console.log('editNode', node.data);
-    selectedNode.value = node.data;
+    editModel.value = node.data;
   };
   const saveCase = (node: any) => {
     window.console.log('saveCase', node.data);
@@ -149,8 +157,9 @@ export const useCaseStore = defineStore('case', () => {
       node.type === 'dir' ? '将级联删除目录下的所有子目录、快捷调试' : '';
     const context = '删除后无法恢复，请确认是否删除？';
 
-    confirmToDelete(title, context, () => {
-      remove(node.data.id);
+    confirmToDelete(title, context, async () => {
+      await remove(node.data.id);
+      fetchTreeData();
     });
   };
 

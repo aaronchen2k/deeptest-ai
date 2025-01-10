@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, unref } from 'vue';
 
-import { expandOneKey, filterByKeyword } from '@vben/utils';
+import { filterByKeyword } from '@vben/utils';
 
 import { InputSearch, Spin, Tree } from 'ant-design-vue';
 import cloneDeep from 'lodash/cloneDeep';
@@ -40,7 +40,7 @@ const DropdownMenuList = [
   {
     label: '新建用例',
     ifShow: (nodeProps) => nodeProps.data?.type !== 'leaf',
-    action: (nodeProps) => caseStore.createNode(nodeProps.data?.id, 'case'),
+    action: (nodeProps) => caseStore.createNode(nodeProps.data?.id, 'leaf'),
   },
   {
     label: (nodeProps: any) => {
@@ -71,15 +71,7 @@ async function saveModel(model: any) {
     projectId: currProject.value.id,
   });
 
-  const caseData = await caseStore.saveNode(model);
-  if (caseData) {
-    caseStore.setEditModel(null);
-
-    if (caseData.type !== 'dir') {
-      expandOneKey(caseStore.treeData, model.parentId, caseStore.expandedKeys);
-      caseStore.selectNode([caseData.id], null);
-    }
-  }
+  caseStore.saveNode(model);
 }
 
 function cancelSaveModel() {

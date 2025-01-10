@@ -87,12 +87,13 @@ func (c *CaseCtrl) Update(ctx iris.Context) {
 		return
 	}
 
-	err = c.CaseService.Update(req)
+	ret, err := c.CaseService.Update(req)
 	if err != nil {
 		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
 		return
 	}
-	ctx.JSON(_domain.Response{Code: _domain.Success.Code})
+
+	ctx.JSON(_domain.Response{Code: _domain.Success.Code, Data: ret})
 }
 
 func (c *CaseCtrl) Delete(ctx iris.Context) {

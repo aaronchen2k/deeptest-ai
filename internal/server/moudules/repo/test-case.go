@@ -4,7 +4,6 @@ import (
 	"github.com/deeptest-com/deeptest-next/internal/pkg/consts"
 	"github.com/deeptest-com/deeptest-next/internal/pkg/domain"
 	"github.com/deeptest-com/deeptest-next/internal/server/moudules/model"
-	"github.com/deeptest-com/deeptest-next/pkg/domain"
 	"gorm.io/gorm"
 )
 
@@ -55,22 +54,22 @@ func (r *CaseRepo) Get(id uint) (scenario model.TestCase, err error) {
 	return
 }
 
-func (r *CaseRepo) Create(po model.TestCase) (ret model.TestCase, bizErr *_domain.BizErr) {
+func (r *CaseRepo) Create(po model.TestCase) (ret model.TestCase, err error) {
 	if po.ID == 0 {
 		po.Ordr = r.GetMaxOrder(po.ParentId)
 	}
 
-	err := r.DB.Model(&model.TestCase{}).Create(&po).Error
+	err = r.DB.Model(&model.TestCase{}).Create(&po).Error
 	if err != nil {
-		bizErr = &_domain.BizErr{Code: _domain.SystemErr.Code}
-
 		return
 	}
+
+	ret = po
 
 	return
 }
 
-func (r *CaseRepo) Update(req model.TestCase) (err error) {
+func (r *CaseRepo) Update(req model.TestCase) (ret model.TestCase, err error) {
 	values := map[string]interface{}{
 		"title":  req.Title,
 		"desc":   req.Desc,
@@ -83,6 +82,8 @@ func (r *CaseRepo) Update(req model.TestCase) (err error) {
 	if err != nil {
 		return
 	}
+
+	ret = req
 
 	return
 }

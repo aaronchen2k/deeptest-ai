@@ -36,8 +36,8 @@ func (s *CaseService) Create(req model.TestCase) (po model.TestCase, err error) 
 	return
 }
 
-func (s *CaseService) Update(req model.TestCase) (err error) {
-	err = s.CaseRepo.Update(req)
+func (s *CaseService) Update(req model.TestCase) (ret model.TestCase, err error) {
+	ret, err = s.CaseRepo.Update(req)
 
 	return
 }
