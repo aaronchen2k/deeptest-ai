@@ -127,9 +127,9 @@ export const useCaseStore = defineStore('case', () => {
     window.console.log('createNode', parentId, type);
     editModel.value = { parentId, type };
   };
-  const saveNode = (data: any) => {
+  const saveNode = async (data: any) => {
     window.console.log('saveNode', data);
-    saveCaseApi(data);
+    await saveCaseApi(data);
 
     return data;
   };

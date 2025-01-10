@@ -38,7 +38,7 @@ class RequestClient {
         'Content-Type': 'application/json;charset=utf-8',
       },
       // 默认超时时间
-      timeout: 10_000,
+      timeout: 3_600_000,
     };
     const { ...axiosConfig } = options;
     const requestConfig = merge(axiosConfig, defaultConfig);

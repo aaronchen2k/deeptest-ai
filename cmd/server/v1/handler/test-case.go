@@ -54,7 +54,7 @@ func (c *CaseCtrl) Get(ctx iris.Context) {
 }
 
 func (c *CaseCtrl) Create(ctx iris.Context) {
-	projectId, err := ctx.URLParamInt("currProjectId")
+	projectId, err := ctx.URLParamInt("projectId")
 	if projectId == 0 {
 		ctx.JSON(_domain.Response{Code: _domain.ParamErr.Code, Msg: "projectId"})
 		return

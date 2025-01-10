@@ -13,7 +13,7 @@ const props = defineProps({
 
 const emit = defineEmits(['ok', 'abandon']);
 
-const formState: UnwrapRef<any> = reactive({
+const formState = ref({
   id: 0,
   title: '',
   desc: '',
@@ -89,6 +89,8 @@ function abandon() {
         <Input placeholder="请输入备注" v-model:value="formState.desc"/>
       </FormItem> -->
     </Form>
+
+    {{formState}}
   </Modal>
 </template>
 
