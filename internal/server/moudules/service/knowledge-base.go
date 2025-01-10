@@ -25,8 +25,6 @@ type KnowledgeBaseService struct {
 }
 
 var (
-	defaultDb = "b0b12d74-2f56-49a8-9fad-8f5c6919b85e"
-
 	kbCreateDocUri = "datasets/%s/document/create-by-file"
 	kbQueryDocUri  = "datasets/%s/documents"
 	kbRemoveDocUri = "datasets/%s/documents/%s"
@@ -64,7 +62,7 @@ func (s *KnowledgeBaseService) UnzipAndUploadFiles(zipPath, dataset string) (err
 
 func (s *KnowledgeBaseService) uploadDocToKnowledgeBase(pth, dataset string) (err error) {
 	if dataset == "" {
-		dataset = defaultDb
+		dataset = os.Getenv("AI_DATASET_ID")
 	}
 
 	url := ""
@@ -87,7 +85,7 @@ func (s *KnowledgeBaseService) uploadDocToKnowledgeBase(pth, dataset string) (er
 
 func (s *KnowledgeBaseService) ClearAll(dataset string) (err error) {
 	if dataset == "" {
-		dataset = defaultDb
+		dataset = os.Getenv("AI_DATASET_ID")
 	}
 
 	queryUrl := ""

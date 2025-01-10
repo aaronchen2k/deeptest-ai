@@ -14,12 +14,8 @@ type KnowledgeBaseCtrl struct {
 	FileService          *service.FileService          `inject:""`
 }
 
-var (
-	kbStr = "b0b12d74-2f56-49a8-9fad-8f5c6919b85e"
-)
-
 func (c *KnowledgeBaseCtrl) UploadDoc(ctx iris.Context) {
-	kb := ctx.URLParamDefault("kb", kbStr)
+	kb := ctx.URLParam("kb")
 
 	f, fh, err := ctx.FormFile("file")
 	if err != nil {
@@ -46,7 +42,7 @@ func (c *KnowledgeBaseCtrl) UploadDoc(ctx iris.Context) {
 }
 
 func (c *KnowledgeBaseCtrl) ClearAll(ctx iris.Context) {
-	kb := ctx.URLParamDefault("kb", kbStr)
+	kb := ctx.URLParam("kb")
 
 	err := c.KnowledgeBaseService.ClearAll(kb)
 	if err != nil {
