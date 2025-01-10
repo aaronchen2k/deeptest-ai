@@ -164,7 +164,7 @@ export const useCaseStore = defineStore('case', () => {
   };
 
   const onDrop = async (info: AntTreeNodeDropEvent) => {
-    if (info.node?.dataRef?.type === 'interface') {
+    if (info.node?.dataRef?.type === 'leaf') {
       message.error('仅可移动到目录下');
       return;
     }
@@ -176,12 +176,12 @@ export const useCaseStore = defineStore('case', () => {
     const pos = info.node.pos.split('-');
     const dropPosition = info.dropPosition - Number(pos[pos.length - 1]);
 
-    const res = await moveCaseApi({
+    const result = await moveCaseApi({
       dragKey,
       dropKey,
       dropPos: dropPosition, // 0 表示移动到目标节点的子节点，-1 表示移动到目标节点的前面， 1表示移动到目标节点的后面
     });
-    if (res.code === 0) {
+    if (result.success) {
       // 移动到目标节点的子节点，则需要展开目标节点
       if (
         dropKey &&
@@ -190,6 +190,8 @@ export const useCaseStore = defineStore('case', () => {
       ) {
         expandedKeys.value.push(+dropKey);
       }
+
+      fetchTreeData();
       message.success('移动成功');
     } else {
       message.warn('移动失败');

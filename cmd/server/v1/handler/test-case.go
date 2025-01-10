@@ -114,10 +114,14 @@ func (c *CaseCtrl) Delete(ctx iris.Context) {
 }
 
 func (c *CaseCtrl) Move(ctx iris.Context) {
-	projectId, _ := ctx.URLParamInt("currProjectId")
+	projectId, err := ctx.URLParamInt("projectId")
+	if projectId == 0 {
+		ctx.JSON(_domain.Response{Code: _domain.ParamErr.Code, Msg: "projectId"})
+		return
+	}
 
 	var req v1.CaseMoveReq
-	err := ctx.ReadJSON(&req)
+	err = ctx.ReadJSON(&req)
 	if err != nil {
 		ctx.JSON(_domain.Response{Code: _domain.SystemErr.Code, Msg: err.Error()})
 		return
@@ -129,5 +133,5 @@ func (c *CaseCtrl) Move(ctx iris.Context) {
 		return
 	}
 
-	ctx.JSON(_domain.Response{Code: _domain.Success.Code})
+	ctx.JSON(c.successResp())
 }

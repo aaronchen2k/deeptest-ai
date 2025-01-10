@@ -50,6 +50,9 @@ func (s *CaseService) Delete(id uint) (err error) {
 
 func (s *CaseService) Move(srcId, targetId uint, pos consts.DropPos, projectId uint) (srcNode model.TestCase, err error) {
 	srcNode, err = s.CaseRepo.Get(srcId)
+	if err != nil {
+		return
+	}
 
 	srcNode.ParentId, srcNode.Ordr = s.CaseRepo.UpdateOrder(pos, targetId, projectId)
 	err = s.CaseRepo.UpdateOrdAndParent(srcNode)
