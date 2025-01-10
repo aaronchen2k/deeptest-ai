@@ -165,7 +165,7 @@ export const useCaseStore = defineStore('case', () => {
 
   const onDrop = async (info: AntTreeNodeDropEvent) => {
     if (info.node?.dataRef?.type === 'leaf') {
-      message.error('仅可移动到目录下');
+      message.error('节点只能移动到目录下');
       return;
     }
     const dropKey = info.node.eventKey;
