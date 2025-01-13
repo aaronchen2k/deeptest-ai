@@ -1,0 +1,105 @@
+openapi: 3.0.3
+name: SFR工作流程
+desc:
+nodes:
+  - name: greetings
+    fromLlmInference: true
+    inferenceReturn:
+      currInstruction:
+        type: string
+    steps:
+      - name: init
+        nextInstruction: create_part
+        nextStep: init
+  - name: confirm
+    steps: []
+    useLlmInference: true
+    inferenceReturn:
+      confirm:
+        type: boolean
+  - name: create_part
+    fromLlmInference: true
+    inferenceReturn:
+    steps:
+      - name: init
+      - name: input_part_no
+      - name: input_part_name
+      - name: fill_part_form
+        nextInstruction: attach_material
+        nextStep: init
+  - name: attach_material
+    steps:
+      - name: init
+      - name: input_materials
+        useLlmInference: true
+        inferenceReturn:
+          materials:
+            type: array
+            items:
+              type: string
+      - name: fill_material_form
+        nextInstruction: attach_geometry
+        nextStep: init
+  - name: attach_geometry
+    steps:
+      - name: init
+      - name: input_geometry
+        useLlmInference: true
+        inferenceReturn:
+          type: array
+          items:
+            $ref: '#/components/schemas/geometry'
+      - name: input_version_or_not
+      - name: show_relation_created_msg
+        nextInstruction: create_st
+        nextStep: init
+  - name: create_st
+    steps:
+      - name: init
+      - name: fill_st_form
+        nextInstruction: assign_project
+        nextStep: init
+  - name: assign_project
+    steps:
+      - name: init
+      - name: input_project
+      - name: input_new_maturity
+        nextInstruction: check_data
+        nextStep: init
+  - name: check_data
+    steps:
+      - name: init
+      - name: success_or_show_st_form
+        nextInstruction: freeze_st
+        nextStep: init
+  - name: freeze_st
+    steps:
+      - name: init
+      - name: success_or_show_st_form
+        nextInstruction: submit_st
+        nextStep: init
+  - name: submit_st
+    steps:
+      - name: init
+      - name: success_or_show_st_form
+  - name: track_st
+    fromLlmInference: true
+    inferenceReturn:
+      structure:
+        type: string
+    steps:
+      - name: init
+
+components:
+  schemas:
+    geometry:
+      type: object
+      properties:
+        category:
+          type: string
+          enum:
+            - 5p
+            - 5d
+        identity:
+          type: string
+          minimum: 8
