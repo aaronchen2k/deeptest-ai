@@ -40,12 +40,13 @@ forms:
           validator:
             - trigger: 'onBlur',
             - script: !javascript |
-                      (form) => { return new Promise((resolve, reject) => {
-                        fetch('http://validate_api', form.data)
+                      (values) => { return new Promise((resolve, reject) => {
+                        // 可调用全局函数
+                        fetch('http://validate_api', values)
                         .then(resp => {
                           resolve(resp.code)
                         })
                         .catch(err => {
                           reject(resp.msg));
                         }
-                      })
+                      })}
