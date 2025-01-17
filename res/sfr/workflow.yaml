@@ -38,6 +38,7 @@ nodes:
             items:
               type: string
       - name: fill_material_form
+        form: material_info
         nextInstruction: attach_geometry
         nextStep: init
   - name: attach_geometry

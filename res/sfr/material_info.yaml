@@ -1,0 +1,70 @@
+openapi: 3.0.3
+name: SFR用户表单
+desc: 表单例子
+# 目前主要包括描述布局和元素，更多样式的控制，可参照或使用TaiwindCSS扩展。
+
+# 表单事件：
+# form_mount, form_unmount, field_change, before_validate, before_submit, after_submit
+# 代码中可获取和修改form对象，该对象包含fields, values, events等属性。
+# 建议尝试直接暴露类似AntDesignVue前端框架中更强大的UseForm方法输出的对象。
+
+form:
+  groups:
+    - title: Basic Info
+      id: basic-info # 可选
+      position: left
+      width: 360px # or flex_1
+      fields:
+        name:
+          label: Position
+          required: true
+          pattern: "^[_A-Za-z]+$"
+
+        position:
+          label: Position
+          type: integer
+    - title: Right Panel
+      layout: flex
+      height: 100% # default
+      groups:
+      - title: Details
+        position: top
+        height: flex_1
+        fields:
+          alternativeMaterial:
+            label: Alternative Material
+            type: integer
+            format: int64
+          thickness:
+            label: Thickness in mm
+            type: number
+            format: double
+            precision: 16
+            maximum: 999999
+          typeOfReference:
+            label: Type of Reference
+            type: string
+            enum: # 支持使用script从远程获取，参考以下validator验证器。
+              - Gliding
+              - Option 2
+              - Option 3
+
+          custom:
+            label: Custom Field
+            type: string
+            validator:
+              - trigger: 'onBlur',
+              - script: !javascript |
+                        (values) => { return new Promise((resolve, reject) => {
+                          // 可调用全局函数
+                          fetch('http://validate_api', values)
+                          .then(resp => {
+                            resolve(resp.code)
+                          })
+                          .catch(err => {
+                            reject(resp.msg));
+                          }
+                        })}
+      - title:
+        position: bottom
+        height: 100px;
